@@ -28,7 +28,7 @@ vi.mock('react-router-dom', async () => {
 });
 
 function renderCartPage(cartItems: Array<{ product: typeof products[0]; quantity: number }> = []) {
-  localStorageMock.setItem('sko-demo-cart', JSON.stringify(cartItems));
+  localStorageMock.setItem('onboarding-demo-cart', JSON.stringify(cartItems));
   return render(
     <BrowserRouter>
       <AuthProvider>

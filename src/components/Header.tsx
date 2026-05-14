@@ -41,7 +41,7 @@ export function Header() {
               letterSpacing: '-0.5px',
             }}
           >
-            SKO Shop
+            Onboarding Shop
           </Link>
           <div style={{ display: 'flex', gap: '32px' }}>
             {categories.map((category) => (

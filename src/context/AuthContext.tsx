@@ -14,8 +14,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const USERS_STORAGE_KEY = 'sko-demo-users';
-const SESSION_STORAGE_KEY = 'sko-demo-session';
+const USERS_STORAGE_KEY = 'onboarding-demo-users';
+const SESSION_STORAGE_KEY = 'onboarding-demo-session';
 
 interface StoredUser {
   email: string;

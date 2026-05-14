@@ -42,7 +42,7 @@ describe('App', () => {
 
   it('renders header with navigation', () => {
     renderApp();
-    expect(screen.getByText('SKO Shop')).toBeInTheDocument();
+    expect(screen.getByText('Onboarding Shop')).toBeInTheDocument();
     expect(screen.getAllByText('Electronics').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Clothing').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Home & Garden').length).toBeGreaterThan(0);

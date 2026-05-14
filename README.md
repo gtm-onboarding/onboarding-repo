@@ -1,4 +1,4 @@
-# SKO Demo App
+# Onboarding Demo App
 
 A React-based ecommerce demo application designed for coding demonstration tasks.
 
