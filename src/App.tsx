@@ -22,7 +22,7 @@ function App() {
   };
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: 'var(--color-bg-primary)', minHeight: '100vh' }}>
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />

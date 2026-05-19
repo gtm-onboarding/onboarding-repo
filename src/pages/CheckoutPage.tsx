@@ -43,28 +43,28 @@ export function CheckoutPage() {
   const inputStyle = {
     width: '100%',
     padding: '14px 16px',
-    border: '1px solid #E8E6E3',
+    border: '1px solid var(--color-border)',
     borderRadius: '8px',
-    backgroundColor: '#FFFFFF',
-    color: '#1A1A1A',
+    backgroundColor: 'var(--color-input-bg)',
+    color: 'var(--color-text-primary)',
     fontSize: '15px',
   };
 
   const labelStyle = {
     display: 'block',
-    color: '#1A1A1A',
+    color: 'var(--color-text-primary)',
     marginBottom: '8px',
     fontSize: '14px',
     fontWeight: '500' as const,
   };
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '40px 32px' }}>
+    <div style={{ backgroundColor: 'var(--color-bg-primary)', minHeight: '100vh', padding: '40px 32px' }}>
       <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
         <h1
           style={{
             fontFamily: '"Playfair Display", Georgia, serif',
-            color: '#1A1A1A',
+            color: 'var(--color-text-primary)',
             marginBottom: '40px',
             fontSize: '36px',
             fontWeight: '600',
@@ -76,16 +76,16 @@ export function CheckoutPage() {
           <form onSubmit={handleSubmit}>
             <div
               style={{
-                backgroundColor: '#FFFFFF',
+                backgroundColor: 'var(--color-bg-card)',
                 padding: '32px',
                 borderRadius: '16px',
                 marginBottom: '24px',
-                boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+                boxShadow: '0 4px 12px var(--color-shadow-strong)',
               }}
             >
               <h2
                 style={{
-                  color: '#1A1A1A',
+                  color: 'var(--color-text-primary)',
                   marginBottom: '24px',
                   fontSize: '18px',
                   fontWeight: '600',
@@ -143,16 +143,16 @@ export function CheckoutPage() {
             </div>
             <div
               style={{
-                backgroundColor: '#FFFFFF',
+                backgroundColor: 'var(--color-bg-card)',
                 padding: '32px',
                 borderRadius: '16px',
                 marginBottom: '24px',
-                boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+                boxShadow: '0 4px 12px var(--color-shadow-strong)',
               }}
             >
               <h2
                 style={{
-                  color: '#1A1A1A',
+                  color: 'var(--color-text-primary)',
                   marginBottom: '24px',
                   fontSize: '18px',
                   fontWeight: '600',
@@ -203,7 +203,7 @@ export function CheckoutPage() {
             <button
               type="submit"
               style={{
-                backgroundColor: '#E07A5F',
+                backgroundColor: 'var(--color-accent)',
                 color: 'white',
                 border: 'none',
                 padding: '18px 32px',
@@ -219,18 +219,18 @@ export function CheckoutPage() {
           </form>
           <div
             style={{
-              backgroundColor: '#FFFFFF',
+              backgroundColor: 'var(--color-bg-card)',
               padding: '28px',
               borderRadius: '16px',
               height: 'fit-content',
-              boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+              boxShadow: '0 4px 12px var(--color-shadow-strong)',
               position: 'sticky',
               top: '120px',
             }}
           >
             <h2
               style={{
-                color: '#1A1A1A',
+                color: 'var(--color-text-primary)',
                 marginBottom: '24px',
                 fontSize: '18px',
                 fontWeight: '600',
@@ -246,42 +246,42 @@ export function CheckoutPage() {
                   display: 'flex',
                   justifyContent: 'space-between',
                   marginBottom: '16px',
-                  color: '#6B6B6B',
+                  color: 'var(--color-text-secondary)',
                   fontSize: '14px',
                 }}
               >
                 <span>
                   {item.product.name} × {item.quantity}
                 </span>
-                <span style={{ color: '#1A1A1A', fontWeight: '500' }}>
+                <span style={{ color: 'var(--color-text-primary)', fontWeight: '500' }}>
                   ${(item.product.price * item.quantity).toFixed(2)}
                 </span>
               </div>
             ))}
-            <div style={{ borderTop: '1px solid #F0EEEB', marginTop: '20px', paddingTop: '20px' }}>
+            <div style={{ borderTop: '1px solid var(--color-border)', marginTop: '20px', paddingTop: '20px' }}>
               <div
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   marginBottom: '12px',
-                  color: '#6B6B6B',
+                  color: 'var(--color-text-secondary)',
                   fontSize: '14px',
                 }}
               >
                 <span>Subtotal</span>
-                <span style={{ color: '#1A1A1A' }}>${totalPrice.toFixed(2)}</span>
+                <span style={{ color: 'var(--color-text-primary)' }}>${totalPrice.toFixed(2)}</span>
               </div>
               <div
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   marginBottom: '12px',
-                  color: '#6B6B6B',
+                  color: 'var(--color-text-secondary)',
                   fontSize: '14px',
                 }}
               >
                 <span>Tax (8%)</span>
-                <span style={{ color: '#1A1A1A' }}>${tax.toFixed(2)}</span>
+                <span style={{ color: 'var(--color-text-primary)' }}>${tax.toFixed(2)}</span>
               </div>
               <div
                 style={{
@@ -289,14 +289,14 @@ export function CheckoutPage() {
                   justifyContent: 'space-between',
                   fontWeight: '600',
                   fontSize: '18px',
-                  color: '#1A1A1A',
+                  color: 'var(--color-text-primary)',
                   paddingTop: '12px',
-                  borderTop: '1px solid #F0EEEB',
+                  borderTop: '1px solid var(--color-border)',
                   marginTop: '12px',
                 }}
               >
                 <span>Total</span>
-                <span style={{ color: '#E07A5F', fontWeight: '700' }}>${total.toFixed(2)}</span>
+                <span style={{ color: 'var(--color-accent)', fontWeight: '700' }}>${total.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -320,8 +320,8 @@ export function CheckoutPage() {
         >
           <div
             style={{
-              backgroundColor: '#FFFFFF',
-              boxShadow: '0 16px 48px rgba(26, 26, 26, 0.15)',
+              backgroundColor: 'var(--color-bg-card)',
+              boxShadow: '0 16px 48px var(--color-shadow-strong)',
               padding: '48px',
               borderRadius: '20px',
               textAlign: 'center',
@@ -346,7 +346,7 @@ export function CheckoutPage() {
             <h2
               style={{
                 fontFamily: '"Playfair Display", Georgia, serif',
-                color: '#1A1A1A',
+                color: 'var(--color-text-primary)',
                 marginBottom: '12px',
                 fontSize: '28px',
                 fontWeight: '600',
@@ -354,13 +354,13 @@ export function CheckoutPage() {
             >
               Order Confirmed!
             </h2>
-            <p style={{ color: '#6B6B6B', marginBottom: '32px', fontSize: '16px', lineHeight: '1.6' }}>
+            <p style={{ color: 'var(--color-text-secondary)', marginBottom: '32px', fontSize: '16px', lineHeight: '1.6' }}>
               Thank you for your purchase. Your order has been placed successfully.
             </p>
             <button
               onClick={handleConfirmationClose}
               style={{
-                backgroundColor: '#E07A5F',
+                backgroundColor: 'var(--color-accent)',
                 color: 'white',
                 border: 'none',
                 padding: '14px 32px',

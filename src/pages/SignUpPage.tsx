@@ -32,28 +32,28 @@ export function SignUpPage() {
   const inputStyle = {
     width: '100%',
     padding: '14px 16px',
-    border: '1px solid #E8E6E3',
+    border: '1px solid var(--color-border)',
     borderRadius: '8px',
-    color: '#1A1A1A',
-    backgroundColor: '#FFFFFF',
+    color: 'var(--color-text-primary)',
+    backgroundColor: 'var(--color-input-bg)',
     fontSize: '15px',
   };
 
   const labelStyle = {
     display: 'block',
-    color: '#1A1A1A',
+    color: 'var(--color-text-primary)',
     marginBottom: '8px',
     fontSize: '14px',
     fontWeight: '500' as const,
   };
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '80px 24px' }}>
+    <div style={{ backgroundColor: 'var(--color-bg-primary)', minHeight: '100vh', padding: '80px 24px' }}>
       <form
         onSubmit={handleSubmit}
         style={{
-          backgroundColor: '#FFFFFF',
-          boxShadow: '0 8px 24px rgba(26, 26, 26, 0.08)',
+          backgroundColor: 'var(--color-bg-card)',
+          boxShadow: '0 8px 24px var(--color-shadow-strong)',
           padding: '48px',
           borderRadius: '20px',
           maxWidth: '420px',
@@ -63,7 +63,7 @@ export function SignUpPage() {
         <h1
           style={{
             fontFamily: '"Playfair Display", Georgia, serif',
-            color: '#1A1A1A',
+            color: 'var(--color-text-primary)',
             marginBottom: '8px',
             textAlign: 'center',
             fontSize: '32px',
@@ -72,7 +72,7 @@ export function SignUpPage() {
         >
           Create Account
         </h1>
-        <p style={{ color: '#9A9A9A', textAlign: 'center', marginBottom: '36px', fontSize: '15px' }}>
+        <p style={{ color: 'var(--color-text-secondary)', textAlign: 'center', marginBottom: '36px', fontSize: '15px' }}>
           Join us and start shopping
         </p>
         {error && (
@@ -133,7 +133,7 @@ export function SignUpPage() {
         <button
           type="submit"
           style={{
-            backgroundColor: '#E07A5F',
+            backgroundColor: 'var(--color-accent)',
             color: 'white',
             border: 'none',
             padding: '16px',
@@ -155,9 +155,9 @@ export function SignUpPage() {
             marginBottom: '24px',
           }}
         >
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#E8E6E3' }} />
-          <span style={{ color: '#9A9A9A', fontSize: '13px', fontWeight: '500' }}>or</span>
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#E8E6E3' }} />
+          <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
+          <span style={{ color: 'var(--color-text-secondary)', fontSize: '13px', fontWeight: '500' }}>or</span>
+          <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
           <GoogleLogin
@@ -177,9 +177,9 @@ export function SignUpPage() {
             width={320}
           />
         </div>
-        <p style={{ textAlign: 'center', color: '#6B6B6B', fontSize: '14px' }}>
+        <p style={{ textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: '14px' }}>
           Already have an account?{' '}
-          <Link to="/signin" style={{ color: '#E07A5F', fontWeight: '600' }}>
+          <Link to="/signin" style={{ color: 'var(--color-accent)', fontWeight: '600' }}>
             Sign In
           </Link>
         </p>
