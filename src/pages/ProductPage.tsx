@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRating } from '../context/RatingContext';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { addRating, getAverageRating, getRatingCount, getUserRating } = useRating();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
@@ -148,11 +151,37 @@ export function ProductPage() {
                 fontSize: '32px',
                 fontWeight: '700',
                 display: 'block',
-                marginBottom: '32px',
+                marginBottom: '16px',
               }}
             >
               ${product.price.toFixed(2)}
             </span>
+            <div style={{ marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                <StarRating
+                  rating={getAverageRating(product.id)}
+                  size={22}
+                  showCount
+                  count={getRatingCount(product.id)}
+                />
+                {getAverageRating(product.id) !== null && (
+                  <span style={{ color: '#6B6B6B', fontSize: '14px', fontWeight: '500' }}>
+                    {getAverageRating(product.id)!.toFixed(1)}
+                  </span>
+                )}
+              </div>
+              <div style={{ marginTop: '12px' }}>
+                <p style={{ color: '#6B6B6B', fontSize: '14px', marginBottom: '8px', fontWeight: '500' }}>
+                  {getUserRating(product.id) !== null ? 'Your rating:' : 'Rate this product:'}
+                </p>
+                <StarRating
+                  rating={getUserRating(product.id)}
+                  onRate={(r) => addRating(product.id, r)}
+                  size={28}
+                  interactive
+                />
+              </div>
+            </div>
             <p
               style={{
                 color: '#6B6B6B',
