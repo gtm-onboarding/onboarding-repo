@@ -2,6 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import {
+  validateZip,
+  validateCardNumber,
+  validateExpiry,
+  validateCvv,
+} from '../utils/validation';
 
 export function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
@@ -17,12 +23,59 @@ export function CheckoutPage() {
     expiry: '',
     cvv: '',
   });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string | null>>({});
 
   const tax = totalPrice * 0.08;
   const total = totalPrice + tax;
 
+  const validateField = (field: string, value?: string) => {
+    let err: string | null = null;
+    const val = value ?? formData[field as keyof typeof formData];
+    switch (field) {
+      case 'name':
+        err = val ? null : 'Full name is required';
+        break;
+      case 'address':
+        err = val ? null : 'Address is required';
+        break;
+      case 'city':
+        err = val ? null : 'City is required';
+        break;
+      case 'zipCode':
+        err = validateZip(val);
+        break;
+      case 'cardNumber':
+        err = validateCardNumber(val);
+        break;
+      case 'expiry':
+        err = validateExpiry(val);
+        break;
+      case 'cvv':
+        err = validateCvv(val);
+        break;
+    }
+    setFieldErrors((prev) => ({ ...prev, [field]: err }));
+    return err;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const errors: Record<string, string | null> = {
+      name: formData.name ? null : 'Full name is required',
+      address: formData.address ? null : 'Address is required',
+      city: formData.city ? null : 'City is required',
+      zipCode: validateZip(formData.zipCode),
+      cardNumber: validateCardNumber(formData.cardNumber),
+      expiry: validateExpiry(formData.expiry),
+      cvv: validateCvv(formData.cvv),
+    };
+    setFieldErrors(errors);
+
+    if (Object.values(errors).some((err) => err !== null)) {
+      return;
+    }
+
     setShowConfirmation(true);
   };
 
@@ -32,7 +85,15 @@ export function CheckoutPage() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (fieldErrors[name]) {
+      validateField(name, value);
+    }
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    validateField(e.target.name);
   };
 
   if (items.length === 0 && !showConfirmation) {
@@ -50,12 +111,23 @@ export function CheckoutPage() {
     fontSize: '15px',
   };
 
+  const inputErrorStyle = {
+    ...inputStyle,
+    border: '1px solid #C44536',
+  };
+
   const labelStyle = {
     display: 'block',
     color: '#1A1A1A',
     marginBottom: '8px',
     fontSize: '14px',
     fontWeight: '500' as const,
+  };
+
+  const fieldErrorStyle = {
+    color: '#C44536',
+    fontSize: '12px',
+    marginTop: '4px',
   };
 
   return (
@@ -101,9 +173,11 @@ export function CheckoutPage() {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   required
-                  style={inputStyle}
+                  style={fieldErrors.name ? inputErrorStyle : inputStyle}
                 />
+                {fieldErrors.name && <div style={fieldErrorStyle}>{fieldErrors.name}</div>}
               </div>
               <div style={{ marginBottom: '20px' }}>
                 <label style={labelStyle}>Address</label>
@@ -112,9 +186,11 @@ export function CheckoutPage() {
                   name="address"
                   value={formData.address}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   required
-                  style={inputStyle}
+                  style={fieldErrors.address ? inputErrorStyle : inputStyle}
                 />
+                {fieldErrors.address && <div style={fieldErrorStyle}>{fieldErrors.address}</div>}
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div>
@@ -124,9 +200,11 @@ export function CheckoutPage() {
                     name="city"
                     value={formData.city}
                     onChange={handleInputChange}
+                    onBlur={handleBlur}
                     required
-                    style={inputStyle}
+                    style={fieldErrors.city ? inputErrorStyle : inputStyle}
                   />
+                  {fieldErrors.city && <div style={fieldErrorStyle}>{fieldErrors.city}</div>}
                 </div>
                 <div>
                   <label style={labelStyle}>ZIP Code</label>
@@ -135,9 +213,11 @@ export function CheckoutPage() {
                     name="zipCode"
                     value={formData.zipCode}
                     onChange={handleInputChange}
+                    onBlur={handleBlur}
                     required
-                    style={inputStyle}
+                    style={fieldErrors.zipCode ? inputErrorStyle : inputStyle}
                   />
+                  {fieldErrors.zipCode && <div style={fieldErrorStyle}>{fieldErrors.zipCode}</div>}
                 </div>
               </div>
             </div>
@@ -168,10 +248,14 @@ export function CheckoutPage() {
                   name="cardNumber"
                   value={formData.cardNumber}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="1234 5678 9012 3456"
                   required
-                  style={inputStyle}
+                  style={fieldErrors.cardNumber ? inputErrorStyle : inputStyle}
                 />
+                {fieldErrors.cardNumber && (
+                  <div style={fieldErrorStyle}>{fieldErrors.cardNumber}</div>
+                )}
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div>
@@ -181,10 +265,12 @@ export function CheckoutPage() {
                     name="expiry"
                     value={formData.expiry}
                     onChange={handleInputChange}
+                    onBlur={handleBlur}
                     placeholder="MM/YY"
                     required
-                    style={inputStyle}
+                    style={fieldErrors.expiry ? inputErrorStyle : inputStyle}
                   />
+                  {fieldErrors.expiry && <div style={fieldErrorStyle}>{fieldErrors.expiry}</div>}
                 </div>
                 <div>
                   <label style={labelStyle}>CVV</label>
@@ -193,10 +279,12 @@ export function CheckoutPage() {
                     name="cvv"
                     value={formData.cvv}
                     onChange={handleInputChange}
+                    onBlur={handleBlur}
                     placeholder="123"
                     required
-                    style={inputStyle}
+                    style={fieldErrors.cvv ? inputErrorStyle : inputStyle}
                   />
+                  {fieldErrors.cvv && <div style={fieldErrorStyle}>{fieldErrors.cvv}</div>}
                 </div>
               </div>
             </div>

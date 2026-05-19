@@ -2,6 +2,12 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import {
+  validateEmail,
+  validatePassword,
+  validateConfirmPassword,
+  validateName,
+} from '../utils/validation';
 
 export function SignUpPage() {
   const [name, setName] = useState('');
@@ -9,15 +15,43 @@ export function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string | null>>({});
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+
+  const validateField = (field: string, value?: string) => {
+    let err: string | null = null;
+    switch (field) {
+      case 'name':
+        err = validateName(value ?? name);
+        break;
+      case 'email':
+        err = validateEmail(value ?? email);
+        break;
+      case 'password':
+        err = validatePassword(value ?? password);
+        break;
+      case 'confirmPassword':
+        err = validateConfirmPassword(password, value ?? confirmPassword);
+        break;
+    }
+    setFieldErrors((prev) => ({ ...prev, [field]: err }));
+    return err;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (!name || !email || !password || !confirmPassword) {
-      setError('Please fill in all fields');
+    const errors = {
+      name: validateName(name),
+      email: validateEmail(email),
+      password: validatePassword(password),
+      confirmPassword: validateConfirmPassword(password, confirmPassword),
+    };
+    setFieldErrors(errors);
+
+    if (Object.values(errors).some((err) => err !== null)) {
       return;
     }
 
@@ -39,12 +73,23 @@ export function SignUpPage() {
     fontSize: '15px',
   };
 
+  const inputErrorStyle = {
+    ...inputStyle,
+    border: '1px solid #C44536',
+  };
+
   const labelStyle = {
     display: 'block',
     color: '#1A1A1A',
     marginBottom: '8px',
     fontSize: '14px',
     fontWeight: '500' as const,
+  };
+
+  const fieldErrorStyle = {
+    color: '#C44536',
+    fontSize: '12px',
+    marginTop: '4px',
   };
 
   return (
@@ -95,40 +140,62 @@ export function SignUpPage() {
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value);
+              if (fieldErrors.name) validateField('name', e.target.value);
+            }}
+            onBlur={() => validateField('name')}
             placeholder="Your name"
-            style={inputStyle}
+            style={fieldErrors.name ? inputErrorStyle : inputStyle}
           />
+          {fieldErrors.name && <div style={fieldErrorStyle}>{fieldErrors.name}</div>}
         </div>
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Email</label>
           <input
-            type="text"
+            type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (fieldErrors.email) validateField('email', e.target.value);
+            }}
+            onBlur={() => validateField('email')}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={fieldErrors.email ? inputErrorStyle : inputStyle}
           />
+          {fieldErrors.email && <div style={fieldErrorStyle}>{fieldErrors.email}</div>}
         </div>
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Password</label>
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (fieldErrors.password) validateField('password', e.target.value);
+            }}
+            onBlur={() => validateField('password')}
             placeholder="At least 6 characters"
-            style={inputStyle}
+            style={fieldErrors.password ? inputErrorStyle : inputStyle}
           />
+          {fieldErrors.password && <div style={fieldErrorStyle}>{fieldErrors.password}</div>}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label style={labelStyle}>Confirm Password</label>
           <input
             type="password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              if (fieldErrors.confirmPassword) validateField('confirmPassword', e.target.value);
+            }}
+            onBlur={() => validateField('confirmPassword')}
             placeholder="Confirm your password"
-            style={inputStyle}
+            style={fieldErrors.confirmPassword ? inputErrorStyle : inputStyle}
           />
+          {fieldErrors.confirmPassword && (
+            <div style={fieldErrorStyle}>{fieldErrors.confirmPassword}</div>
+          )}
         </div>
         <button
           type="submit"
