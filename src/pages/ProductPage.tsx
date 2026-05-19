@@ -107,16 +107,38 @@ export function ProductPage() {
             boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
           }}
         >
-          <img
-            src={product.image}
-            alt={product.name}
-            style={{
-              width: '100%',
-              height: '500px',
-              objectFit: 'cover',
-              borderRadius: '12px',
-            }}
-          />
+          <div style={{ position: 'relative' }}>
+            {product.price < 50 && (
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '16px',
+                  left: '16px',
+                  backgroundColor: '#C44536',
+                  color: '#FFFFFF',
+                  fontSize: '14px',
+                  fontWeight: '700',
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  zIndex: 1,
+                  letterSpacing: '0.5px',
+                  textTransform: 'uppercase',
+                }}
+              >
+                Sale
+              </span>
+            )}
+            <img
+              src={product.image}
+              alt={product.name}
+              style={{
+                width: '100%',
+                height: '500px',
+                objectFit: 'cover',
+                borderRadius: '12px',
+              }}
+            />
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <p
               style={{
