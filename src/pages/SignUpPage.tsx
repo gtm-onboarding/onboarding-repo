@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { theme } from '../theme';
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function SignUpPage() {
   const [name, setName] = useState('');
@@ -9,8 +12,36 @@ export function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+
+  const validateEmail = (value: string): boolean => {
+    if (!value) {
+      setEmailError('');
+      return false;
+    }
+    if (!EMAIL_REGEX.test(value)) {
+      setEmailError('Please enter a valid email address');
+      return false;
+    }
+    setEmailError('');
+    return true;
+  };
+
+  const validateConfirmPassword = (pw: string, cpw: string): boolean => {
+    if (!cpw) {
+      setConfirmPasswordError('');
+      return false;
+    }
+    if (pw !== cpw) {
+      setConfirmPasswordError('Passwords do not match');
+      return false;
+    }
+    setConfirmPasswordError('');
+    return true;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,6 +49,14 @@ export function SignUpPage() {
 
     if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      return;
+    }
+
+    if (!validateConfirmPassword(password, confirmPassword)) {
       return;
     }
 
@@ -29,6 +68,14 @@ export function SignUpPage() {
     }
   };
 
+  const isFormValid =
+    name.length > 0 &&
+    email.length > 0 &&
+    password.length > 0 &&
+    confirmPassword.length > 0 &&
+    EMAIL_REGEX.test(email) &&
+    password === confirmPassword;
+
   const inputStyle = {
     width: '100%',
     padding: '14px 16px',
@@ -37,6 +84,17 @@ export function SignUpPage() {
     color: '#1A1A1A',
     backgroundColor: '#FFFFFF',
     fontSize: '15px',
+  };
+
+  const inputErrorStyle = {
+    ...inputStyle,
+    border: `1px solid ${theme.colors.error}`,
+  };
+
+  const errorMessageStyle = {
+    color: theme.colors.error,
+    fontSize: '13px',
+    marginTop: '6px',
   };
 
   const labelStyle = {
@@ -105,10 +163,15 @@ export function SignUpPage() {
           <input
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (emailError) validateEmail(e.target.value);
+            }}
+            onBlur={() => { if (email) validateEmail(email); }}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={emailError ? inputErrorStyle : inputStyle}
           />
+          {emailError && <div style={errorMessageStyle}>{emailError}</div>}
         </div>
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Password</label>
@@ -125,15 +188,21 @@ export function SignUpPage() {
           <input
             type="password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              if (confirmPasswordError) validateConfirmPassword(password, e.target.value);
+            }}
+            onBlur={() => { if (confirmPassword) validateConfirmPassword(password, confirmPassword); }}
             placeholder="Confirm your password"
-            style={inputStyle}
+            style={confirmPasswordError ? inputErrorStyle : inputStyle}
           />
+          {confirmPasswordError && <div style={errorMessageStyle}>{confirmPasswordError}</div>}
         </div>
         <button
           type="submit"
+          disabled={!isFormValid}
           style={{
-            backgroundColor: '#E07A5F',
+            backgroundColor: isFormValid ? theme.colors.primary : '#ccc',
             color: 'white',
             border: 'none',
             padding: '16px',
@@ -143,6 +212,8 @@ export function SignUpPage() {
             width: '100%',
             marginBottom: '24px',
             letterSpacing: '0.3px',
+            cursor: isFormValid ? 'pointer' : 'not-allowed',
+            opacity: isFormValid ? 1 : 0.7,
           }}
         >
           Sign Up
