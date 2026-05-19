@@ -61,4 +61,28 @@ describe('ProductCard', () => {
     const productLink = links.find((link) => link.getAttribute('href') === `/product/${products[0].id}`);
     expect(productLink).toBeInTheDocument();
   });
+
+  it('displays Sale badge for products under $50', () => {
+    const cheapProduct = products.find((p) => p.price < 50)!;
+    render(
+      <BrowserRouter>
+        <CartProvider>
+          <ProductCard product={cheapProduct} />
+        </CartProvider>
+      </BrowserRouter>
+    );
+    expect(screen.getByText('Sale')).toBeInTheDocument();
+  });
+
+  it('does not display Sale badge for products $50 or more', () => {
+    const expensiveProduct = products.find((p) => p.price >= 50)!;
+    render(
+      <BrowserRouter>
+        <CartProvider>
+          <ProductCard product={expensiveProduct} />
+        </CartProvider>
+      </BrowserRouter>
+    );
+    expect(screen.queryByText('Sale')).not.toBeInTheDocument();
+  });
 });
