@@ -2,14 +2,20 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { getEmailError } from '../utils/validation';
 
 export function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState<string | null>(null);
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+  const handleEmailBlur = () => {
+    setEmailError(getEmailError(email));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,6 +23,12 @@ export function SignInPage() {
 
     if (!email || !password) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    const emailErr = getEmailError(email);
+    setEmailError(emailErr);
+    if (emailErr) {
       return;
     }
 
@@ -97,10 +109,33 @@ export function SignInPage() {
           <input
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (emailError) setEmailError(getEmailError(e.target.value));
+            }}
+            onBlur={handleEmailBlur}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              ...(emailError ? { borderColor: '#C44536' } : {}),
+            }}
+            aria-invalid={!!emailError}
+            aria-describedby={emailError ? 'email-error' : undefined}
           />
+          {emailError && (
+            <p
+              id="email-error"
+              role="alert"
+              style={{
+                color: '#C44536',
+                fontSize: '13px',
+                marginTop: '6px',
+                marginBottom: 0,
+              }}
+            >
+              {emailError}
+            </p>
+          )}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label
