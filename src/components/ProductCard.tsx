@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
+import { theme } from '../theme';
 
 interface ProductCardProps {
   product: Product;
@@ -20,7 +21,7 @@ export function ProductCard({ product }: ProductCardProps) {
         boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
       }}
     >
-      <Link to={`/product/${product.id}`} style={{ overflow: 'hidden' }}>
+      <Link to={`/product/${product.id}`} style={{ overflow: 'hidden', position: 'relative', display: 'block' }}>
         <img
           src={product.image}
           alt={product.name}
@@ -33,6 +34,26 @@ export function ProductCard({ product }: ProductCardProps) {
           onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
           onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
         />
+        {product.price < 50 && (
+          <span
+            style={{
+              position: 'absolute',
+              top: '12px',
+              left: '12px',
+              backgroundColor: theme.colors.primary,
+              color: theme.colors.surface,
+              fontSize: '12px',
+              fontWeight: '700',
+              padding: '4px 10px',
+              borderRadius: theme.radii.sm,
+              letterSpacing: '0.5px',
+              textTransform: 'uppercase',
+              pointerEvents: 'none',
+            }}
+          >
+            Sale
+          </span>
+        )}
       </Link>
       <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
