@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { CartPage } from '../pages/CartPage';
 import { CartProvider } from '../context/CartContext';
+import { WishlistProvider } from '../context/WishlistContext';
 import { AuthProvider } from '../context/AuthContext';
 import { products } from '../data/products';
 
@@ -33,7 +34,9 @@ function renderCartPage(cartItems: Array<{ product: typeof products[0]; quantity
     <BrowserRouter>
       <AuthProvider>
         <CartProvider>
-          <CartPage />
+          <WishlistProvider>
+            <CartPage />
+          </WishlistProvider>
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>
