@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRatings } from '../context/RatingsContext';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { getAverageRating, getRatingCount, getUserRating, rateProduct } = useRatings();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
@@ -153,6 +156,35 @@ export function ProductPage() {
             >
               ${product.price.toFixed(2)}
             </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+              <StarRating
+                rating={getAverageRating(product.id)}
+                count={getRatingCount(product.id)}
+                size={20}
+              />
+              <span style={{ color: '#6B6B6B', fontSize: '14px' }}>
+                {getAverageRating(product.id).toFixed(1)} out of 5
+              </span>
+            </div>
+            <div
+              style={{
+                backgroundColor: '#F5F3F0',
+                borderRadius: '10px',
+                padding: '16px 20px',
+                marginBottom: '24px',
+              }}
+            >
+              <p style={{ color: '#1A1A1A', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>
+                {getUserRating(product.id) ? 'Your Rating' : 'Rate this Product'}
+              </p>
+              <StarRating
+                rating={getAverageRating(product.id)}
+                interactive
+                userRating={getUserRating(product.id)}
+                onRate={(r) => rateProduct(product.id, r)}
+                size={28}
+              />
+            </div>
             <p
               style={{
                 color: '#6B6B6B',
