@@ -107,16 +107,37 @@ export function ProductPage() {
             boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
           }}
         >
-          <img
-            src={product.image}
-            alt={product.name}
-            style={{
-              width: '100%',
-              height: '500px',
-              objectFit: 'cover',
-              borderRadius: '12px',
-            }}
-          />
+          <div style={{ position: 'relative' }}>
+            {product.salePrice != null && (
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '16px',
+                  left: '16px',
+                  zIndex: 1,
+                  backgroundColor: '#C44536',
+                  color: '#fff',
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  fontWeight: '700',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                SALE
+              </span>
+            )}
+            <img
+              src={product.image}
+              alt={product.name}
+              style={{
+                width: '100%',
+                height: '500px',
+                objectFit: 'cover',
+                borderRadius: '12px',
+              }}
+            />
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <p
               style={{
@@ -142,17 +163,40 @@ export function ProductPage() {
             >
               {product.name}
             </h1>
-            <span
-              style={{
-                color: '#E07A5F',
-                fontSize: '32px',
-                fontWeight: '700',
-                display: 'block',
-                marginBottom: '32px',
-              }}
-            >
-              ${product.price.toFixed(2)}
-            </span>
+            {product.salePrice != null ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '32px' }}>
+                <span
+                  style={{
+                    color: '#9A9A9A',
+                    fontSize: '24px',
+                    textDecoration: 'line-through',
+                  }}
+                >
+                  ${product.price.toFixed(2)}
+                </span>
+                <span
+                  style={{
+                    color: '#C44536',
+                    fontSize: '32px',
+                    fontWeight: '700',
+                  }}
+                >
+                  ${product.salePrice.toFixed(2)}
+                </span>
+              </div>
+            ) : (
+              <span
+                style={{
+                  color: '#E07A5F',
+                  fontSize: '32px',
+                  fontWeight: '700',
+                  display: 'block',
+                  marginBottom: '32px',
+                }}
+              >
+                ${product.price.toFixed(2)}
+              </span>
+            )}
             <p
               style={{
                 color: '#6B6B6B',

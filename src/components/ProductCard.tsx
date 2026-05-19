@@ -20,7 +20,26 @@ export function ProductCard({ product }: ProductCardProps) {
         boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
       }}
     >
-      <Link to={`/product/${product.id}`} style={{ overflow: 'hidden' }}>
+      <Link to={`/product/${product.id}`} style={{ overflow: 'hidden', position: 'relative', display: 'block' }}>
+        {product.salePrice != null && (
+          <span
+            style={{
+              position: 'absolute',
+              top: '12px',
+              left: '12px',
+              zIndex: 1,
+              backgroundColor: '#C44536',
+              color: '#fff',
+              padding: '4px 10px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              fontWeight: '700',
+              letterSpacing: '0.5px',
+            }}
+          >
+            SALE
+          </span>
+        )}
         <img
           src={product.image}
           alt={product.name}
@@ -74,9 +93,20 @@ export function ProductCard({ product }: ProductCardProps) {
             borderTop: '1px solid #F0EEEB',
           }}
         >
-          <span style={{ color: '#E07A5F', fontWeight: '700', fontSize: '20px' }}>
-            ${product.price.toFixed(2)}
-          </span>
+          {product.salePrice != null ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ color: '#9A9A9A', textDecoration: 'line-through', fontSize: '15px' }}>
+                ${product.price.toFixed(2)}
+              </span>
+              <span style={{ color: '#C44536', fontWeight: '700', fontSize: '20px' }}>
+                ${product.salePrice.toFixed(2)}
+              </span>
+            </div>
+          ) : (
+            <span style={{ color: '#E07A5F', fontWeight: '700', fontSize: '20px' }}>
+              ${product.price.toFixed(2)}
+            </span>
+          )}
           <button
             onClick={() => addToCart(product)}
             style={{

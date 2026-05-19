@@ -39,7 +39,8 @@ describe('ProductCard', () => {
   it('renders product information', () => {
     renderProductCard();
     expect(screen.getByText(products[0].name)).toBeInTheDocument();
-    expect(screen.getByText(`$${products[0].price.toFixed(2)}`)).toBeInTheDocument();
+    // products[0] has a salePrice, so the sale price is displayed
+    expect(screen.getByText(`$${products[0].salePrice!.toFixed(2)}`)).toBeInTheDocument();
   });
 
   it('renders product image', () => {
@@ -60,5 +61,29 @@ describe('ProductCard', () => {
     const links = screen.getAllByRole('link');
     const productLink = links.find((link) => link.getAttribute('href') === `/product/${products[0].id}`);
     expect(productLink).toBeInTheDocument();
+  });
+
+  it('shows SALE badge when product has salePrice', () => {
+    renderProductCard();
+    expect(screen.getByText('SALE')).toBeInTheDocument();
+  });
+
+  it('shows struck-through original price when on sale', () => {
+    renderProductCard();
+    const originalPrice = screen.getByText(`$${products[0].price.toFixed(2)}`);
+    expect(originalPrice).toBeInTheDocument();
+    expect(originalPrice.style.textDecoration).toBe('line-through');
+  });
+
+  it('does not show SALE badge when product has no salePrice', () => {
+    // products[1] (Smart Watch) has no salePrice
+    render(
+      <BrowserRouter>
+        <CartProvider>
+          <ProductCard product={products[1]} />
+        </CartProvider>
+      </BrowserRouter>
+    );
+    expect(screen.queryByText('SALE')).not.toBeInTheDocument();
   });
 });

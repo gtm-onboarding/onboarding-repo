@@ -60,7 +60,8 @@ describe('CartPage', () => {
   it('displays correct totals', () => {
     const quantity = 2;
     renderCartPage([{ product: products[0], quantity }]);
-    const subtotal = products[0].price * quantity;
+    const effectivePrice = products[0].salePrice ?? products[0].price;
+    const subtotal = effectivePrice * quantity;
     const subtotalElements = screen.getAllByText(`$${subtotal.toFixed(2)}`);
     expect(subtotalElements.length).toBeGreaterThan(0);
   });
