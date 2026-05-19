@@ -4,6 +4,10 @@ import { BrowserRouter } from 'react-router-dom';
 import App from '../App';
 import { CartProvider } from '../context/CartContext';
 import { AuthProvider } from '../context/AuthContext';
+import { ThemeProvider } from '../context/ThemeContext';
+import { RatingProvider } from '../context/RatingContext';
+import { OrderProvider } from '../context/OrderContext';
+import { WishlistProvider } from '../context/WishlistContext';
 
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
@@ -20,11 +24,19 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 function renderApp() {
   return render(
     <BrowserRouter>
-      <AuthProvider>
-        <CartProvider>
-          <App />
-        </CartProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <RatingProvider>
+          <OrderProvider>
+            <WishlistProvider>
+              <AuthProvider>
+                <CartProvider>
+                  <App />
+                </CartProvider>
+              </AuthProvider>
+            </WishlistProvider>
+          </OrderProvider>
+        </RatingProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

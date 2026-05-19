@@ -5,6 +5,10 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import App from './App';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { RatingProvider } from './context/RatingContext';
+import { OrderProvider } from './context/OrderContext';
+import { WishlistProvider } from './context/WishlistContext';
 import './App.css';
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
@@ -13,11 +17,19 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <GoogleOAuthProvider clientId={googleClientId}>
       <BrowserRouter>
-        <AuthProvider>
-          <CartProvider>
-            <App />
-          </CartProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <RatingProvider>
+            <OrderProvider>
+              <WishlistProvider>
+                <AuthProvider>
+                  <CartProvider>
+                    <App />
+                  </CartProvider>
+                </AuthProvider>
+              </WishlistProvider>
+            </OrderProvider>
+          </RatingProvider>
+        </ThemeProvider>
       </BrowserRouter>
     </GoogleOAuthProvider>
   </React.StrictMode>

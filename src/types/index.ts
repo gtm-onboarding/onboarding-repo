@@ -16,3 +16,17 @@ export interface User {
   email: string;
   name: string;
 }
+
+export interface Order {
+  id: string;
+  items: CartItem[];
+  subtotal: number;
+  tax: number;
+  total: number;
+  date: string;
+  shippingInfo?: {
+    name: string;
+    email: string;
+    address: string;
+  };
+}

@@ -1,24 +1,29 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { CartIcon } from './icons/CartIcon';
 import { UserIcon } from './icons/UserIcon';
 import { categories } from '../data/products';
+import { SearchBar } from './SearchBar';
+import { useWishlist } from '../context/WishlistContext';
 
 export function Header() {
   const { totalItems } = useCart();
   const { user, isAuthenticated, signOut } = useAuth();
+  const { activeTheme, mode, toggleTheme } = useTheme();
+  const { wishlistItems } = useWishlist();
 
   return (
     <header
       style={{
-        backgroundColor: '#FFFFFF',
-        borderBottom: '1px solid #E8E6E3',
+        backgroundColor: activeTheme.colors.surface,
+        borderBottom: `1px solid ${activeTheme.colors.border}`,
         padding: '20px 32px',
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        boxShadow: '0 1px 3px rgba(26, 26, 26, 0.04)',
+        boxShadow: activeTheme.shadows.sm,
       }}
     >
       <nav
@@ -34,10 +39,10 @@ export function Header() {
           <Link
             to="/"
             style={{
-              color: '#1A1A1A',
+              color: activeTheme.colors.text,
               fontSize: '26px',
               fontWeight: '600',
-              fontFamily: '"Playfair Display", Georgia, serif',
+              fontFamily: activeTheme.fonts.display,
               letterSpacing: '-0.5px',
             }}
           >
@@ -49,7 +54,7 @@ export function Header() {
                 key={category}
                 to={`/category/${encodeURIComponent(category)}`}
                 style={{
-                  color: '#6B6B6B',
+                  color: activeTheme.colors.textSecondary,
                   fontSize: '14px',
                   fontWeight: '500',
                   letterSpacing: '0.3px',
@@ -62,19 +67,44 @@ export function Header() {
             ))}
           </div>
         </div>
+        <SearchBar />
         <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
+          <button
+            onClick={toggleTheme}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '22px',
+              cursor: 'pointer',
+              padding: '4px',
+              lineHeight: '1',
+            }}
+            aria-label={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}
+          >
+            {mode === 'light' ? '🌙' : '☀️'}
+          </button>
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <UserIcon />
-              <span style={{ color: '#6B6B6B', fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
+              <span style={{ color: activeTheme.colors.textSecondary, fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
+              <Link
+                to="/orders"
+                style={{
+                  color: activeTheme.colors.textSecondary,
+                  fontSize: '13px',
+                  fontWeight: '500',
+                }}
+              >
+                Orders
+              </Link>
               <button
                 onClick={signOut}
                 style={{
                   backgroundColor: 'transparent',
-                  border: '1px solid #E8E6E3',
-                  color: '#6B6B6B',
+                  border: `1px solid ${activeTheme.colors.border}`,
+                  color: activeTheme.colors.textSecondary,
                   padding: '8px 16px',
-                  borderRadius: '6px',
+                  borderRadius: activeTheme.radii.sm,
                   fontSize: '13px',
                   fontWeight: '500',
                 }}
@@ -86,7 +116,7 @@ export function Header() {
             <Link
               to="/signin"
               style={{
-                color: '#1A1A1A',
+                color: activeTheme.colors.text,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
@@ -99,9 +129,42 @@ export function Header() {
             </Link>
           )}
           <Link
+            to="/wishlist"
+            style={{
+              color: activeTheme.colors.text,
+              display: 'flex',
+              alignItems: 'center',
+              position: 'relative',
+            }}
+            aria-label="Wishlist"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+            {wishlistItems.length > 0 && (
+              <span
+                style={{
+                  backgroundColor: activeTheme.colors.primary,
+                  color: 'white',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  padding: '2px 7px',
+                  borderRadius: '10px',
+                  position: 'absolute',
+                  top: '-10px',
+                  right: '-10px',
+                  minWidth: '20px',
+                  textAlign: 'center',
+                }}
+              >
+                {wishlistItems.length}
+              </span>
+            )}
+          </Link>
+          <Link
             to="/cart"
             style={{
-              color: '#1A1A1A',
+              color: activeTheme.colors.text,
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
@@ -112,7 +175,7 @@ export function Header() {
             {totalItems > 0 && (
               <span
                 style={{
-                  backgroundColor: '#E07A5F',
+                  backgroundColor: activeTheme.colors.primary,
                   color: 'white',
                   fontSize: '11px',
                   fontWeight: '600',

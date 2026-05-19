@@ -8,12 +8,16 @@ import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { SignInPage } from './pages/SignInPage';
 import { SignUpPage } from './pages/SignUpPage';
+import { OrderHistoryPage } from './pages/OrderHistoryPage';
+import { WishlistPage } from './pages/WishlistPage';
 import { useCart } from './context/CartContext';
 import { useAuth } from './context/AuthContext';
+import { useTheme } from './context/ThemeContext';
 
 function App() {
   const { toastMessage: cartToast, showToast: showCartToast } = useCart();
   const { toastMessage: authToast, showToast: showAuthToast } = useAuth();
+  const { activeTheme } = useTheme();
 
   const toastMessage = cartToast || authToast;
   const clearToast = () => {
@@ -22,7 +26,7 @@ function App() {
   };
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: activeTheme.colors.background, minHeight: '100vh', color: activeTheme.colors.text }}>
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -32,6 +36,8 @@ function App() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/orders" element={<OrderHistoryPage />} />
+        <Route path="/wishlist" element={<WishlistPage />} />
       </Routes>
       {toastMessage && <Toast message={toastMessage} onClose={clearToast} />}
     </div>

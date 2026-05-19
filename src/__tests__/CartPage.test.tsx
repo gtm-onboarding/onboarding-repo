@@ -4,6 +4,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { CartPage } from '../pages/CartPage';
 import { CartProvider } from '../context/CartContext';
 import { AuthProvider } from '../context/AuthContext';
+import { ThemeProvider } from '../context/ThemeContext';
+import { RatingProvider } from '../context/RatingContext';
+import { OrderProvider } from '../context/OrderContext';
+import { WishlistProvider } from '../context/WishlistContext';
 import { products } from '../data/products';
 
 const localStorageMock = (() => {
@@ -31,11 +35,19 @@ function renderCartPage(cartItems: Array<{ product: typeof products[0]; quantity
   localStorageMock.setItem('onboarding-demo-cart', JSON.stringify(cartItems));
   return render(
     <BrowserRouter>
-      <AuthProvider>
-        <CartProvider>
-          <CartPage />
-        </CartProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <RatingProvider>
+          <OrderProvider>
+            <WishlistProvider>
+              <AuthProvider>
+                <CartProvider>
+                  <CartPage />
+                </CartProvider>
+              </AuthProvider>
+            </WishlistProvider>
+          </OrderProvider>
+        </RatingProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

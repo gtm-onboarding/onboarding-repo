@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRatings } from '../context/RatingContext';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { addRating, getAverageRating, getRatingCount } = useRatings();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
@@ -153,6 +156,18 @@ export function ProductPage() {
             >
               ${product.price.toFixed(2)}
             </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+              <StarRating
+                rating={getAverageRating(product.id)}
+                onRate={(rating) => addRating(product.id, rating)}
+                size={24}
+              />
+              <span style={{ color: '#6B6B6B', fontSize: '14px' }}>
+                {getRatingCount(product.id) > 0
+                  ? `${getAverageRating(product.id).toFixed(1)} (${getRatingCount(product.id)} ${getRatingCount(product.id) === 1 ? 'rating' : 'ratings'})`
+                  : 'No ratings yet'}
+              </span>
+            </div>
             <p
               style={{
                 color: '#6B6B6B',
