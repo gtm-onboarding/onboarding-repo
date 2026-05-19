@@ -2,14 +2,19 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRatings } from '../context/RatingsContext';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { getRating, rateProduct } = useRatings();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
   const product = products.find((p) => p.id === productId);
+  const productRating = productId ? getRating(productId) : { total: 0, count: 0, userRating: null };
+  const averageRating = productRating.count > 0 ? productRating.total / productRating.count : 0;
 
   useEffect(() => {
     setIsLoading(true);
@@ -153,6 +158,28 @@ export function ProductPage() {
             >
               ${product.price.toFixed(2)}
             </span>
+            <div style={{ marginBottom: '24px' }}>
+              <div style={{ marginBottom: '8px' }}>
+                <StarRating rating={averageRating} count={productRating.count} size={20} />
+              </div>
+              <div>
+                <p
+                  style={{
+                    color: '#6B6B6B',
+                    fontSize: '14px',
+                    marginBottom: '8px',
+                  }}
+                >
+                  {productRating.userRating !== null ? 'Your rating:' : 'Rate this product:'}
+                </p>
+                <StarRating
+                  rating={productRating.userRating ?? 0}
+                  interactive
+                  onRate={(rating) => rateProduct(product.id, rating)}
+                  size={24}
+                />
+              </div>
+            </div>
             <p
               style={{
                 color: '#6B6B6B',

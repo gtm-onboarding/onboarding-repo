@@ -16,3 +16,9 @@ export interface User {
   email: string;
   name: string;
 }
+
+export interface ProductRatings {
+  total: number;
+  count: number;
+  userRating: number | null;
+}
