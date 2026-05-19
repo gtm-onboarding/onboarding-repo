@@ -1,13 +1,26 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { CartIcon } from './icons/CartIcon';
 import { UserIcon } from './icons/UserIcon';
+import { SearchIcon } from './icons/SearchIcon';
 import { categories } from '../data/products';
 
 export function Header() {
   const { totalItems } = useCart();
   const { user, isAuthenticated, signOut } = useAuth();
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = searchQuery.trim();
+    if (trimmed) {
+      navigate(`/search?q=${encodeURIComponent(trimmed)}`);
+      setSearchQuery('');
+    }
+  };
 
   return (
     <header
@@ -63,6 +76,26 @@ export function Header() {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
+          <form onSubmit={handleSearch} style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <span style={{ position: 'absolute', left: '12px', display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
+              <SearchIcon />
+            </span>
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                padding: '8px 16px 8px 40px',
+                border: '1px solid #E8E6E3',
+                borderRadius: '6px',
+                fontSize: '14px',
+                width: '220px',
+                backgroundColor: '#FAF9F7',
+                color: '#1A1A1A',
+              }}
+            />
+          </form>
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <UserIcon />
