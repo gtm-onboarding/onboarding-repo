@@ -1,3 +1,5 @@
+import { useTheme } from '../context/ThemeContext';
+
 interface ToastProps {
   message: string;
   type?: 'success' | 'error';
@@ -5,17 +7,23 @@ interface ToastProps {
 }
 
 export function Toast({ message, type = 'success', onClose }: ToastProps) {
+  const { theme, mode } = useTheme();
+  const c = theme.colors;
+
+  const successBg = mode === 'dark' ? '#1B3A1B' : '#E8F5E9';
+  const errorBg = mode === 'dark' ? '#3A1B1B' : '#FEF2F2';
+
   return (
     <div
       style={{
         position: 'fixed',
         bottom: '24px',
         right: '24px',
-        backgroundColor: type === 'success' ? '#E8F5E9' : '#FEF2F2',
-        color: type === 'success' ? '#4A7C59' : '#C44536',
+        backgroundColor: type === 'success' ? successBg : errorBg,
+        color: type === 'success' ? c.success : c.error,
         padding: '16px 20px',
         borderRadius: '12px',
-        boxShadow: '0 8px 24px rgba(26, 26, 26, 0.12)',
+        boxShadow: theme.shadows.lg,
         zIndex: 1000,
         display: 'flex',
         alignItems: 'center',
@@ -30,7 +38,7 @@ export function Toast({ message, type = 'success', onClose }: ToastProps) {
           width: '24px',
           height: '24px',
           borderRadius: '50%',
-          backgroundColor: type === 'success' ? '#4A7C59' : '#C44536',
+          backgroundColor: type === 'success' ? c.success : c.error,
           color: 'white',
           display: 'flex',
           alignItems: 'center',
@@ -47,7 +55,7 @@ export function Toast({ message, type = 'success', onClose }: ToastProps) {
         style={{
           background: 'none',
           border: 'none',
-          color: type === 'success' ? '#4A7C59' : '#C44536',
+          color: type === 'success' ? c.success : c.error,
           fontSize: '20px',
           cursor: 'pointer',
           padding: '0',
