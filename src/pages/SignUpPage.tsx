@@ -9,8 +9,37 @@ export function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+
+  const isValidEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+  const handleEmailBlur = () => {
+    if (email && !isValidEmail(email)) {
+      setEmailError('Please enter a valid email address');
+    } else {
+      setEmailError('');
+    }
+  };
+
+  const handleConfirmPasswordBlur = () => {
+    if (confirmPassword && password !== confirmPassword) {
+      setPasswordError('Passwords do not match');
+    } else {
+      setPasswordError('');
+    }
+  };
+
+  const isFormValid =
+    name.length > 0 &&
+    email.length > 0 &&
+    password.length >= 6 &&
+    confirmPassword.length > 0 &&
+    isValidEmail(email) &&
+    password === confirmPassword;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,6 +47,21 @@ export function SignUpPage() {
 
     if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setPasswordError('Passwords do not match');
       return;
     }
 
@@ -105,10 +149,20 @@ export function SignUpPage() {
           <input
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (emailError) setEmailError('');
+            }}
+            onBlur={handleEmailBlur}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              ...(emailError ? { borderColor: '#C44536' } : {}),
+            }}
           />
+          {emailError && (
+            <p style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>{emailError}</p>
+          )}
         </div>
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Password</label>
@@ -125,15 +179,26 @@ export function SignUpPage() {
           <input
             type="password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              if (passwordError) setPasswordError('');
+            }}
+            onBlur={handleConfirmPasswordBlur}
             placeholder="Confirm your password"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              ...(passwordError ? { borderColor: '#C44536' } : {}),
+            }}
           />
+          {passwordError && (
+            <p style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>{passwordError}</p>
+          )}
         </div>
         <button
           type="submit"
+          disabled={!isFormValid}
           style={{
-            backgroundColor: '#E07A5F',
+            backgroundColor: isFormValid ? '#E07A5F' : '#D4A99A',
             color: 'white',
             border: 'none',
             padding: '16px',
@@ -143,6 +208,7 @@ export function SignUpPage() {
             width: '100%',
             marginBottom: '24px',
             letterSpacing: '0.3px',
+            cursor: isFormValid ? 'pointer' : 'not-allowed',
           }}
         >
           Sign Up

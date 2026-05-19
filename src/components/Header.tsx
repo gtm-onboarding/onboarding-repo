@@ -1,24 +1,38 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { CartIcon } from './icons/CartIcon';
 import { UserIcon } from './icons/UserIcon';
+import { SearchIcon } from './icons/SearchIcon';
 import { categories } from '../data/products';
+import { theme } from '../theme';
 
 export function Header() {
   const { totalItems } = useCart();
   const { user, isAuthenticated, signOut } = useAuth();
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = searchQuery.trim();
+    if (trimmed) {
+      navigate(`/search?q=${encodeURIComponent(trimmed)}`);
+      setSearchQuery('');
+    }
+  };
 
   return (
     <header
       style={{
-        backgroundColor: '#FFFFFF',
-        borderBottom: '1px solid #E8E6E3',
+        backgroundColor: theme.colors.surface,
+        borderBottom: `1px solid ${theme.colors.border}`,
         padding: '20px 32px',
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        boxShadow: '0 1px 3px rgba(26, 26, 26, 0.04)',
+        boxShadow: theme.shadows.sm,
       }}
     >
       <nav
@@ -34,10 +48,10 @@ export function Header() {
           <Link
             to="/"
             style={{
-              color: '#1A1A1A',
+              color: theme.colors.text,
               fontSize: '26px',
               fontWeight: '600',
-              fontFamily: '"Playfair Display", Georgia, serif',
+              fontFamily: theme.fonts.display,
               letterSpacing: '-0.5px',
             }}
           >
@@ -49,7 +63,7 @@ export function Header() {
                 key={category}
                 to={`/category/${encodeURIComponent(category)}`}
                 style={{
-                  color: '#6B6B6B',
+                  color: theme.colors.textSecondary,
                   fontSize: '14px',
                   fontWeight: '500',
                   letterSpacing: '0.3px',
@@ -62,19 +76,52 @@ export function Header() {
             ))}
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <form onSubmit={handleSearch} style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search products..."
+              style={{
+                padding: '8px 36px 8px 14px',
+                border: `1px solid ${theme.colors.border}`,
+                borderRadius: theme.radii.sm,
+                fontSize: '14px',
+                width: '200px',
+                backgroundColor: theme.colors.background,
+                color: theme.colors.text,
+              }}
+            />
+            <button
+              type="submit"
+              style={{
+                position: 'absolute',
+                right: '8px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                padding: '2px',
+              }}
+              aria-label="Search"
+            >
+              <SearchIcon />
+            </button>
+          </form>
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <UserIcon />
-              <span style={{ color: '#6B6B6B', fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
+              <span style={{ color: theme.colors.textSecondary, fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
               <button
                 onClick={signOut}
                 style={{
                   backgroundColor: 'transparent',
-                  border: '1px solid #E8E6E3',
-                  color: '#6B6B6B',
+                  border: `1px solid ${theme.colors.border}`,
+                  color: theme.colors.textSecondary,
                   padding: '8px 16px',
-                  borderRadius: '6px',
+                  borderRadius: theme.radii.sm,
                   fontSize: '13px',
                   fontWeight: '500',
                 }}
@@ -86,7 +133,7 @@ export function Header() {
             <Link
               to="/signin"
               style={{
-                color: '#1A1A1A',
+                color: theme.colors.text,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
@@ -101,7 +148,7 @@ export function Header() {
           <Link
             to="/cart"
             style={{
-              color: '#1A1A1A',
+              color: theme.colors.text,
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
@@ -112,7 +159,7 @@ export function Header() {
             {totalItems > 0 && (
               <span
                 style={{
-                  backgroundColor: '#E07A5F',
+                  backgroundColor: theme.colors.primary,
                   color: 'white',
                   fontSize: '11px',
                   fontWeight: '600',

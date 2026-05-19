@@ -7,9 +7,23 @@ export function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+  const isValidEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+  const handleEmailBlur = () => {
+    if (email && !isValidEmail(email)) {
+      setEmailError('Please enter a valid email address');
+    } else {
+      setEmailError('');
+    }
+  };
+
+  const isFormValid = email.length > 0 && password.length > 0 && isValidEmail(email);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,6 +31,11 @@ export function SignInPage() {
 
     if (!email || !password) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setEmailError('Please enter a valid email address');
       return;
     }
 
@@ -97,10 +116,20 @@ export function SignInPage() {
           <input
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (emailError) setEmailError('');
+            }}
+            onBlur={handleEmailBlur}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              ...(emailError ? { borderColor: '#C44536' } : {}),
+            }}
           />
+          {emailError && (
+            <p style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>{emailError}</p>
+          )}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label
@@ -124,8 +153,9 @@ export function SignInPage() {
         </div>
         <button
           type="submit"
+          disabled={!isFormValid}
           style={{
-            backgroundColor: '#E07A5F',
+            backgroundColor: isFormValid ? '#E07A5F' : '#D4A99A',
             color: 'white',
             border: 'none',
             padding: '16px',
@@ -135,6 +165,7 @@ export function SignInPage() {
             width: '100%',
             marginBottom: '24px',
             letterSpacing: '0.3px',
+            cursor: isFormValid ? 'pointer' : 'not-allowed',
           }}
         >
           Sign In
