@@ -17,7 +17,7 @@ export function Toast({ message, type = 'success', onClose }: ToastProps) {
         color: type === 'success' ? theme.colors.success : theme.colors.error,
         padding: '16px 20px',
         borderRadius: theme.radii.md,
-        boxShadow: theme.shadows.lg,
+        boxShadow: '0 8px 24px rgba(26, 26, 26, 0.12)',
         zIndex: 1000,
         display: 'flex',
         alignItems: 'center',
