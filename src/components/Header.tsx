@@ -3,6 +3,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { CartIcon } from './icons/CartIcon';
 import { UserIcon } from './icons/UserIcon';
+import { SearchBar } from './SearchBar';
 import { categories } from '../data/products';
 
 export function Header() {
@@ -62,6 +63,7 @@ export function Header() {
             ))}
           </div>
         </div>
+        <SearchBar />
         <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
