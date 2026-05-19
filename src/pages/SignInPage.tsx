@@ -7,6 +7,7 @@ export function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<{ email?: string }>({});
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -14,9 +15,21 @@ export function SignInPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setFieldErrors({});
 
     if (!email || !password) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    const errors: { email?: string } = {};
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
 
@@ -101,6 +114,11 @@ export function SignInPage() {
             placeholder="you@example.com"
             style={inputStyle}
           />
+          {fieldErrors.email && (
+            <span style={{ color: '#C44536', fontSize: '13px', marginTop: '6px', display: 'block' }}>
+              {fieldErrors.email}
+            </span>
+          )}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label
