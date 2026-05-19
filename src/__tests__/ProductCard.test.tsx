@@ -3,6 +3,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { ProductCard } from '../components/ProductCard';
 import { CartProvider } from '../context/CartContext';
+import { ThemeProvider } from '../context/ThemeContext';
+import { RatingProvider } from '../context/RatingContext';
+import { WishlistProvider } from '../context/WishlistContext';
 import { products } from '../data/products';
 
 const mockAddToCart = vi.fn();
@@ -28,9 +31,15 @@ vi.mock('../context/CartContext', async () => {
 function renderProductCard() {
   return render(
     <BrowserRouter>
-      <CartProvider>
-        <ProductCard product={products[0]} />
-      </CartProvider>
+      <ThemeProvider>
+        <RatingProvider>
+          <WishlistProvider>
+            <CartProvider>
+              <ProductCard product={products[0]} />
+            </CartProvider>
+          </WishlistProvider>
+        </RatingProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }
