@@ -178,7 +178,12 @@ export function SignUpPage() {
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (confirmPasswordError && confirmPassword) {
+                validateConfirmPassword(e.target.value, confirmPassword);
+              }
+            }}
             placeholder="At least 6 characters"
             style={inputStyle}
           />

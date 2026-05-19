@@ -143,6 +143,20 @@ describe('Password Confirmation Validation', () => {
     expect(screen.queryByText('Passwords do not match')).not.toBeInTheDocument();
   });
 
+  it('clears error when password field is edited to match confirm password', () => {
+    renderSignUp();
+    const passwordInput = screen.getByPlaceholderText('At least 6 characters');
+    const confirmInput = screen.getByPlaceholderText('Confirm your password');
+
+    fireEvent.change(passwordInput, { target: { value: 'password123' } });
+    fireEvent.change(confirmInput, { target: { value: 'different' } });
+    fireEvent.blur(confirmInput);
+    expect(screen.getByText('Passwords do not match')).toBeInTheDocument();
+
+    fireEvent.change(passwordInput, { target: { value: 'different' } });
+    expect(screen.queryByText('Passwords do not match')).not.toBeInTheDocument();
+  });
+
   it('disables sign up button when passwords do not match', () => {
     renderSignUp();
     const nameInput = screen.getByPlaceholderText('Your name');
