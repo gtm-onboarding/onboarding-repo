@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
+import { HeartIcon } from './icons/HeartIcon';
 
 interface ProductCardProps {
   product: Product;
@@ -8,6 +10,8 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const wishlisted = isInWishlist(product.id);
 
   return (
     <div
@@ -18,8 +22,30 @@ export function ProductCard({ product }: ProductCardProps) {
         display: 'flex',
         flexDirection: 'column',
         boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+        position: 'relative',
       }}
     >
+      <button
+        onClick={() => toggleWishlist(product)}
+        aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+        style={{
+          position: 'absolute',
+          top: '12px',
+          right: '12px',
+          zIndex: 10,
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          border: 'none',
+          borderRadius: '50%',
+          width: '36px',
+          height: '36px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <HeartIcon filled={wishlisted} size={18} />
+      </button>
       <Link to={`/product/${product.id}`} style={{ overflow: 'hidden' }}>
         <img
           src={product.image}
