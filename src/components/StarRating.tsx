@@ -9,33 +9,22 @@ interface StarRatingProps {
   size?: number;
 }
 
+const STAR_PATH = 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z';
+const STAR_LEFT_HALF = 'M12 2L8.91 8.26 2 9.27 7 14.14 5.82 21.02 12 17.77Z';
+
 function StarIcon({ filled, half, size, color }: { filled: boolean; half: boolean; size: number; color: string }) {
   if (half) {
     return (
       <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-        <defs>
-          <clipPath id="halfClip">
-            <rect x="0" y="0" width="12" height="24" />
-          </clipPath>
-        </defs>
-        <path
-          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-          fill={color}
-          clipPath="url(#halfClip)"
-        />
-        <path
-          d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-          fill="none"
-          stroke={color}
-          strokeWidth="1.5"
-        />
+        <path d={STAR_PATH} fill="none" stroke={color} strokeWidth="1.5" />
+        <path d={STAR_LEFT_HALF} fill={color} />
       </svg>
     );
   }
 
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill={filled ? color : 'none'} stroke={color} strokeWidth="1.5">
-      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+      <path d={STAR_PATH} />
     </svg>
   );
 }
