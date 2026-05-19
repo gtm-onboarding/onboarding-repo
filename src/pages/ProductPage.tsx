@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRatings } from '../context/RatingsContext';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { rateProduct, getAverageRating, getUserRating, getRatingCount } = useRatings();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
@@ -153,6 +156,16 @@ export function ProductPage() {
             >
               ${product.price.toFixed(2)}
             </span>
+            <div style={{ marginBottom: '24px' }}>
+              <StarRating
+                rating={getAverageRating(product.id)}
+                count={getRatingCount(product.id)}
+                interactive
+                userRating={getUserRating(product.id)}
+                onRate={(r) => rateProduct(product.id, r)}
+                size={24}
+              />
+            </div>
             <p
               style={{
                 color: '#6B6B6B',
