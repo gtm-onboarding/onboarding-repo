@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRatings } from '../context/RatingsContext';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { getAverageRating, getRatingCount, rateProduct, userRatings } = useRatings();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
@@ -148,11 +151,22 @@ export function ProductPage() {
                 fontSize: '32px',
                 fontWeight: '700',
                 display: 'block',
-                marginBottom: '32px',
+                marginBottom: '12px',
               }}
             >
               ${product.price.toFixed(2)}
             </span>
+            {getRatingCount(product.id) > 0 && (
+              <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <StarRating rating={getAverageRating(product.id)} size={20} />
+                <span style={{ color: '#6B6B6B', fontSize: '15px' }}>
+                  {getAverageRating(product.id).toFixed(1)} out of 5
+                </span>
+                <span style={{ color: '#9A9A9A', fontSize: '14px' }}>
+                  ({getRatingCount(product.id)} {getRatingCount(product.id) === 1 ? 'review' : 'reviews'})
+                </span>
+              </div>
+            )}
             <p
               style={{
                 color: '#6B6B6B',
@@ -163,6 +177,23 @@ export function ProductPage() {
             >
               {product.description}
             </p>
+            <div
+              style={{
+                marginBottom: '24px',
+                paddingTop: '24px',
+                borderTop: '1px solid #F0EEEB',
+              }}
+            >
+              <label style={{ color: '#1A1A1A', fontWeight: '600', fontSize: '15px', display: 'block', marginBottom: '10px' }}>
+                {userRatings[product.id] ? 'Your Rating' : 'Rate this Product'}
+              </label>
+              <StarRating
+                rating={userRatings[product.id] || 0}
+                interactive
+                onRate={(stars) => rateProduct(product.id, stars)}
+                size={28}
+              />
+            </div>
             <div
               style={{
                 display: 'flex',

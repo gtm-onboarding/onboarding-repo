@@ -16,3 +16,10 @@ export interface User {
   email: string;
   name: string;
 }
+
+export interface ProductRating {
+  total: number;
+  count: number;
+}
+
+export type ProductRatings = Record<string, ProductRating>;
