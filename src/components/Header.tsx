@@ -1,12 +1,15 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useWishlist } from '../context/WishlistContext';
 import { CartIcon } from './icons/CartIcon';
+import { HeartIcon } from './icons/HeartIcon';
 import { UserIcon } from './icons/UserIcon';
 import { categories } from '../data/products';
 
 export function Header() {
   const { totalItems } = useCart();
+  const { totalItems: wishlistCount } = useWishlist();
   const { user, isAuthenticated, signOut } = useAuth();
 
   return (
@@ -98,6 +101,36 @@ export function Header() {
               <span>Sign In</span>
             </Link>
           )}
+          <Link
+            to="/wishlist"
+            style={{
+              color: '#1A1A1A',
+              display: 'flex',
+              alignItems: 'center',
+              position: 'relative',
+            }}
+          >
+            <HeartIcon size={22} color="#1A1A1A" />
+            {wishlistCount > 0 && (
+              <span
+                style={{
+                  backgroundColor: '#E07A5F',
+                  color: 'white',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  padding: '2px 7px',
+                  borderRadius: '10px',
+                  position: 'absolute',
+                  top: '-10px',
+                  right: '-10px',
+                  minWidth: '20px',
+                  textAlign: 'center',
+                }}
+              >
+                {wishlistCount}
+              </span>
+            )}
+          </Link>
           <Link
             to="/cart"
             style={{
