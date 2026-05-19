@@ -10,7 +10,7 @@ export function WishlistPage() {
   const handleMoveToCart = (index: number) => {
     const item = items[index];
     addToCart(item);
-    removeFromWishlist(item.id);
+    removeFromWishlist(item.id, { silent: true });
   };
 
   if (items.length === 0) {
@@ -176,7 +176,7 @@ export function WishlistPage() {
                   Move to Cart
                 </button>
                 <button
-                  onClick={() => removeFromWishlist(product.id)}
+                  onClick={() => removeFromWishlist(product.id, { silent: true })}
                   style={{
                     backgroundColor: 'transparent',
                     border: 'none',
