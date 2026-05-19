@@ -16,3 +16,18 @@ export interface User {
   email: string;
   name: string;
 }
+
+export interface OrderItem {
+  product: Product;
+  quantity: number;
+}
+
+export interface Order {
+  id: string;
+  items: OrderItem[];
+  subtotal: number;
+  tax: number;
+  total: number;
+  date: string;
+  userEmail: string;
+}
