@@ -2,20 +2,36 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { validateEmail } from '../utils/validation';
 
 export function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string | null>>({});
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+  const validateField = (field: string, value?: string) => {
+    let err: string | null = null;
+    if (field === 'email') {
+      err = validateEmail(value ?? email);
+    }
+    setFieldErrors((prev) => ({ ...prev, [field]: err }));
+    return err;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (!email || !password) {
+    const emailError = validateEmail(email);
+    setFieldErrors({ email: emailError });
+
+    if (emailError) return;
+
+    if (!password) {
       setError('Please fill in all fields');
       return;
     }
@@ -37,6 +53,17 @@ export function SignInPage() {
     color: '#1A1A1A',
     backgroundColor: '#FFFFFF',
     fontSize: '15px',
+  };
+
+  const inputErrorStyle = {
+    ...inputStyle,
+    border: '1px solid #C44536',
+  };
+
+  const fieldErrorStyle = {
+    color: '#C44536',
+    fontSize: '12px',
+    marginTop: '4px',
   };
 
   return (
@@ -95,12 +122,17 @@ export function SignInPage() {
             Email
           </label>
           <input
-            type="text"
+            type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (fieldErrors.email) validateField('email', e.target.value);
+            }}
+            onBlur={() => validateField('email')}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={fieldErrors.email ? inputErrorStyle : inputStyle}
           />
+          {fieldErrors.email && <div style={fieldErrorStyle}>{fieldErrors.email}</div>}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label
