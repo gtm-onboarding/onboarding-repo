@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { CartIcon } from './icons/CartIcon';
 import { UserIcon } from './icons/UserIcon';
 import { categories } from '../data/products';
@@ -8,17 +9,19 @@ import { categories } from '../data/products';
 export function Header() {
   const { totalItems } = useCart();
   const { user, isAuthenticated, signOut } = useAuth();
+  const { theme, isDarkMode, toggleDarkMode } = useTheme();
 
   return (
     <header
       style={{
-        backgroundColor: '#FFFFFF',
-        borderBottom: '1px solid #E8E6E3',
+        backgroundColor: theme.colors.surface,
+        borderBottom: `1px solid ${theme.colors.border}`,
         padding: '20px 32px',
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        boxShadow: '0 1px 3px rgba(26, 26, 26, 0.04)',
+        boxShadow: theme.shadows.sm,
+        transition: 'background-color 250ms ease, border-color 250ms ease',
       }}
     >
       <nav
@@ -34,10 +37,10 @@ export function Header() {
           <Link
             to="/"
             style={{
-              color: '#1A1A1A',
+              color: theme.colors.text,
               fontSize: '26px',
               fontWeight: '600',
-              fontFamily: '"Playfair Display", Georgia, serif',
+              fontFamily: theme.fonts.display,
               letterSpacing: '-0.5px',
             }}
           >
@@ -49,7 +52,7 @@ export function Header() {
                 key={category}
                 to={`/category/${encodeURIComponent(category)}`}
                 style={{
-                  color: '#6B6B6B',
+                  color: theme.colors.textSecondary,
                   fontSize: '14px',
                   fontWeight: '500',
                   letterSpacing: '0.3px',
@@ -63,16 +66,35 @@ export function Header() {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
+          <button
+            onClick={toggleDarkMode}
+            aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+            style={{
+              backgroundColor: 'transparent',
+              border: `1px solid ${theme.colors.border}`,
+              color: theme.colors.text,
+              padding: '8px 12px',
+              borderRadius: '6px',
+              fontSize: '18px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'border-color 250ms ease, color 250ms ease',
+            }}
+          >
+            {isDarkMode ? '☀️' : '🌙'}
+          </button>
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <UserIcon />
-              <span style={{ color: '#6B6B6B', fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
+              <UserIcon color={theme.colors.text} />
+              <span style={{ color: theme.colors.textSecondary, fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
               <button
                 onClick={signOut}
                 style={{
                   backgroundColor: 'transparent',
-                  border: '1px solid #E8E6E3',
-                  color: '#6B6B6B',
+                  border: `1px solid ${theme.colors.border}`,
+                  color: theme.colors.textSecondary,
                   padding: '8px 16px',
                   borderRadius: '6px',
                   fontSize: '13px',
@@ -86,7 +108,7 @@ export function Header() {
             <Link
               to="/signin"
               style={{
-                color: '#1A1A1A',
+                color: theme.colors.text,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
@@ -94,25 +116,25 @@ export function Header() {
                 fontWeight: '500',
               }}
             >
-              <UserIcon />
+              <UserIcon color={theme.colors.text} />
               <span>Sign In</span>
             </Link>
           )}
           <Link
             to="/cart"
             style={{
-              color: '#1A1A1A',
+              color: theme.colors.text,
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
               position: 'relative',
             }}
           >
-            <CartIcon />
+            <CartIcon color={theme.colors.text} />
             {totalItems > 0 && (
               <span
                 style={{
-                  backgroundColor: '#E07A5F',
+                  backgroundColor: theme.colors.primary,
                   color: 'white',
                   fontSize: '11px',
                   fontWeight: '600',
