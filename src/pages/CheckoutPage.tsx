@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useOrders } from '../context/OrderContext';
 
 export function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
+  const { addOrder } = useOrders();
   const navigate = useNavigate();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState({
@@ -27,6 +29,16 @@ export function CheckoutPage() {
   };
 
   const handleConfirmationClose = () => {
+    addOrder({
+      items: [...items],
+      subtotal: totalPrice,
+      tax,
+      total,
+      shippingName: formData.name,
+      shippingAddress: formData.address,
+      shippingCity: formData.city,
+      shippingZip: formData.zipCode,
+    });
     clearCart();
     navigate('/');
   };
