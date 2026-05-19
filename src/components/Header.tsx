@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { CartIcon } from './icons/CartIcon';
+import { ProductSearch } from './ProductSearch';
 import { UserIcon } from './icons/UserIcon';
 import { categories } from '../data/products';
 
@@ -63,6 +64,7 @@ export function Header() {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
+          <ProductSearch />
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <UserIcon />
