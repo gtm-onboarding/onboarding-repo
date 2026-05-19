@@ -33,10 +33,6 @@ export function Header() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    setHighlightedIndex(-1);
-  }, [searchQuery]);
-
   const handleSearchSelect = (productId: string) => {
     setSearchQuery('');
     setIsSearchOpen(false);
@@ -130,6 +126,7 @@ export function Header() {
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
                   setIsSearchOpen(true);
+                  setHighlightedIndex(-1);
                 }}
                 onFocus={() => setIsSearchOpen(true)}
                 onKeyDown={handleSearchKeyDown}
