@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { CartPage } from '../pages/CartPage';
 import { CartProvider } from '../context/CartContext';
 import { AuthProvider } from '../context/AuthContext';
+import { ThemeProvider } from '../context/ThemeContext';
 import { products } from '../data/products';
 
 const localStorageMock = (() => {
@@ -31,11 +32,13 @@ function renderCartPage(cartItems: Array<{ product: typeof products[0]; quantity
   localStorageMock.setItem('onboarding-demo-cart', JSON.stringify(cartItems));
   return render(
     <BrowserRouter>
-      <AuthProvider>
-        <CartProvider>
-          <CartPage />
-        </CartProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <CartProvider>
+            <CartPage />
+          </CartProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }
