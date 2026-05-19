@@ -21,12 +21,12 @@ export function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '40px 32px' }}>
+      <div style={{ backgroundColor: 'var(--bg-primary)', minHeight: '100vh', padding: '40px 32px', transition: 'background-color 300ms ease' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           <h1
             style={{
               fontFamily: '"Playfair Display", Georgia, serif',
-              color: '#1A1A1A',
+              color: 'var(--text-primary)',
               marginBottom: '32px',
               fontSize: '36px',
               fontWeight: '600',
@@ -36,14 +36,14 @@ export function CartPage() {
           </h1>
           <div
             style={{
-              backgroundColor: '#FFFFFF',
+              backgroundColor: 'var(--bg-secondary)',
               borderRadius: '16px',
               textAlign: 'center',
               padding: '80px',
-              boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+              boxShadow: '0 4px 12px var(--shadow)',
             }}
           >
-            <p style={{ fontSize: '18px', marginBottom: '24px', color: '#9A9A9A' }}>Your cart is empty</p>
+            <p style={{ fontSize: '18px', marginBottom: '24px', color: 'var(--text-secondary)' }}>Your cart is empty</p>
             <Link
               to="/"
               style={{
@@ -61,13 +61,13 @@ export function CartPage() {
   }
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '40px 32px' }}>
+    <div style={{ backgroundColor: 'var(--bg-primary)', minHeight: '100vh', padding: '40px 32px', transition: 'background-color 300ms ease' }}>
       <div style={{ maxWidth: '900px', margin: '0 auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
           <h1
             style={{
               fontFamily: '"Playfair Display", Georgia, serif',
-              color: '#1A1A1A',
+              color: 'var(--text-primary)',
               fontSize: '36px',
               fontWeight: '600',
             }}
@@ -91,10 +91,10 @@ export function CartPage() {
         </div>
         <div
           style={{
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--bg-secondary)',
             borderRadius: '16px',
             overflow: 'hidden',
-            boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+            boxShadow: '0 4px 12px var(--shadow)',
             marginBottom: '24px',
           }}
         >
@@ -104,30 +104,30 @@ export function CartPage() {
         </div>
         <div
           style={{
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--bg-secondary)',
             padding: '28px',
             borderRadius: '16px',
-            boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+            boxShadow: '0 4px 12px var(--shadow)',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Subtotal</span>
-            <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${totalPrice.toFixed(2)}</span>
+            <span style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>Subtotal</span>
+            <span style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: '500' }}>${totalPrice.toFixed(2)}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Tax (8%)</span>
-            <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${tax.toFixed(2)}</span>
+            <span style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>Tax (8%)</span>
+            <span style={{ color: 'var(--text-primary)', fontSize: '15px', fontWeight: '500' }}>${tax.toFixed(2)}</span>
           </div>
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              borderTop: '1px solid #F0EEEB',
+              borderTop: '1px solid var(--border)',
               paddingTop: '16px',
               marginTop: '8px',
             }}
           >
-            <span style={{ color: '#1A1A1A', fontWeight: '600', fontSize: '18px' }}>Total</span>
+            <span style={{ color: 'var(--text-primary)', fontWeight: '600', fontSize: '18px' }}>Total</span>
             <span style={{ color: '#E07A5F', fontWeight: '700', fontSize: '22px' }}>${total.toFixed(2)}</span>
           </div>
         </div>
@@ -135,7 +135,7 @@ export function CartPage() {
           <Link
             to="/"
             style={{
-              color: '#6B6B6B',
+              color: 'var(--text-secondary)',
               padding: '12px 0',
               fontSize: '15px',
               fontWeight: '500',

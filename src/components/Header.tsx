@@ -12,13 +12,14 @@ export function Header() {
   return (
     <header
       style={{
-        backgroundColor: '#FFFFFF',
-        borderBottom: '1px solid #E8E6E3',
+        backgroundColor: 'var(--bg-secondary)',
+        borderBottom: '1px solid var(--border)',
         padding: '20px 32px',
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        boxShadow: '0 1px 3px rgba(26, 26, 26, 0.04)',
+        boxShadow: '0 1px 3px var(--shadow)',
+        transition: 'background-color 300ms ease, border-color 300ms ease',
       }}
     >
       <nav
@@ -34,7 +35,7 @@ export function Header() {
           <Link
             to="/"
             style={{
-              color: '#1A1A1A',
+              color: 'var(--text-primary)',
               fontSize: '26px',
               fontWeight: '600',
               fontFamily: '"Playfair Display", Georgia, serif',
@@ -49,7 +50,7 @@ export function Header() {
                 key={category}
                 to={`/category/${encodeURIComponent(category)}`}
                 style={{
-                  color: '#6B6B6B',
+                  color: 'var(--text-secondary)',
                   fontSize: '14px',
                   fontWeight: '500',
                   letterSpacing: '0.3px',
@@ -66,13 +67,13 @@ export function Header() {
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <UserIcon />
-              <span style={{ color: '#6B6B6B', fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
+              <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
               <button
                 onClick={signOut}
                 style={{
                   backgroundColor: 'transparent',
-                  border: '1px solid #E8E6E3',
-                  color: '#6B6B6B',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-secondary)',
                   padding: '8px 16px',
                   borderRadius: '6px',
                   fontSize: '13px',
@@ -86,7 +87,7 @@ export function Header() {
             <Link
               to="/signin"
               style={{
-                color: '#1A1A1A',
+                color: 'var(--text-primary)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
@@ -101,7 +102,7 @@ export function Header() {
           <Link
             to="/cart"
             style={{
-              color: '#1A1A1A',
+              color: 'var(--text-primary)',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
