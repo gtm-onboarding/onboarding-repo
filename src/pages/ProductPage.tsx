@@ -20,15 +20,15 @@ export function ProductPage() {
 
   if (isLoading) {
     return (
-      <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '40px 32px' }}>
+      <div style={{ backgroundColor: 'var(--bg-primary)', minHeight: '100vh', padding: '40px 32px', transition: 'background-color 300ms ease' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px' }}>
-            <div style={{ backgroundColor: '#F5F3F0', height: '500px', borderRadius: '16px' }} />
+            <div style={{ backgroundColor: 'var(--bg-secondary)', height: '500px', borderRadius: '16px' }} />
             <div>
-              <div style={{ backgroundColor: '#F5F3F0', height: '48px', borderRadius: '8px', marginBottom: '20px', width: '70%' }} />
-              <div style={{ backgroundColor: '#F5F3F0', height: '32px', borderRadius: '8px', marginBottom: '32px', width: '30%' }} />
-              <div style={{ backgroundColor: '#F5F3F0', height: '120px', borderRadius: '8px', marginBottom: '32px' }} />
-              <div style={{ backgroundColor: '#F5F3F0', height: '56px', borderRadius: '8px', width: '50%' }} />
+              <div style={{ backgroundColor: 'var(--bg-secondary)', height: '48px', borderRadius: '8px', marginBottom: '20px', width: '70%' }} />
+              <div style={{ backgroundColor: 'var(--bg-secondary)', height: '32px', borderRadius: '8px', marginBottom: '32px', width: '30%' }} />
+              <div style={{ backgroundColor: 'var(--bg-secondary)', height: '120px', borderRadius: '8px', marginBottom: '32px' }} />
+              <div style={{ backgroundColor: 'var(--bg-secondary)', height: '56px', borderRadius: '8px', width: '50%' }} />
             </div>
           </div>
         </div>
@@ -38,19 +38,19 @@ export function ProductPage() {
 
   if (!product) {
     return (
-      <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '40px 32px' }}>
+      <div style={{ backgroundColor: 'var(--bg-primary)', minHeight: '100vh', padding: '40px 32px', transition: 'background-color 300ms ease' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center', paddingTop: '100px' }}>
           <h1
             style={{
               fontFamily: '"Playfair Display", Georgia, serif',
-              color: '#1A1A1A',
+              color: 'var(--text-primary)',
               marginBottom: '16px',
               fontSize: '32px',
             }}
           >
             Product Not Found
           </h1>
-          <p style={{ color: '#9A9A9A', marginBottom: '32px', fontSize: '16px' }}>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '32px', fontSize: '16px' }}>
             The product you're looking for doesn't exist.
           </p>
           <Link
@@ -79,12 +79,12 @@ export function ProductPage() {
   };
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '40px 32px' }}>
+    <div style={{ backgroundColor: 'var(--bg-primary)', minHeight: '100vh', padding: '40px 32px', transition: 'background-color 300ms ease' }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
         <Link
           to={`/category/${encodeURIComponent(product.category)}`}
           style={{
-            color: '#6B6B6B',
+            color: 'var(--text-secondary)',
             marginBottom: '32px',
             display: 'inline-flex',
             alignItems: 'center',
@@ -101,10 +101,10 @@ export function ProductPage() {
             gridTemplateColumns: '1fr 1fr',
             gap: '64px',
             marginTop: '24px',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: 'var(--bg-secondary)',
             borderRadius: '16px',
             padding: '40px',
-            boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+            boxShadow: '0 4px 12px var(--shadow)',
           }}
         >
           <img
@@ -133,7 +133,7 @@ export function ProductPage() {
             <h1
               style={{
                 fontFamily: '"Playfair Display", Georgia, serif',
-                color: '#1A1A1A',
+                color: 'var(--text-primary)',
                 marginBottom: '20px',
                 fontSize: '36px',
                 fontWeight: '600',
@@ -155,7 +155,7 @@ export function ProductPage() {
             </span>
             <p
               style={{
-                color: '#6B6B6B',
+                color: 'var(--text-secondary)',
                 lineHeight: '1.8',
                 marginBottom: '40px',
                 fontSize: '16px',
@@ -170,16 +170,16 @@ export function ProductPage() {
                 gap: '20px',
                 marginBottom: '32px',
                 paddingTop: '24px',
-                borderTop: '1px solid #F0EEEB',
+                borderTop: '1px solid var(--border)',
               }}
             >
-              <label style={{ color: '#1A1A1A', fontWeight: '500', fontSize: '15px' }}>Quantity:</label>
+              <label style={{ color: 'var(--text-primary)', fontWeight: '500', fontSize: '15px' }}>Quantity:</label>
               <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                   style={{
-                    backgroundColor: '#F5F3F0',
-                    color: '#1A1A1A',
+                    backgroundColor: 'var(--bg-primary)',
+                    color: 'var(--text-primary)',
                     border: 'none',
                     width: '40px',
                     height: '40px',
@@ -192,7 +192,7 @@ export function ProductPage() {
                 </button>
                 <span
                   style={{
-                    color: '#1A1A1A',
+                    color: 'var(--text-primary)',
                     minWidth: '48px',
                     textAlign: 'center',
                     fontSize: '16px',
@@ -204,8 +204,8 @@ export function ProductPage() {
                 <button
                   onClick={() => setQuantity((q) => Math.min(99, q + 1))}
                   style={{
-                    backgroundColor: '#F5F3F0',
-                    color: '#1A1A1A',
+                    backgroundColor: 'var(--bg-primary)',
+                    color: 'var(--text-primary)',
                     border: 'none',
                     width: '40px',
                     height: '40px',
