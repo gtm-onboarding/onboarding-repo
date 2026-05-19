@@ -17,18 +17,17 @@ const OrderContext = createContext<OrderContextType | undefined>(undefined);
 const ORDERS_STORAGE_KEY = 'onboarding-demo-orders';
 
 export function OrderProvider({ children }: { children: ReactNode }) {
-  const [orders, setOrders] = useState<Order[]>([]);
-
-  useEffect(() => {
+  const [orders, setOrders] = useState<Order[]>(() => {
     const stored = localStorage.getItem(ORDERS_STORAGE_KEY);
     if (stored) {
       try {
-        setOrders(JSON.parse(stored));
+        return JSON.parse(stored);
       } catch {
-        localStorage.removeItem(ORDERS_STORAGE_KEY);
+        return [];
       }
     }
-  }, []);
+    return [];
+  });
 
   useEffect(() => {
     localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
