@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { getEmailError, getPasswordConfirmError } from '../utils/validation';
 
 export function SignUpPage() {
   const [name, setName] = useState('');
@@ -9,15 +10,44 @@ export function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+
+  const emailError = emailTouched ? getEmailError(email) : '';
+  const confirmPasswordError = confirmPasswordTouched
+    ? getPasswordConfirmError(password, confirmPassword)
+    : '';
+
+  const isFormValid =
+    name.length > 0 &&
+    email.length > 0 &&
+    !getEmailError(email) &&
+    password.length > 0 &&
+    confirmPassword.length > 0 &&
+    !getPasswordConfirmError(password, confirmPassword);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setEmailTouched(true);
+    setConfirmPasswordTouched(true);
 
     if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    const emailErr = getEmailError(email);
+    if (emailErr) {
+      setError(emailErr);
+      return;
+    }
+
+    const confirmErr = getPasswordConfirmError(password, confirmPassword);
+    if (confirmErr) {
+      setError(confirmErr);
       return;
     }
 
@@ -106,9 +136,18 @@ export function SignUpPage() {
             type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onBlur={() => setEmailTouched(true)}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              ...(emailError ? { borderColor: '#C44536' } : {}),
+            }}
           />
+          {emailError && (
+            <p style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>
+              {emailError}
+            </p>
+          )}
         </div>
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Password</label>
@@ -126,15 +165,25 @@ export function SignUpPage() {
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            onBlur={() => setConfirmPasswordTouched(true)}
             placeholder="Confirm your password"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              ...(confirmPasswordError ? { borderColor: '#C44536' } : {}),
+            }}
           />
+          {confirmPasswordError && (
+            <p style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>
+              {confirmPasswordError}
+            </p>
+          )}
         </div>
         <button
           type="submit"
+          disabled={!isFormValid}
           style={{
-            backgroundColor: '#E07A5F',
-            color: 'white',
+            backgroundColor: isFormValid ? '#E07A5F' : '#E8E6E3',
+            color: isFormValid ? 'white' : '#9A9A9A',
             border: 'none',
             padding: '16px',
             borderRadius: '8px',
@@ -143,6 +192,7 @@ export function SignUpPage() {
             width: '100%',
             marginBottom: '24px',
             letterSpacing: '0.3px',
+            cursor: isFormValid ? 'pointer' : 'not-allowed',
           }}
         >
           Sign Up
