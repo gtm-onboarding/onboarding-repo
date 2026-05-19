@@ -16,3 +16,8 @@ export interface User {
   email: string;
   name: string;
 }
+
+export interface ProductRating {
+  productId: string;
+  rating: number;
+}
