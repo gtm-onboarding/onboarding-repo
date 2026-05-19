@@ -2,18 +2,23 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRatings } from '../context/RatingsContext';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { addRating, getAverageRating, getRatingCount } = useRatings();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [hasRated, setHasRated] = useState(false);
 
   const product = products.find((p) => p.id === productId);
 
   useEffect(() => {
     setIsLoading(true);
     setQuantity(1);
+    setHasRated(false);
     const timer = setTimeout(() => setIsLoading(false), 200);
     return () => clearTimeout(timer);
   }, [productId]);
@@ -148,11 +153,36 @@ export function ProductPage() {
                 fontSize: '32px',
                 fontWeight: '700',
                 display: 'block',
-                marginBottom: '32px',
+                marginBottom: '16px',
               }}
             >
               ${product.price.toFixed(2)}
             </span>
+            <div style={{ marginBottom: '32px' }}>
+              {getAverageRating(product.id) !== null && (
+                <div style={{ marginBottom: '12px' }}>
+                  <StarRating
+                    rating={getAverageRating(product.id)}
+                    count={getRatingCount(product.id)}
+                    size={20}
+                  />
+                </div>
+              )}
+              <div>
+                <p style={{ color: '#1A1A1A', fontSize: '14px', fontWeight: '500', marginBottom: '8px' }}>
+                  {hasRated ? 'Thanks for your rating!' : 'Rate this product:'}
+                </p>
+                <StarRating
+                  rating={null}
+                  interactive
+                  size={28}
+                  onRate={(rating) => {
+                    addRating(product.id, rating);
+                    setHasRated(true);
+                  }}
+                />
+              </div>
+            </div>
             <p
               style={{
                 color: '#6B6B6B',
