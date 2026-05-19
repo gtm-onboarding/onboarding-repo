@@ -9,15 +9,36 @@ export function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string; confirmPassword?: string }>({});
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setFieldErrors({});
 
     if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    const errors: { email?: string; password?: string; confirmPassword?: string } = {};
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+
+    if (password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    }
+
+    if (password !== confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
 
@@ -109,6 +130,11 @@ export function SignUpPage() {
             placeholder="you@example.com"
             style={inputStyle}
           />
+          {fieldErrors.email && (
+            <span style={{ color: '#C44536', fontSize: '13px', marginTop: '6px', display: 'block' }}>
+              {fieldErrors.email}
+            </span>
+          )}
         </div>
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Password</label>
@@ -119,6 +145,11 @@ export function SignUpPage() {
             placeholder="At least 6 characters"
             style={inputStyle}
           />
+          {fieldErrors.password && (
+            <span style={{ color: '#C44536', fontSize: '13px', marginTop: '6px', display: 'block' }}>
+              {fieldErrors.password}
+            </span>
+          )}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label style={labelStyle}>Confirm Password</label>
@@ -129,6 +160,11 @@ export function SignUpPage() {
             placeholder="Confirm your password"
             style={inputStyle}
           />
+          {fieldErrors.confirmPassword && (
+            <span style={{ color: '#C44536', fontSize: '13px', marginTop: '6px', display: 'block' }}>
+              {fieldErrors.confirmPassword}
+            </span>
+          )}
         </div>
         <button
           type="submit"
