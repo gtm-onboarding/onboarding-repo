@@ -7,6 +7,7 @@ import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { RatingProvider } from './context/RatingContext';
+import { OrderProvider } from './context/OrderContext';
 import './App.css';
 
 const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
@@ -17,11 +18,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <ThemeProvider>
           <RatingProvider>
-            <AuthProvider>
-              <CartProvider>
-                <App />
-              </CartProvider>
-            </AuthProvider>
+            <OrderProvider>
+              <AuthProvider>
+                <CartProvider>
+                  <App />
+                </CartProvider>
+              </AuthProvider>
+            </OrderProvider>
           </RatingProvider>
         </ThemeProvider>
       </BrowserRouter>

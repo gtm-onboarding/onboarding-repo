@@ -85,6 +85,16 @@ export function Header() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <UserIcon />
               <span style={{ color: activeTheme.colors.textSecondary, fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
+              <Link
+                to="/orders"
+                style={{
+                  color: activeTheme.colors.textSecondary,
+                  fontSize: '13px',
+                  fontWeight: '500',
+                }}
+              >
+                Orders
+              </Link>
               <button
                 onClick={signOut}
                 style={{
