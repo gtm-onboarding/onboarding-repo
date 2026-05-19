@@ -21,6 +21,7 @@ export const theme = {
     sm: '0 1px 3px rgba(26, 26, 26, 0.04)',
     md: '0 4px 12px rgba(26, 26, 26, 0.06)',
     lg: '0 8px 24px rgba(26, 26, 26, 0.08)',
+    overlay: '0 8px 24px rgba(26, 26, 26, 0.12)',
     xl: '0 16px 48px rgba(26, 26, 26, 0.1)',
     overlay: '0 8px 24px rgba(26, 26, 26, 0.12)',
   },
