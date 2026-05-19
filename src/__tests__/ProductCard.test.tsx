@@ -63,10 +63,12 @@ describe('ProductCard', () => {
   });
 
   it('displays Sale badge for products priced under $50', () => {
+    const cheapProduct = products.find((p) => p.price < 50);
+    if (!cheapProduct) throw new Error('Test fixture requires a product priced under $50');
     render(
       <BrowserRouter>
         <CartProvider>
-          <ProductCard product={products[3]} />
+          <ProductCard product={cheapProduct} />
         </CartProvider>
       </BrowserRouter>
     );
@@ -74,7 +76,15 @@ describe('ProductCard', () => {
   });
 
   it('does not display Sale badge for products priced $50 or above', () => {
-    renderProductCard();
+    const pricyProduct = products.find((p) => p.price >= 50);
+    if (!pricyProduct) throw new Error('Test fixture requires a product priced $50 or above');
+    render(
+      <BrowserRouter>
+        <CartProvider>
+          <ProductCard product={pricyProduct} />
+        </CartProvider>
+      </BrowserRouter>
+    );
     expect(screen.queryByText('Sale')).not.toBeInTheDocument();
   });
 });

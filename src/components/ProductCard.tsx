@@ -6,6 +6,8 @@ interface ProductCardProps {
   product: Product;
 }
 
+const SALE_PRICE_THRESHOLD = 50;
+
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
 
@@ -35,7 +37,7 @@ export function ProductCard({ product }: ProductCardProps) {
             onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
           />
         </Link>
-        {product.price < 50 && (
+        {product.price < SALE_PRICE_THRESHOLD && (
           <span
             style={{
               position: 'absolute',
