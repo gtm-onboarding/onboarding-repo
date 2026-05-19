@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useOrders } from '../context/OrderContext';
 
 export function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const { placeOrder } = useOrders();
   const navigate = useNavigate();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState({
@@ -18,11 +20,28 @@ export function CheckoutPage() {
     cvv: '',
   });
 
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/signin?redirect=/checkout" replace />;
+  }
+
   const tax = totalPrice * 0.08;
   const total = totalPrice + tax;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    placeOrder(
+      items,
+      totalPrice,
+      tax,
+      total,
+      {
+        name: formData.name,
+        address: formData.address,
+        city: formData.city,
+        zipCode: formData.zipCode,
+      },
+      user.email
+    );
     setShowConfirmation(true);
   };
 

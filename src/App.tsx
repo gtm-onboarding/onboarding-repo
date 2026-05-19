@@ -6,6 +6,7 @@ import { CategoryPage } from './pages/CategoryPage';
 import { ProductPage } from './pages/ProductPage';
 import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutPage';
+import { OrderHistoryPage } from './pages/OrderHistoryPage';
 import { SignInPage } from './pages/SignInPage';
 import { SignUpPage } from './pages/SignUpPage';
 import { useCart } from './context/CartContext';
@@ -30,6 +31,7 @@ function App() {
         <Route path="/product/:productId" element={<ProductPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/orders" element={<OrderHistoryPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
       </Routes>
