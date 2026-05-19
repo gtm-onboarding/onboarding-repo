@@ -1,3 +1,5 @@
+import { theme } from '../theme';
+
 interface ToastProps {
   message: string;
   type?: 'success' | 'error';
@@ -12,10 +14,10 @@ export function Toast({ message, type = 'success', onClose }: ToastProps) {
         bottom: '24px',
         right: '24px',
         backgroundColor: type === 'success' ? '#E8F5E9' : '#FEF2F2',
-        color: type === 'success' ? '#4A7C59' : '#C44536',
+        color: type === 'success' ? theme.colors.success : theme.colors.error,
         padding: '16px 20px',
-        borderRadius: '12px',
-        boxShadow: '0 8px 24px rgba(26, 26, 26, 0.12)',
+        borderRadius: theme.radii.md,
+        boxShadow: theme.shadows.overlay,
         zIndex: 1000,
         display: 'flex',
         alignItems: 'center',
@@ -30,7 +32,7 @@ export function Toast({ message, type = 'success', onClose }: ToastProps) {
           width: '24px',
           height: '24px',
           borderRadius: '50%',
-          backgroundColor: type === 'success' ? '#4A7C59' : '#C44536',
+          backgroundColor: type === 'success' ? theme.colors.success : theme.colors.error,
           color: 'white',
           display: 'flex',
           alignItems: 'center',
@@ -47,7 +49,7 @@ export function Toast({ message, type = 'success', onClose }: ToastProps) {
         style={{
           background: 'none',
           border: 'none',
-          color: type === 'success' ? '#4A7C59' : '#C44536',
+          color: type === 'success' ? theme.colors.success : theme.colors.error,
           fontSize: '20px',
           cursor: 'pointer',
           padding: '0',
