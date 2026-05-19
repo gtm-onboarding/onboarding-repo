@@ -20,6 +20,11 @@ export function SignInPage() {
       return;
     }
 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
     const success = signIn(email, password);
     if (success) {
       const redirect = searchParams.get('redirect') || '/';
