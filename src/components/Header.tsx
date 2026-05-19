@@ -5,6 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import { CartIcon } from './icons/CartIcon';
 import { UserIcon } from './icons/UserIcon';
 import { categories } from '../data/products';
+import { SearchBar } from './SearchBar';
 
 export function Header() {
   const { totalItems } = useCart();
@@ -64,6 +65,7 @@ export function Header() {
             ))}
           </div>
         </div>
+        <SearchBar />
         <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
           <button
             onClick={toggleTheme}
