@@ -115,11 +115,12 @@ describe('CartContext', () => {
     expect(screen.getByTestId('items-count').textContent).toBe('0');
   });
 
-  it('calculates total price correctly', () => {
+  it('calculates total price correctly using salePrice when available', () => {
     renderWithProvider();
     fireEvent.click(screen.getByText('Add Product 1'));
     fireEvent.click(screen.getByText('Add Product 1'));
-    const expectedPrice = (products[0].price * 2).toFixed(2);
+    const effectivePrice = products[0].salePrice ?? products[0].price;
+    const expectedPrice = (effectivePrice * 2).toFixed(2);
     expect(screen.getByTestId('total-price').textContent).toBe(expectedPrice);
   });
 

@@ -42,7 +42,7 @@ export function CartItem({ item }: CartItemProps) {
           {item.product.name}
         </span>
         <span style={{ color: '#E07A5F', display: 'block', fontWeight: '600', fontSize: '15px' }}>
-          ${item.product.price.toFixed(2)} each
+          ${(item.product.salePrice ?? item.product.price).toFixed(2)} each
         </span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -92,7 +92,7 @@ export function CartItem({ item }: CartItemProps) {
       </div>
       <div style={{ minWidth: '100px', textAlign: 'right' }}>
         <span style={{ color: '#1A1A1A', fontWeight: '700', fontSize: '17px' }}>
-          ${(item.product.price * item.quantity).toFixed(2)}
+          ${((item.product.salePrice ?? item.product.price) * item.quantity).toFixed(2)}
         </span>
       </div>
       <button
