@@ -254,7 +254,7 @@ export function CheckoutPage() {
                   {item.product.name} × {item.quantity}
                 </span>
                 <span style={{ color: '#1A1A1A', fontWeight: '500' }}>
-                  ${(item.product.price * item.quantity).toFixed(2)}
+                  ${((item.product.salePrice ?? item.product.price) * item.quantity).toFixed(2)}
                 </span>
               </div>
             ))}
