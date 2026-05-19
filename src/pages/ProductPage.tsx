@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
+import { HeartIcon } from '../components/icons/HeartIcon';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
@@ -72,6 +75,16 @@ export function ProductPage() {
     );
   }
 
+  const wishlisted = isInWishlist(product.id);
+
+  const toggleWishlist = () => {
+    if (wishlisted) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product);
+    }
+  };
+
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       addToCart(product);
@@ -130,18 +143,39 @@ export function ProductPage() {
             >
               {product.category}
             </p>
-            <h1
-              style={{
-                fontFamily: '"Playfair Display", Georgia, serif',
-                color: '#1A1A1A',
-                marginBottom: '20px',
-                fontSize: '36px',
-                fontWeight: '600',
-                letterSpacing: '-0.5px',
-              }}
-            >
-              {product.name}
-            </h1>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px' }}>
+              <h1
+                style={{
+                  fontFamily: '"Playfair Display", Georgia, serif',
+                  color: '#1A1A1A',
+                  marginBottom: '20px',
+                  fontSize: '36px',
+                  fontWeight: '600',
+                  letterSpacing: '-0.5px',
+                }}
+              >
+                {product.name}
+              </h1>
+              <button
+                onClick={toggleWishlist}
+                aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                style={{
+                  backgroundColor: wishlisted ? '#FFF0ED' : '#F5F3F0',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '44px',
+                  height: '44px',
+                  minWidth: '44px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  marginTop: '4px',
+                }}
+              >
+                <HeartIcon filled={wishlisted} size={22} color={wishlisted ? '#E07A5F' : '#6B6B6B'} />
+              </button>
+            </div>
             <span
               style={{
                 color: '#E07A5F',
