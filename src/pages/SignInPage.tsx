@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { validateEmail } from '../utils/validation';
 
 export function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState<string | null>(null);
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -17,6 +19,12 @@ export function SignInPage() {
 
     if (!email || !password) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    const emailValidation = validateEmail(email);
+    if (emailValidation) {
+      setEmailError(emailValidation);
       return;
     }
 
@@ -97,10 +105,22 @@ export function SignInPage() {
           <input
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (emailError) setEmailError(validateEmail(e.target.value));
+            }}
+            onBlur={() => setEmailError(validateEmail(email))}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              borderColor: emailError ? '#C44536' : '#E8E6E3',
+            }}
           />
+          {emailError && (
+            <p style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>
+              {emailError}
+            </p>
+          )}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label
@@ -124,8 +144,9 @@ export function SignInPage() {
         </div>
         <button
           type="submit"
+          disabled={!!emailError}
           style={{
-            backgroundColor: '#E07A5F',
+            backgroundColor: emailError ? '#D4A59A' : '#E07A5F',
             color: 'white',
             border: 'none',
             padding: '16px',
@@ -135,6 +156,7 @@ export function SignInPage() {
             width: '100%',
             marginBottom: '24px',
             letterSpacing: '0.3px',
+            cursor: emailError ? 'not-allowed' : 'pointer',
           }}
         >
           Sign In
