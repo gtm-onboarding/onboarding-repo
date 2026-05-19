@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { CartIcon } from './icons/CartIcon';
 import { UserIcon } from './icons/UserIcon';
 import { categories } from '../data/products';
@@ -8,6 +9,7 @@ import { categories } from '../data/products';
 export function Header() {
   const { totalItems } = useCart();
   const { user, isAuthenticated, signOut } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <header
@@ -130,6 +132,25 @@ export function Header() {
               </span>
             )}
           </Link>
+          <button
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            style={{
+              backgroundColor: 'transparent',
+              border: '1px solid var(--border)',
+              borderRadius: '8px',
+              width: '36px',
+              height: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '18px',
+              cursor: 'pointer',
+              transition: 'border-color 300ms ease',
+            }}
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
         </div>
       </nav>
     </header>

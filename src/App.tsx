@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Toast } from './components/Toast';
-import { ThemeToggle } from './components/ThemeToggle';
+
 import { HomePage } from './pages/HomePage';
 import { CategoryPage } from './pages/CategoryPage';
 import { ProductPage } from './pages/ProductPage';
@@ -35,7 +35,6 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
       </Routes>
       {toastMessage && <Toast message={toastMessage} onClose={clearToast} />}
-      <ThemeToggle />
     </div>
   );
 }
