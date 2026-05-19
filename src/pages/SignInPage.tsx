@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { validateEmail } from '../utils/validation';
 
 export function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState<string | null>(null);
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -20,6 +22,12 @@ export function SignInPage() {
       return;
     }
 
+    const emailValidation = validateEmail(email);
+    if (emailValidation) {
+      setEmailError(emailValidation);
+      return;
+    }
+
     const success = signIn(email, password);
     if (success) {
       const redirect = searchParams.get('redirect') || '/';
@@ -27,6 +35,10 @@ export function SignInPage() {
     } else {
       setError('Invalid email or password');
     }
+  };
+
+  const handleEmailBlur = () => {
+    setEmailError(validateEmail(email));
   };
 
   const inputStyle = {
@@ -37,6 +49,17 @@ export function SignInPage() {
     color: '#1A1A1A',
     backgroundColor: '#FFFFFF',
     fontSize: '15px',
+  };
+
+  const inputErrorStyle = {
+    ...inputStyle,
+    border: '1px solid #C44536',
+  };
+
+  const fieldErrorStyle = {
+    color: '#C44536',
+    fontSize: '13px',
+    marginTop: '6px',
   };
 
   return (
@@ -69,6 +92,7 @@ export function SignInPage() {
         </p>
         {error && (
           <div
+            role="alert"
             style={{
               backgroundColor: '#FEF2F2',
               color: '#C44536',
@@ -98,9 +122,11 @@ export function SignInPage() {
             type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onBlur={handleEmailBlur}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={emailError ? inputErrorStyle : inputStyle}
           />
+          {emailError && <div style={fieldErrorStyle}>{emailError}</div>}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label

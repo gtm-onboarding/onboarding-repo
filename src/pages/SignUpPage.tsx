@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { validateEmail, validatePassword, validateConfirmPassword } from '../utils/validation';
 
 export function SignUpPage() {
   const [name, setName] = useState('');
@@ -9,8 +10,19 @@ export function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string | null>>({});
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+
+  const runValidation = () => {
+    const errors: Record<string, string | null> = {
+      email: validateEmail(email),
+      password: validatePassword(password),
+      confirmPassword: validateConfirmPassword(password, confirmPassword),
+    };
+    setFieldErrors(errors);
+    return !Object.values(errors).some(Boolean);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,12 +33,37 @@ export function SignUpPage() {
       return;
     }
 
+    if (!runValidation()) {
+      return;
+    }
+
     const success = signUp(email, password, name);
     if (success) {
       navigate('/');
     } else {
       setError('An account with this email already exists');
     }
+  };
+
+  const handleEmailBlur = () => {
+    setFieldErrors((prev) => ({ ...prev, email: validateEmail(email) }));
+  };
+
+  const handlePasswordBlur = () => {
+    setFieldErrors((prev) => ({ ...prev, password: validatePassword(password) }));
+    if (confirmPassword) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        confirmPassword: validateConfirmPassword(password, confirmPassword),
+      }));
+    }
+  };
+
+  const handleConfirmPasswordBlur = () => {
+    setFieldErrors((prev) => ({
+      ...prev,
+      confirmPassword: validateConfirmPassword(password, confirmPassword),
+    }));
   };
 
   const inputStyle = {
@@ -39,12 +76,23 @@ export function SignUpPage() {
     fontSize: '15px',
   };
 
+  const inputErrorStyle = {
+    ...inputStyle,
+    border: '1px solid #C44536',
+  };
+
   const labelStyle = {
     display: 'block',
     color: '#1A1A1A',
     marginBottom: '8px',
     fontSize: '14px',
     fontWeight: '500' as const,
+  };
+
+  const fieldErrorStyle = {
+    color: '#C44536',
+    fontSize: '13px',
+    marginTop: '6px',
   };
 
   return (
@@ -77,6 +125,7 @@ export function SignUpPage() {
         </p>
         {error && (
           <div
+            role="alert"
             style={{
               backgroundColor: '#FEF2F2',
               color: '#C44536',
@@ -106,9 +155,11 @@ export function SignUpPage() {
             type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onBlur={handleEmailBlur}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={fieldErrors.email ? inputErrorStyle : inputStyle}
           />
+          {fieldErrors.email && <div style={fieldErrorStyle}>{fieldErrors.email}</div>}
         </div>
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Password</label>
@@ -116,9 +167,11 @@ export function SignUpPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onBlur={handlePasswordBlur}
             placeholder="At least 6 characters"
-            style={inputStyle}
+            style={fieldErrors.password ? inputErrorStyle : inputStyle}
           />
+          {fieldErrors.password && <div style={fieldErrorStyle}>{fieldErrors.password}</div>}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label style={labelStyle}>Confirm Password</label>
@@ -126,9 +179,13 @@ export function SignUpPage() {
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            onBlur={handleConfirmPasswordBlur}
             placeholder="Confirm your password"
-            style={inputStyle}
+            style={fieldErrors.confirmPassword ? inputErrorStyle : inputStyle}
           />
+          {fieldErrors.confirmPassword && (
+            <div style={fieldErrorStyle}>{fieldErrors.confirmPassword}</div>
+          )}
         </div>
         <button
           type="submit"
