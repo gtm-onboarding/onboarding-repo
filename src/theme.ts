@@ -35,3 +35,23 @@ export const theme = {
     slow: '400ms ease',
   },
 };
+
+export type Theme = typeof theme;
+
+export const darkTheme: Theme = {
+  ...theme,
+  colors: {
+    background: '#1A1A1A',
+    surface: '#2A2A2A',
+    surfaceAlt: '#333333',
+    text: '#F5F3F0',
+    textSecondary: '#B0B0B0',
+    textMuted: '#808080',
+    primary: '#E07A5F',
+    primaryHover: '#C96A52',
+    success: '#6AAF7B',
+    error: '#E06050',
+    border: '#444444',
+    borderLight: '#383838',
+  },
+};

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
-import { theme } from '../theme';
+import { useTheme } from '../context/ThemeContext';
 
 interface ProductCardProps {
   product: Product;
@@ -9,16 +9,17 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
+  const { activeTheme } = useTheme();
 
   return (
     <div
       style={{
-        backgroundColor: theme.colors.surface,
-        borderRadius: theme.radii.md,
+        backgroundColor: activeTheme.colors.surface,
+        borderRadius: activeTheme.radii.md,
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: theme.shadows.md,
+        boxShadow: activeTheme.shadows.md,
       }}
     >
       <Link to={`/product/${product.id}`} style={{ overflow: 'hidden' }}>
@@ -29,7 +30,7 @@ export function ProductCard({ product }: ProductCardProps) {
             width: '100%',
             height: '220px',
             objectFit: 'cover',
-            transition: `transform ${theme.transitions.slow}`,
+            transition: `transform ${activeTheme.transitions.slow}`,
           }}
           onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
           onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
@@ -39,7 +40,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
           <h3
             style={{
-              color: theme.colors.text,
+              color: activeTheme.colors.text,
               marginBottom: '8px',
               fontSize: '17px',
               fontWeight: '600',
@@ -51,7 +52,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </Link>
         <p
           style={{
-            color: theme.colors.textMuted,
+            color: activeTheme.colors.textMuted,
             fontSize: '14px',
             marginBottom: '16px',
             flex: 1,
@@ -72,20 +73,20 @@ export function ProductCard({ product }: ProductCardProps) {
             alignItems: 'center',
             marginTop: 'auto',
             paddingTop: '16px',
-            borderTop: `1px solid ${theme.colors.borderLight}`,
+            borderTop: `1px solid ${activeTheme.colors.borderLight}`,
           }}
         >
-          <span style={{ color: theme.colors.primary, fontWeight: '700', fontSize: '20px' }}>
+          <span style={{ color: activeTheme.colors.primary, fontWeight: '700', fontSize: '20px' }}>
             ${product.price.toFixed(2)}
           </span>
           <button
             onClick={() => addToCart(product)}
             style={{
-              backgroundColor: theme.colors.text,
+              backgroundColor: activeTheme.colors.text,
               color: 'white',
               border: 'none',
               padding: '10px 20px',
-              borderRadius: theme.radii.sm,
+              borderRadius: activeTheme.radii.sm,
               fontSize: '13px',
               fontWeight: '600',
               letterSpacing: '0.3px',

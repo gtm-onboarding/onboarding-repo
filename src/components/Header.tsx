@@ -1,25 +1,26 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { CartIcon } from './icons/CartIcon';
 import { UserIcon } from './icons/UserIcon';
 import { categories } from '../data/products';
-import { theme } from '../theme';
 
 export function Header() {
   const { totalItems } = useCart();
   const { user, isAuthenticated, signOut } = useAuth();
+  const { activeTheme, mode, toggleTheme } = useTheme();
 
   return (
     <header
       style={{
-        backgroundColor: theme.colors.surface,
-        borderBottom: `1px solid ${theme.colors.border}`,
+        backgroundColor: activeTheme.colors.surface,
+        borderBottom: `1px solid ${activeTheme.colors.border}`,
         padding: '20px 32px',
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        boxShadow: theme.shadows.sm,
+        boxShadow: activeTheme.shadows.sm,
       }}
     >
       <nav
@@ -35,10 +36,10 @@ export function Header() {
           <Link
             to="/"
             style={{
-              color: theme.colors.text,
+              color: activeTheme.colors.text,
               fontSize: '26px',
               fontWeight: '600',
-              fontFamily: theme.fonts.display,
+              fontFamily: activeTheme.fonts.display,
               letterSpacing: '-0.5px',
             }}
           >
@@ -50,7 +51,7 @@ export function Header() {
                 key={category}
                 to={`/category/${encodeURIComponent(category)}`}
                 style={{
-                  color: theme.colors.textSecondary,
+                  color: activeTheme.colors.textSecondary,
                   fontSize: '14px',
                   fontWeight: '500',
                   letterSpacing: '0.3px',
@@ -64,18 +65,32 @@ export function Header() {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
+          <button
+            onClick={toggleTheme}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '22px',
+              cursor: 'pointer',
+              padding: '4px',
+              lineHeight: '1',
+            }}
+            aria-label={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}
+          >
+            {mode === 'light' ? '🌙' : '☀️'}
+          </button>
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <UserIcon />
-              <span style={{ color: theme.colors.textSecondary, fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
+              <span style={{ color: activeTheme.colors.textSecondary, fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
               <button
                 onClick={signOut}
                 style={{
                   backgroundColor: 'transparent',
-                  border: `1px solid ${theme.colors.border}`,
-                  color: theme.colors.textSecondary,
+                  border: `1px solid ${activeTheme.colors.border}`,
+                  color: activeTheme.colors.textSecondary,
                   padding: '8px 16px',
-                  borderRadius: theme.radii.sm,
+                  borderRadius: activeTheme.radii.sm,
                   fontSize: '13px',
                   fontWeight: '500',
                 }}
@@ -87,7 +102,7 @@ export function Header() {
             <Link
               to="/signin"
               style={{
-                color: theme.colors.text,
+                color: activeTheme.colors.text,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
@@ -102,7 +117,7 @@ export function Header() {
           <Link
             to="/cart"
             style={{
-              color: theme.colors.text,
+              color: activeTheme.colors.text,
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
@@ -113,7 +128,7 @@ export function Header() {
             {totalItems > 0 && (
               <span
                 style={{
-                  backgroundColor: theme.colors.primary,
+                  backgroundColor: activeTheme.colors.primary,
                   color: 'white',
                   fontSize: '11px',
                   fontWeight: '600',
