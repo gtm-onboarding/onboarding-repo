@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRating } from '../context/RatingContext';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { getRating, getAverageRating, getRatingCount, setRating } = useRating();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
@@ -148,11 +151,38 @@ export function ProductPage() {
                 fontSize: '32px',
                 fontWeight: '700',
                 display: 'block',
-                marginBottom: '32px',
+                marginBottom: '16px',
               }}
             >
               ${product.price.toFixed(2)}
             </span>
+            <div style={{ marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                <StarRating
+                  rating={getAverageRating(product.id)}
+                  size={22}
+                  showCount
+                  count={getRatingCount(product.id)}
+                />
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  backgroundColor: '#FAF9F7',
+                  borderRadius: '8px',
+                }}
+              >
+                <span style={{ color: '#6B6B6B', fontSize: '14px', fontWeight: '500' }}>Your rating:</span>
+                <StarRating
+                  rating={getRating(product.id)}
+                  onRate={(value) => setRating(product.id, value)}
+                  size={24}
+                />
+              </div>
+            </div>
             <p
               style={{
                 color: '#6B6B6B',

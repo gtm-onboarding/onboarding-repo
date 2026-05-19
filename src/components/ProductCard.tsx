@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
+import { useRating } from '../context/RatingContext';
+import { StarRating } from './StarRating';
 
 interface ProductCardProps {
   product: Product;
@@ -8,6 +10,10 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
+  const { getAverageRating, getRatingCount } = useRating();
+
+  const averageRating = getAverageRating(product.id);
+  const ratingCount = getRatingCount(product.id);
 
   return (
     <div
@@ -48,6 +54,7 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.name}
           </h3>
         </Link>
+        <StarRating rating={averageRating} size={16} showCount count={ratingCount} />
         <p
           style={{
             color: '#9A9A9A',
