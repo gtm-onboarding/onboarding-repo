@@ -6,6 +6,8 @@ interface ProductCardProps {
   product: Product;
 }
 
+const SALE_PRICE_THRESHOLD = 50;
+
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
 
@@ -20,20 +22,41 @@ export function ProductCard({ product }: ProductCardProps) {
         boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
       }}
     >
-      <Link to={`/product/${product.id}`} style={{ overflow: 'hidden' }}>
-        <img
-          src={product.image}
-          alt={product.name}
-          style={{
-            width: '100%',
-            height: '220px',
-            objectFit: 'cover',
-            transition: 'transform 400ms ease',
-          }}
-          onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-          onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-        />
-      </Link>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <Link to={`/product/${product.id}`} style={{ overflow: 'hidden' }}>
+          <img
+            src={product.image}
+            alt={product.name}
+            style={{
+              width: '100%',
+              height: '220px',
+              objectFit: 'cover',
+              transition: 'transform 400ms ease',
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
+            onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+          />
+        </Link>
+        {product.price < SALE_PRICE_THRESHOLD && (
+          <span
+            style={{
+              position: 'absolute',
+              top: '12px',
+              left: '12px',
+              backgroundColor: '#E07A5F',
+              color: '#FFFFFF',
+              padding: '4px 12px',
+              borderRadius: '4px',
+              fontSize: '13px',
+              fontWeight: '700',
+              letterSpacing: '0.5px',
+              zIndex: 1,
+            }}
+          >
+            Sale
+          </span>
+        )}
+      </div>
       <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
           <h3
