@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { validateEmail, validatePasswordMatch } from '../utils/validation';
 
 export function SignUpPage() {
   const [name, setName] = useState('');
@@ -9,6 +10,8 @@ export function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [confirmPasswordError, setConfirmPasswordError] = useState<string | null>(null);
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
@@ -18,6 +21,18 @@ export function SignUpPage() {
 
     if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    const emailValidation = validateEmail(email);
+    if (emailValidation) {
+      setEmailError(emailValidation);
+      return;
+    }
+
+    const passwordMatchValidation = validatePasswordMatch(password, confirmPassword);
+    if (passwordMatchValidation) {
+      setConfirmPasswordError(passwordMatchValidation);
       return;
     }
 
@@ -105,10 +120,22 @@ export function SignUpPage() {
           <input
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              if (emailError) setEmailError(validateEmail(e.target.value));
+            }}
+            onBlur={() => setEmailError(validateEmail(email))}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              borderColor: emailError ? '#C44536' : '#E8E6E3',
+            }}
           />
+          {emailError && (
+            <p style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>
+              {emailError}
+            </p>
+          )}
         </div>
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Password</label>
@@ -125,15 +152,28 @@ export function SignUpPage() {
           <input
             type="password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              if (confirmPasswordError) setConfirmPasswordError(validatePasswordMatch(password, e.target.value));
+            }}
+            onBlur={() => setConfirmPasswordError(validatePasswordMatch(password, confirmPassword))}
             placeholder="Confirm your password"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              borderColor: confirmPasswordError ? '#C44536' : '#E8E6E3',
+            }}
           />
+          {confirmPasswordError && (
+            <p style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>
+              {confirmPasswordError}
+            </p>
+          )}
         </div>
         <button
           type="submit"
+          disabled={!!emailError || !!confirmPasswordError}
           style={{
-            backgroundColor: '#E07A5F',
+            backgroundColor: (emailError || confirmPasswordError) ? '#D4A59A' : '#E07A5F',
             color: 'white',
             border: 'none',
             padding: '16px',
@@ -143,6 +183,7 @@ export function SignUpPage() {
             width: '100%',
             marginBottom: '24px',
             letterSpacing: '0.3px',
+            cursor: (emailError || confirmPasswordError) ? 'not-allowed' : 'pointer',
           }}
         >
           Sign Up
