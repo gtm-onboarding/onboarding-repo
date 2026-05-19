@@ -2,10 +2,14 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRating } from '../context/RatingContext';
+import { StarRating } from '../components/StarRating';
+import { StarRatingInput } from '../components/StarRatingInput';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { getRating, submitRating, getUserRating } = useRating();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
@@ -148,21 +152,43 @@ export function ProductPage() {
                 fontSize: '32px',
                 fontWeight: '700',
                 display: 'block',
-                marginBottom: '32px',
+                marginBottom: '16px',
               }}
             >
               ${product.price.toFixed(2)}
             </span>
+            {getRating(product.id).count > 0 && (
+              <div style={{ marginBottom: '16px' }}>
+                <StarRating
+                  rating={getRating(product.id).average}
+                  count={getRating(product.id).count}
+                  size={20}
+                />
+              </div>
+            )}
             <p
               style={{
                 color: '#6B6B6B',
                 lineHeight: '1.8',
-                marginBottom: '40px',
+                marginBottom: '24px',
                 fontSize: '16px',
               }}
             >
               {product.description}
             </p>
+            <div
+              style={{
+                marginBottom: '24px',
+                padding: '16px',
+                backgroundColor: '#FAF9F7',
+                borderRadius: '8px',
+              }}
+            >
+              <StarRatingInput
+                currentRating={getUserRating(product.id)}
+                onRate={(rating) => submitRating(product.id, rating)}
+              />
+            </div>
             <div
               style={{
                 display: 'flex',
