@@ -3,10 +3,12 @@ import { useParams } from 'react-router-dom';
 import { products } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
 import { CategoryMenu } from '../components/CategoryMenu';
+import { useTheme } from '../context/ThemeContext';
 
 export function CategoryPage() {
   const { categoryId } = useParams<{ categoryId: string }>();
   const [isLoading, setIsLoading] = useState(true);
+  const { theme } = useTheme();
 
   const categoryName = decodeURIComponent(categoryId || '');
   const categoryProducts = products.filter((p) => p.category === categoryName);
@@ -18,7 +20,7 @@ export function CategoryPage() {
   }, [categoryId]);
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '40px 32px' }}>
+    <div style={{ backgroundColor: theme.colors.background, minHeight: '100vh', padding: '40px 32px' }}>
       <div
         style={{
           maxWidth: '1280px',
@@ -35,8 +37,8 @@ export function CategoryPage() {
           <div style={{ marginBottom: '32px' }}>
             <h1
               style={{
-                fontFamily: '"Playfair Display", Georgia, serif',
-                color: '#1A1A1A',
+                fontFamily: theme.fonts.display,
+                color: theme.colors.text,
                 fontSize: '36px',
                 fontWeight: '600',
                 marginBottom: '8px',
@@ -45,7 +47,7 @@ export function CategoryPage() {
             >
               {categoryName}
             </h1>
-            <p style={{ color: '#9A9A9A', fontSize: '15px' }}>
+            <p style={{ color: theme.colors.textMuted, fontSize: '15px' }}>
               {categoryProducts.length} products available
             </p>
           </div>
@@ -61,7 +63,7 @@ export function CategoryPage() {
                 <div
                   key={i}
                   style={{
-                    backgroundColor: '#F5F3F0',
+                    backgroundColor: theme.colors.surfaceAlt,
                     height: '360px',
                     borderRadius: '12px',
                   }}
@@ -71,14 +73,14 @@ export function CategoryPage() {
           ) : categoryProducts.length === 0 ? (
             <div
               style={{
-                backgroundColor: '#FFFFFF',
-                boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+                backgroundColor: theme.colors.surface,
+                boxShadow: theme.shadows.md,
                 padding: '80px',
                 textAlign: 'center',
                 borderRadius: '12px',
               }}
             >
-              <p style={{ color: '#9A9A9A', fontSize: '17px' }}>
+              <p style={{ color: theme.colors.textMuted, fontSize: '17px' }}>
                 No products found in this category
               </p>
             </div>

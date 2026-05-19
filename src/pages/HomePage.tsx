@@ -1,15 +1,17 @@
 import { Link } from 'react-router-dom';
 import { products, categories } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
+import { useTheme } from '../context/ThemeContext';
 
 export function HomePage() {
   const featuredProducts = products.slice(0, 4);
+  const { theme } = useTheme();
 
   return (
-    <main style={{ backgroundColor: '#FAF9F7', minHeight: '100vh' }}>
+    <main style={{ backgroundColor: theme.colors.background, minHeight: '100vh' }}>
       <section
         style={{
-          backgroundColor: '#F5F3F0',
+          backgroundColor: theme.colors.surfaceAlt,
           padding: '80px 32px 100px',
           position: 'relative',
           overflow: 'hidden',
@@ -28,7 +30,7 @@ export function HomePage() {
           <div style={{ animation: 'fadeIn 0.6s ease-out' }}>
             <p
               style={{
-                color: '#E07A5F',
+                color: theme.colors.primary,
                 fontSize: '13px',
                 fontWeight: '600',
                 letterSpacing: '2px',
@@ -40,10 +42,10 @@ export function HomePage() {
             </p>
             <h1
               style={{
-                fontFamily: '"Playfair Display", Georgia, serif',
+                fontFamily: theme.fonts.display,
                 fontSize: '56px',
                 fontWeight: '600',
-                color: '#1A1A1A',
+                color: theme.colors.text,
                 lineHeight: '1.1',
                 marginBottom: '24px',
                 letterSpacing: '-1px',
@@ -56,7 +58,7 @@ export function HomePage() {
             <p
               style={{
                 fontSize: '18px',
-                color: '#6B6B6B',
+                color: theme.colors.textSecondary,
                 lineHeight: '1.7',
                 marginBottom: '40px',
                 maxWidth: '440px',
@@ -68,7 +70,7 @@ export function HomePage() {
             <Link
               to="/category/Electronics"
               style={{
-                backgroundColor: '#E07A5F',
+                backgroundColor: theme.colors.primary,
                 color: 'white',
                 padding: '16px 40px',
                 borderRadius: '6px',
@@ -91,10 +93,10 @@ export function HomePage() {
           >
             <div
               style={{
-                backgroundColor: '#FFFFFF',
+                backgroundColor: theme.colors.surface,
                 borderRadius: '16px',
                 padding: '24px',
-                boxShadow: '0 8px 24px rgba(26, 26, 26, 0.08)',
+                boxShadow: theme.shadows.lg,
                 transform: 'translateY(-20px)',
               }}
             >
@@ -103,14 +105,14 @@ export function HomePage() {
                 alt="Featured"
                 style={{ width: '100%', borderRadius: '12px', marginBottom: '16px' }}
               />
-              <p style={{ color: '#1A1A1A', fontWeight: '500', fontSize: '14px' }}>Electronics</p>
+              <p style={{ color: theme.colors.text, fontWeight: '500', fontSize: '14px' }}>Electronics</p>
             </div>
             <div
               style={{
-                backgroundColor: '#FFFFFF',
+                backgroundColor: theme.colors.surface,
                 borderRadius: '16px',
                 padding: '24px',
-                boxShadow: '0 8px 24px rgba(26, 26, 26, 0.08)',
+                boxShadow: theme.shadows.lg,
                 transform: 'translateY(20px)',
               }}
             >
@@ -119,7 +121,7 @@ export function HomePage() {
                 alt="Featured"
                 style={{ width: '100%', borderRadius: '12px', marginBottom: '16px' }}
               />
-              <p style={{ color: '#1A1A1A', fontWeight: '500', fontSize: '14px' }}>Home & Garden</p>
+              <p style={{ color: theme.colors.text, fontWeight: '500', fontSize: '14px' }}>Home &amp; Garden</p>
             </div>
           </div>
         </div>
@@ -135,8 +137,8 @@ export function HomePage() {
         <div style={{ textAlign: 'center', marginBottom: '48px' }}>
           <h2
             style={{
-              fontFamily: '"Playfair Display", Georgia, serif',
-              color: '#1A1A1A',
+              fontFamily: theme.fonts.display,
+              color: theme.colors.text,
               fontSize: '36px',
               fontWeight: '600',
               marginBottom: '12px',
@@ -145,7 +147,7 @@ export function HomePage() {
           >
             Featured Products
           </h2>
-          <p style={{ color: '#6B6B6B', fontSize: '16px' }}>
+          <p style={{ color: theme.colors.textSecondary, fontSize: '16px' }}>
             Handpicked selections for discerning tastes
           </p>
         </div>
@@ -164,7 +166,7 @@ export function HomePage() {
 
       <section
         style={{
-          backgroundColor: '#FFFFFF',
+          backgroundColor: theme.colors.surface,
           padding: '80px 32px',
         }}
       >
@@ -172,8 +174,8 @@ export function HomePage() {
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <h2
               style={{
-                fontFamily: '"Playfair Display", Georgia, serif',
-                color: '#1A1A1A',
+                fontFamily: theme.fonts.display,
+                color: theme.colors.text,
                 fontSize: '36px',
                 fontWeight: '600',
                 marginBottom: '12px',
@@ -182,7 +184,7 @@ export function HomePage() {
             >
               Shop by Category
             </h2>
-            <p style={{ color: '#6B6B6B', fontSize: '16px' }}>
+            <p style={{ color: theme.colors.textSecondary, fontSize: '16px' }}>
               Explore our curated collections
             </p>
           </div>
@@ -198,11 +200,11 @@ export function HomePage() {
                 key={category}
                 to={`/category/${encodeURIComponent(category)}`}
                 style={{
-                  backgroundColor: '#F5F3F0',
+                  backgroundColor: theme.colors.surfaceAlt,
                   borderRadius: '16px',
                   padding: '48px 32px',
                   textAlign: 'center',
-                  color: '#1A1A1A',
+                  color: theme.colors.text,
                   position: 'relative',
                   overflow: 'hidden',
                 }}
@@ -212,7 +214,7 @@ export function HomePage() {
                     position: 'absolute',
                     top: '16px',
                     right: '16px',
-                    backgroundColor: '#E07A5F',
+                    backgroundColor: theme.colors.primary,
                     color: 'white',
                     fontSize: '12px',
                     fontWeight: '600',
@@ -224,7 +226,7 @@ export function HomePage() {
                 </div>
                 <h3
                   style={{
-                    fontFamily: '"Playfair Display", Georgia, serif',
+                    fontFamily: theme.fonts.display,
                     fontSize: '28px',
                     fontWeight: '600',
                     marginBottom: '8px',
@@ -233,7 +235,7 @@ export function HomePage() {
                 >
                   {category}
                 </h3>
-                <p style={{ color: '#6B6B6B', fontSize: '14px' }}>
+                <p style={{ color: theme.colors.textSecondary, fontSize: '14px' }}>
                   {index === 0 && 'Tech & gadgets'}
                   {index === 1 && 'Fashion & apparel'}
                   {index === 2 && 'Living spaces'}
