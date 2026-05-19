@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 export function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
+  const { colors } = useTheme();
   const navigate = useNavigate();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState({
@@ -43,28 +45,28 @@ export function CheckoutPage() {
   const inputStyle = {
     width: '100%',
     padding: '14px 16px',
-    border: '1px solid #E8E6E3',
+    border: `1px solid ${colors.border}`,
     borderRadius: '8px',
-    backgroundColor: '#FFFFFF',
-    color: '#1A1A1A',
+    backgroundColor: colors.inputBg,
+    color: colors.text,
     fontSize: '15px',
   };
 
   const labelStyle = {
     display: 'block',
-    color: '#1A1A1A',
+    color: colors.text,
     marginBottom: '8px',
     fontSize: '14px',
     fontWeight: '500' as const,
   };
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '40px 32px' }}>
+    <div style={{ backgroundColor: colors.background, minHeight: '100vh', padding: '40px 32px', transition: 'background-color 250ms ease' }}>
       <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
         <h1
           style={{
             fontFamily: '"Playfair Display", Georgia, serif',
-            color: '#1A1A1A',
+            color: colors.text,
             marginBottom: '40px',
             fontSize: '36px',
             fontWeight: '600',
@@ -76,16 +78,17 @@ export function CheckoutPage() {
           <form onSubmit={handleSubmit}>
             <div
               style={{
-                backgroundColor: '#FFFFFF',
+                backgroundColor: colors.surface,
                 padding: '32px',
                 borderRadius: '16px',
                 marginBottom: '24px',
-                boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+                boxShadow: `0 4px 12px ${colors.shadow}`,
+                transition: 'background-color 250ms ease',
               }}
             >
               <h2
                 style={{
-                  color: '#1A1A1A',
+                  color: colors.text,
                   marginBottom: '24px',
                   fontSize: '18px',
                   fontWeight: '600',
@@ -143,16 +146,17 @@ export function CheckoutPage() {
             </div>
             <div
               style={{
-                backgroundColor: '#FFFFFF',
+                backgroundColor: colors.surface,
                 padding: '32px',
                 borderRadius: '16px',
                 marginBottom: '24px',
-                boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+                boxShadow: `0 4px 12px ${colors.shadow}`,
+                transition: 'background-color 250ms ease',
               }}
             >
               <h2
                 style={{
-                  color: '#1A1A1A',
+                  color: colors.text,
                   marginBottom: '24px',
                   fontSize: '18px',
                   fontWeight: '600',
@@ -203,7 +207,7 @@ export function CheckoutPage() {
             <button
               type="submit"
               style={{
-                backgroundColor: '#E07A5F',
+                backgroundColor: colors.primary,
                 color: 'white',
                 border: 'none',
                 padding: '18px 32px',
@@ -219,18 +223,19 @@ export function CheckoutPage() {
           </form>
           <div
             style={{
-              backgroundColor: '#FFFFFF',
+              backgroundColor: colors.surface,
               padding: '28px',
               borderRadius: '16px',
               height: 'fit-content',
-              boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+              boxShadow: `0 4px 12px ${colors.shadow}`,
               position: 'sticky',
               top: '120px',
+              transition: 'background-color 250ms ease',
             }}
           >
             <h2
               style={{
-                color: '#1A1A1A',
+                color: colors.text,
                 marginBottom: '24px',
                 fontSize: '18px',
                 fontWeight: '600',
@@ -246,42 +251,42 @@ export function CheckoutPage() {
                   display: 'flex',
                   justifyContent: 'space-between',
                   marginBottom: '16px',
-                  color: '#6B6B6B',
+                  color: colors.textSecondary,
                   fontSize: '14px',
                 }}
               >
                 <span>
                   {item.product.name} × {item.quantity}
                 </span>
-                <span style={{ color: '#1A1A1A', fontWeight: '500' }}>
+                <span style={{ color: colors.text, fontWeight: '500' }}>
                   ${(item.product.price * item.quantity).toFixed(2)}
                 </span>
               </div>
             ))}
-            <div style={{ borderTop: '1px solid #F0EEEB', marginTop: '20px', paddingTop: '20px' }}>
+            <div style={{ borderTop: `1px solid ${colors.borderLight}`, marginTop: '20px', paddingTop: '20px' }}>
               <div
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   marginBottom: '12px',
-                  color: '#6B6B6B',
+                  color: colors.textSecondary,
                   fontSize: '14px',
                 }}
               >
                 <span>Subtotal</span>
-                <span style={{ color: '#1A1A1A' }}>${totalPrice.toFixed(2)}</span>
+                <span style={{ color: colors.text }}>${totalPrice.toFixed(2)}</span>
               </div>
               <div
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   marginBottom: '12px',
-                  color: '#6B6B6B',
+                  color: colors.textSecondary,
                   fontSize: '14px',
                 }}
               >
                 <span>Tax (8%)</span>
-                <span style={{ color: '#1A1A1A' }}>${tax.toFixed(2)}</span>
+                <span style={{ color: colors.text }}>${tax.toFixed(2)}</span>
               </div>
               <div
                 style={{
@@ -289,14 +294,14 @@ export function CheckoutPage() {
                   justifyContent: 'space-between',
                   fontWeight: '600',
                   fontSize: '18px',
-                  color: '#1A1A1A',
+                  color: colors.text,
                   paddingTop: '12px',
-                  borderTop: '1px solid #F0EEEB',
+                  borderTop: `1px solid ${colors.borderLight}`,
                   marginTop: '12px',
                 }}
               >
                 <span>Total</span>
-                <span style={{ color: '#E07A5F', fontWeight: '700' }}>${total.toFixed(2)}</span>
+                <span style={{ color: colors.primary, fontWeight: '700' }}>${total.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -320,8 +325,8 @@ export function CheckoutPage() {
         >
           <div
             style={{
-              backgroundColor: '#FFFFFF',
-              boxShadow: '0 16px 48px rgba(26, 26, 26, 0.15)',
+              backgroundColor: colors.surface,
+              boxShadow: `0 16px 48px ${colors.shadow}`,
               padding: '48px',
               borderRadius: '20px',
               textAlign: 'center',
@@ -333,7 +338,7 @@ export function CheckoutPage() {
               style={{
                 width: '64px',
                 height: '64px',
-                backgroundColor: '#E8F5E9',
+                backgroundColor: colors.toastSuccessBg,
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
@@ -341,12 +346,12 @@ export function CheckoutPage() {
                 margin: '0 auto 24px',
               }}
             >
-              <span style={{ color: '#4A7C59', fontSize: '32px' }}>✓</span>
+              <span style={{ color: colors.success, fontSize: '32px' }}>✓</span>
             </div>
             <h2
               style={{
                 fontFamily: '"Playfair Display", Georgia, serif',
-                color: '#1A1A1A',
+                color: colors.text,
                 marginBottom: '12px',
                 fontSize: '28px',
                 fontWeight: '600',
@@ -354,13 +359,13 @@ export function CheckoutPage() {
             >
               Order Confirmed!
             </h2>
-            <p style={{ color: '#6B6B6B', marginBottom: '32px', fontSize: '16px', lineHeight: '1.6' }}>
+            <p style={{ color: colors.textSecondary, marginBottom: '32px', fontSize: '16px', lineHeight: '1.6' }}>
               Thank you for your purchase. Your order has been placed successfully.
             </p>
             <button
               onClick={handleConfirmationClose}
               style={{
-                backgroundColor: '#E07A5F',
+                backgroundColor: colors.primary,
                 color: 'white',
                 border: 'none',
                 padding: '14px 32px',

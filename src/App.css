@@ -17,11 +17,21 @@ body {
   color: #1A1A1A;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 250ms ease, color 250ms ease;
+}
+
+[data-theme='dark'] body {
+  background-color: #121212;
+  color: #E8E6E3;
 }
 
 ::selection {
   background-color: rgba(224, 122, 95, 0.2);
   color: #1A1A1A;
+}
+
+[data-theme='dark'] ::selection {
+  color: #E8E6E3;
 }
 
 a {

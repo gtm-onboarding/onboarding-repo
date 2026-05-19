@@ -1,3 +1,5 @@
+import { useTheme } from '../context/ThemeContext';
+
 interface ToastProps {
   message: string;
   type?: 'success' | 'error';
@@ -5,17 +7,22 @@ interface ToastProps {
 }
 
 export function Toast({ message, type = 'success', onClose }: ToastProps) {
+  const { colors } = useTheme();
+
+  const bg = type === 'success' ? colors.toastSuccessBg : colors.toastErrorBg;
+  const fg = type === 'success' ? colors.success : colors.error;
+
   return (
     <div
       style={{
         position: 'fixed',
         bottom: '24px',
         right: '24px',
-        backgroundColor: type === 'success' ? '#E8F5E9' : '#FEF2F2',
-        color: type === 'success' ? '#4A7C59' : '#C44536',
+        backgroundColor: bg,
+        color: fg,
         padding: '16px 20px',
         borderRadius: '12px',
-        boxShadow: '0 8px 24px rgba(26, 26, 26, 0.12)',
+        boxShadow: `0 8px 24px ${colors.shadow}`,
         zIndex: 1000,
         display: 'flex',
         alignItems: 'center',
@@ -30,7 +37,7 @@ export function Toast({ message, type = 'success', onClose }: ToastProps) {
           width: '24px',
           height: '24px',
           borderRadius: '50%',
-          backgroundColor: type === 'success' ? '#4A7C59' : '#C44536',
+          backgroundColor: fg,
           color: 'white',
           display: 'flex',
           alignItems: 'center',
@@ -47,7 +54,7 @@ export function Toast({ message, type = 'success', onClose }: ToastProps) {
         style={{
           background: 'none',
           border: 'none',
-          color: type === 'success' ? '#4A7C59' : '#C44536',
+          color: fg,
           fontSize: '20px',
           cursor: 'pointer',
           padding: '0',

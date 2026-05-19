@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 export function SignUpPage() {
   const [name, setName] = useState('');
@@ -10,6 +11,7 @@ export function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const { signUp, signInWithGoogle } = useAuth();
+  const { colors } = useTheme();
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -32,38 +34,39 @@ export function SignUpPage() {
   const inputStyle = {
     width: '100%',
     padding: '14px 16px',
-    border: '1px solid #E8E6E3',
+    border: `1px solid ${colors.border}`,
     borderRadius: '8px',
-    color: '#1A1A1A',
-    backgroundColor: '#FFFFFF',
+    color: colors.text,
+    backgroundColor: colors.inputBg,
     fontSize: '15px',
   };
 
   const labelStyle = {
     display: 'block',
-    color: '#1A1A1A',
+    color: colors.text,
     marginBottom: '8px',
     fontSize: '14px',
     fontWeight: '500' as const,
   };
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '80px 24px' }}>
+    <div style={{ backgroundColor: colors.background, minHeight: '100vh', padding: '80px 24px', transition: 'background-color 250ms ease' }}>
       <form
         onSubmit={handleSubmit}
         style={{
-          backgroundColor: '#FFFFFF',
-          boxShadow: '0 8px 24px rgba(26, 26, 26, 0.08)',
+          backgroundColor: colors.surface,
+          boxShadow: `0 8px 24px ${colors.shadow}`,
           padding: '48px',
           borderRadius: '20px',
           maxWidth: '420px',
           margin: '0 auto',
+          transition: 'background-color 250ms ease',
         }}
       >
         <h1
           style={{
             fontFamily: '"Playfair Display", Georgia, serif',
-            color: '#1A1A1A',
+            color: colors.text,
             marginBottom: '8px',
             textAlign: 'center',
             fontSize: '32px',
@@ -72,14 +75,14 @@ export function SignUpPage() {
         >
           Create Account
         </h1>
-        <p style={{ color: '#9A9A9A', textAlign: 'center', marginBottom: '36px', fontSize: '15px' }}>
+        <p style={{ color: colors.textMuted, textAlign: 'center', marginBottom: '36px', fontSize: '15px' }}>
           Join us and start shopping
         </p>
         {error && (
           <div
             style={{
-              backgroundColor: '#FEF2F2',
-              color: '#C44536',
+              backgroundColor: colors.toastErrorBg,
+              color: colors.error,
               padding: '14px 16px',
               borderRadius: '8px',
               marginBottom: '24px',
@@ -133,7 +136,7 @@ export function SignUpPage() {
         <button
           type="submit"
           style={{
-            backgroundColor: '#E07A5F',
+            backgroundColor: colors.primary,
             color: 'white',
             border: 'none',
             padding: '16px',
@@ -155,9 +158,9 @@ export function SignUpPage() {
             marginBottom: '24px',
           }}
         >
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#E8E6E3' }} />
-          <span style={{ color: '#9A9A9A', fontSize: '13px', fontWeight: '500' }}>or</span>
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#E8E6E3' }} />
+          <div style={{ flex: 1, height: '1px', backgroundColor: colors.border }} />
+          <span style={{ color: colors.textMuted, fontSize: '13px', fontWeight: '500' }}>or</span>
+          <div style={{ flex: 1, height: '1px', backgroundColor: colors.border }} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
           <GoogleLogin
@@ -177,9 +180,9 @@ export function SignUpPage() {
             width={320}
           />
         </div>
-        <p style={{ textAlign: 'center', color: '#6B6B6B', fontSize: '14px' }}>
+        <p style={{ textAlign: 'center', color: colors.textSecondary, fontSize: '14px' }}>
           Already have an account?{' '}
-          <Link to="/signin" style={{ color: '#E07A5F', fontWeight: '600' }}>
+          <Link to="/signin" style={{ color: colors.primary, fontWeight: '600' }}>
             Sign In
           </Link>
         </p>

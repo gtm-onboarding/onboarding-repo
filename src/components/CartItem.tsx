@@ -1,5 +1,6 @@
 import { CartItem as CartItemType } from '../types';
 import { useCart } from '../context/CartContext';
+import { useTheme } from '../context/ThemeContext';
 
 interface CartItemProps {
   item: CartItemType;
@@ -7,12 +8,13 @@ interface CartItemProps {
 
 export function CartItem({ item }: CartItemProps) {
   const { updateQuantity, removeFromCart } = useCart();
+  const { colors } = useTheme();
 
   return (
     <div
       style={{
-        backgroundColor: '#FFFFFF',
-        borderBottom: '1px solid #F0EEEB',
+        backgroundColor: colors.surface,
+        borderBottom: `1px solid ${colors.borderLight}`,
         padding: '24px',
         display: 'flex',
         alignItems: 'center',
@@ -32,7 +34,7 @@ export function CartItem({ item }: CartItemProps) {
       <div style={{ flex: 1 }}>
         <span
           style={{
-            color: '#1A1A1A',
+            color: colors.text,
             fontWeight: '600',
             display: 'block',
             fontSize: '16px',
@@ -41,7 +43,7 @@ export function CartItem({ item }: CartItemProps) {
         >
           {item.product.name}
         </span>
-        <span style={{ color: '#E07A5F', display: 'block', fontWeight: '600', fontSize: '15px' }}>
+        <span style={{ color: colors.primary, display: 'block', fontWeight: '600', fontSize: '15px' }}>
           ${item.product.price.toFixed(2)} each
         </span>
       </div>
@@ -49,8 +51,8 @@ export function CartItem({ item }: CartItemProps) {
         <button
           onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
           style={{
-            backgroundColor: '#F5F3F0',
-            color: '#1A1A1A',
+            backgroundColor: colors.surfaceAlt,
+            color: colors.text,
             border: 'none',
             width: '36px',
             height: '36px',
@@ -64,7 +66,7 @@ export function CartItem({ item }: CartItemProps) {
         </button>
         <span
           style={{
-            color: '#1A1A1A',
+            color: colors.text,
             minWidth: '44px',
             textAlign: 'center',
             fontSize: '15px',
@@ -76,8 +78,8 @@ export function CartItem({ item }: CartItemProps) {
         <button
           onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
           style={{
-            backgroundColor: '#F5F3F0',
-            color: '#1A1A1A',
+            backgroundColor: colors.surfaceAlt,
+            color: colors.text,
             border: 'none',
             width: '36px',
             height: '36px',
@@ -91,7 +93,7 @@ export function CartItem({ item }: CartItemProps) {
         </button>
       </div>
       <div style={{ minWidth: '100px', textAlign: 'right' }}>
-        <span style={{ color: '#1A1A1A', fontWeight: '700', fontSize: '17px' }}>
+        <span style={{ color: colors.text, fontWeight: '700', fontSize: '17px' }}>
           ${(item.product.price * item.quantity).toFixed(2)}
         </span>
       </div>
@@ -99,8 +101,8 @@ export function CartItem({ item }: CartItemProps) {
         onClick={() => removeFromCart(item.product.id)}
         style={{
           backgroundColor: 'transparent',
-          color: '#C44536',
-          border: '1px solid #C44536',
+          color: colors.error,
+          border: `1px solid ${colors.error}`,
           padding: '8px 16px',
           borderRadius: '6px',
           fontSize: '13px',

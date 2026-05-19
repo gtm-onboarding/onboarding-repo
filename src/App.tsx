@@ -10,10 +10,12 @@ import { SignInPage } from './pages/SignInPage';
 import { SignUpPage } from './pages/SignUpPage';
 import { useCart } from './context/CartContext';
 import { useAuth } from './context/AuthContext';
+import { useTheme } from './context/ThemeContext';
 
 function App() {
   const { toastMessage: cartToast, showToast: showCartToast } = useCart();
   const { toastMessage: authToast, showToast: showAuthToast } = useAuth();
+  const { colors } = useTheme();
 
   const toastMessage = cartToast || authToast;
   const clearToast = () => {
@@ -22,7 +24,7 @@ function App() {
   };
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: colors.background, minHeight: '100vh', transition: 'background-color 250ms ease' }}>
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
