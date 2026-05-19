@@ -61,4 +61,20 @@ describe('ProductCard', () => {
     const productLink = links.find((link) => link.getAttribute('href') === `/product/${products[0].id}`);
     expect(productLink).toBeInTheDocument();
   });
+
+  it('displays Sale badge for products priced under $50', () => {
+    render(
+      <BrowserRouter>
+        <CartProvider>
+          <ProductCard product={products[3]} />
+        </CartProvider>
+      </BrowserRouter>
+    );
+    expect(screen.getByText('Sale')).toBeInTheDocument();
+  });
+
+  it('does not display Sale badge for products priced $50 or above', () => {
+    renderProductCard();
+    expect(screen.queryByText('Sale')).not.toBeInTheDocument();
+  });
 });
