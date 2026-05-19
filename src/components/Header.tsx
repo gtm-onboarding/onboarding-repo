@@ -6,11 +6,13 @@ import { CartIcon } from './icons/CartIcon';
 import { UserIcon } from './icons/UserIcon';
 import { categories } from '../data/products';
 import { SearchBar } from './SearchBar';
+import { useWishlist } from '../context/WishlistContext';
 
 export function Header() {
   const { totalItems } = useCart();
   const { user, isAuthenticated, signOut } = useAuth();
   const { activeTheme, mode, toggleTheme } = useTheme();
+  const { wishlistItems } = useWishlist();
 
   return (
     <header
@@ -126,6 +128,39 @@ export function Header() {
               <span>Sign In</span>
             </Link>
           )}
+          <Link
+            to="/wishlist"
+            style={{
+              color: activeTheme.colors.text,
+              display: 'flex',
+              alignItems: 'center',
+              position: 'relative',
+            }}
+            aria-label="Wishlist"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+            {wishlistItems.length > 0 && (
+              <span
+                style={{
+                  backgroundColor: activeTheme.colors.primary,
+                  color: 'white',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  padding: '2px 7px',
+                  borderRadius: '10px',
+                  position: 'absolute',
+                  top: '-10px',
+                  right: '-10px',
+                  minWidth: '20px',
+                  textAlign: 'center',
+                }}
+              >
+                {wishlistItems.length}
+              </span>
+            )}
+          </Link>
           <Link
             to="/cart"
             style={{

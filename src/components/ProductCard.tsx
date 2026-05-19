@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
 import { useRatings } from '../context/RatingContext';
 import { StarRating } from './StarRating';
+import { useWishlist } from '../context/WishlistContext';
 
 interface ProductCardProps {
   product: Product;
@@ -15,6 +16,8 @@ export function ProductCard({ product }: ProductCardProps) {
   const { getAverageRating, getRatingCount } = useRatings();
   const avgRating = getAverageRating(product.id);
   const ratingCount = getRatingCount(product.id);
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  const wishlisted = isInWishlist(product.id);
 
   return (
     <div
@@ -27,20 +30,59 @@ export function ProductCard({ product }: ProductCardProps) {
         boxShadow: activeTheme.shadows.md,
       }}
     >
-      <Link to={`/product/${product.id}`} style={{ overflow: 'hidden' }}>
-        <img
-          src={product.image}
-          alt={product.name}
-          style={{
-            width: '100%',
-            height: '220px',
-            objectFit: 'cover',
-            transition: `transform ${activeTheme.transitions.slow}`,
+      <div style={{ position: 'relative' }}>
+        <Link to={`/product/${product.id}`} style={{ overflow: 'hidden', display: 'block' }}>
+          <img
+            src={product.image}
+            alt={product.name}
+            style={{
+              width: '100%',
+              height: '220px',
+              objectFit: 'cover',
+              transition: `transform ${activeTheme.transitions.slow}`,
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
+            onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+          />
+        </Link>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleWishlist(product.id);
           }}
-          onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-          onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-        />
-      </Link>
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            background: 'rgba(255,255,255,0.9)',
+            border: 'none',
+            borderRadius: '50%',
+            width: '34px',
+            height: '34px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            fontSize: '18px',
+            boxShadow: activeTheme.shadows.sm,
+          }}
+          aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill={wishlisted ? '#E07A5F' : 'none'}
+            stroke={wishlisted ? '#E07A5F' : '#666'}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
+        </button>
+      </div>
       <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
           <h3

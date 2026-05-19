@@ -9,6 +9,7 @@ import { CheckoutPage } from './pages/CheckoutPage';
 import { SignInPage } from './pages/SignInPage';
 import { SignUpPage } from './pages/SignUpPage';
 import { OrderHistoryPage } from './pages/OrderHistoryPage';
+import { WishlistPage } from './pages/WishlistPage';
 import { useCart } from './context/CartContext';
 import { useAuth } from './context/AuthContext';
 import { useTheme } from './context/ThemeContext';
@@ -36,6 +37,7 @@ function App() {
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/orders" element={<OrderHistoryPage />} />
+        <Route path="/wishlist" element={<WishlistPage />} />
       </Routes>
       {toastMessage && <Toast message={toastMessage} onClose={clearToast} />}
     </div>
