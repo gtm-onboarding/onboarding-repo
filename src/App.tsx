@@ -8,17 +8,21 @@ import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { SignInPage } from './pages/SignInPage';
 import { SignUpPage } from './pages/SignUpPage';
+import { WishlistPage } from './pages/WishlistPage';
 import { useCart } from './context/CartContext';
 import { useAuth } from './context/AuthContext';
+import { useWishlist } from './context/WishlistContext';
 
 function App() {
   const { toastMessage: cartToast, showToast: showCartToast } = useCart();
   const { toastMessage: authToast, showToast: showAuthToast } = useAuth();
+  const { toastMessage: wishlistToast, showToast: showWishlistToast } = useWishlist();
 
-  const toastMessage = cartToast || authToast;
+  const toastMessage = cartToast || authToast || wishlistToast;
   const clearToast = () => {
     if (cartToast) showCartToast('');
     if (authToast) showAuthToast('');
+    if (wishlistToast) showWishlistToast('');
   };
 
   return (
@@ -32,6 +36,7 @@ function App() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/wishlist" element={<WishlistPage />} />
       </Routes>
       {toastMessage && <Toast message={toastMessage} onClose={clearToast} />}
     </div>

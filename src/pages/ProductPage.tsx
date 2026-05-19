@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
+import { HeartIcon } from '../components/icons/HeartIcon';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
@@ -218,23 +221,40 @@ export function ProductPage() {
                 </button>
               </div>
             </div>
-            <button
-              onClick={handleAddToCart}
-              style={{
-                backgroundColor: '#E07A5F',
-                color: '#fff',
-                border: 'none',
-                padding: '18px 32px',
-                borderRadius: '8px',
-                fontSize: '16px',
-                fontWeight: '600',
-                width: '100%',
-                letterSpacing: '0.5px',
-                marginTop: 'auto',
-              }}
-            >
-              Add to Cart
-            </button>
+            <div style={{ display: 'flex', gap: '12px', marginTop: 'auto' }}>
+              <button
+                onClick={handleAddToCart}
+                style={{
+                  backgroundColor: '#E07A5F',
+                  color: '#fff',
+                  border: 'none',
+                  padding: '18px 32px',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  flex: 1,
+                  letterSpacing: '0.5px',
+                }}
+              >
+                Add to Cart
+              </button>
+              <button
+                onClick={() => toggleWishlist(product)}
+                aria-label={isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #E8E6E3',
+                  borderRadius: '8px',
+                  padding: '18px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                }}
+              >
+                <HeartIcon filled={isInWishlist(product.id)} size={22} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
