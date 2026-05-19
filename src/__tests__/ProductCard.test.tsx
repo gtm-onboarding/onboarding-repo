@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { ProductCard } from '../components/ProductCard';
 import { CartProvider } from '../context/CartContext';
+import { RatingsProvider } from '../context/RatingsContext';
 import { products } from '../data/products';
 
 const mockAddToCart = vi.fn();
@@ -25,11 +26,26 @@ vi.mock('../context/CartContext', async () => {
   };
 });
 
+vi.mock('../context/RatingsContext', async () => {
+  const actual = await vi.importActual('../context/RatingsContext');
+  return {
+    ...actual,
+    useRatings: () => ({
+      rateProduct: vi.fn(),
+      getAverageRating: () => 4.2,
+      getUserRating: () => null,
+      getRatingCount: () => 10,
+    }),
+  };
+});
+
 function renderProductCard() {
   return render(
     <BrowserRouter>
       <CartProvider>
-        <ProductCard product={products[0]} />
+        <RatingsProvider>
+          <ProductCard product={products[0]} />
+        </RatingsProvider>
       </CartProvider>
     </BrowserRouter>
   );
@@ -60,5 +76,10 @@ describe('ProductCard', () => {
     const links = screen.getAllByRole('link');
     const productLink = links.find((link) => link.getAttribute('href') === `/product/${products[0].id}`);
     expect(productLink).toBeInTheDocument();
+  });
+
+  it('displays average rating', () => {
+    renderProductCard();
+    expect(screen.getByText('4.2 (10)')).toBeInTheDocument();
   });
 });
