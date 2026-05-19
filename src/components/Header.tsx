@@ -1,13 +1,42 @@
-import { Link } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { CartIcon } from './icons/CartIcon';
 import { UserIcon } from './icons/UserIcon';
-import { categories } from '../data/products';
+import { SearchIcon } from './icons/SearchIcon';
+import { categories, products } from '../data/products';
 
 export function Header() {
   const { totalItems } = useCart();
   const { user, isAuthenticated, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  const searchResults = searchQuery.trim()
+    ? products.filter((p) =>
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
+    : [];
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setIsSearchOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  function handleResultClick(productId: string) {
+    setSearchQuery('');
+    setIsSearchOpen(false);
+    navigate(`/product/${productId}`);
+  }
 
   return (
     <header
@@ -61,6 +90,118 @@ export function Header() {
               </Link>
             ))}
           </div>
+        </div>
+        <div ref={searchRef} style={{ position: 'relative', flex: '0 1 320px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              border: '1px solid #E8E6E3',
+              borderRadius: '8px',
+              padding: '8px 12px',
+              backgroundColor: '#FAF9F7',
+            }}
+          >
+            <SearchIcon />
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setIsSearchOpen(true);
+              }}
+              onFocus={() => setIsSearchOpen(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  setIsSearchOpen(false);
+                }
+              }}
+              style={{
+                border: 'none',
+                outline: 'none',
+                backgroundColor: 'transparent',
+                marginLeft: '8px',
+                fontSize: '14px',
+                color: '#1A1A1A',
+                width: '100%',
+              }}
+            />
+          </div>
+          {isSearchOpen && searchQuery.trim() && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                right: 0,
+                marginTop: '4px',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid #E8E6E3',
+                borderRadius: '8px',
+                boxShadow: '0 4px 12px rgba(26, 26, 26, 0.08)',
+                maxHeight: '320px',
+                overflowY: 'auto',
+                zIndex: 200,
+              }}
+            >
+              {searchResults.length > 0 ? (
+                searchResults.map((product) => (
+                  <button
+                    key={product.id}
+                    onClick={() => handleResultClick(product.id)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      width: '100%',
+                      padding: '10px 12px',
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      fontSize: '14px',
+                      color: '#1A1A1A',
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.backgroundColor = '#FAF9F7')
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.backgroundColor = 'transparent')
+                    }
+                  >
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      style={{
+                        width: '40px',
+                        height: '40px',
+                        objectFit: 'cover',
+                        borderRadius: '4px',
+                      }}
+                    />
+                    <div>
+                      <div style={{ fontWeight: '500' }}>{product.name}</div>
+                      <div style={{ color: '#6B6B6B', fontSize: '12px' }}>
+                        ${product.price.toFixed(2)}
+                      </div>
+                    </div>
+                  </button>
+                ))
+              ) : (
+                <div
+                  style={{
+                    padding: '16px 12px',
+                    color: '#6B6B6B',
+                    fontSize: '14px',
+                    textAlign: 'center',
+                  }}
+                >
+                  No products found
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
           {isAuthenticated ? (
