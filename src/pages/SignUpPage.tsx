@@ -12,12 +12,30 @@ export function SignUpPage() {
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
+  const isValidEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
