@@ -60,6 +60,19 @@ export function Header() {
                 {category}
               </Link>
             ))}
+            <Link
+              to="/wiki"
+              style={{
+                color: '#6B6B6B',
+                fontSize: '14px',
+                fontWeight: '500',
+                letterSpacing: '0.3px',
+                position: 'relative',
+                paddingBottom: '2px',
+              }}
+            >
+              Wiki
+            </Link>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
