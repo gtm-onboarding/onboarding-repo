@@ -27,8 +27,11 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-function renderCartPage(cartItems: Array<{ product: typeof products[0]; quantity: number }> = []) {
+function renderCartPage(cartItems: Array<{ product: typeof products[0]; quantity: number }> = [], authenticated = false) {
   localStorageMock.setItem('onboarding-demo-cart', JSON.stringify(cartItems));
+  if (authenticated) {
+    localStorageMock.setItem('onboarding-demo-session', JSON.stringify({ email: 'test@test.com', name: 'Test' }));
+  }
   return render(
     <BrowserRouter>
       <AuthProvider>
@@ -69,5 +72,17 @@ describe('CartPage', () => {
     renderCartPage([{ product: products[0], quantity: 1 }]);
     fireEvent.click(screen.getByText('Proceed to Checkout'));
     expect(mockNavigate).toHaveBeenCalledWith('/signin?redirect=/checkout');
+  });
+
+  it('navigates to checkout when authenticated', () => {
+    renderCartPage([{ product: products[0], quantity: 1 }], true);
+    fireEvent.click(screen.getByText('Proceed to Checkout'));
+    expect(mockNavigate).toHaveBeenCalledWith('/checkout');
+  });
+
+  it('clears cart when clear button is clicked', () => {
+    renderCartPage([{ product: products[0], quantity: 1 }]);
+    fireEvent.click(screen.getByText('Clear Cart'));
+    expect(screen.getByText('Your cart is empty')).toBeInTheDocument();
   });
 });
