@@ -12,6 +12,24 @@ export interface CartItem {
   quantity: number;
 }
 
+export interface OrderItem {
+  productId: string;
+  productName: string;
+  productImage: string;
+  price: number;
+  quantity: number;
+}
+
+export interface Order {
+  id: string;
+  items: OrderItem[];
+  subtotal: number;
+  tax: number;
+  total: number;
+  date: string;
+  userEmail: string;
+}
+
 export interface User {
   email: string;
   name: string;
