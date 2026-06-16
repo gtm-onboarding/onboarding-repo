@@ -1,3 +1,5 @@
+import { theme } from '../theme';
+
 interface ToastProps {
   message: string;
   type?: 'success' | 'error';
@@ -5,37 +7,41 @@ interface ToastProps {
 }
 
 export function Toast({ message, type = 'success', onClose }: ToastProps) {
+  const bgColor = type === 'success' ? theme.colors.successLight : theme.colors.errorLight;
+  const textColor = type === 'success' ? theme.colors.success : theme.colors.error;
+  const iconBgColor = type === 'success' ? theme.colors.success : theme.colors.error;
+
   return (
     <div
       style={{
         position: 'fixed',
-        bottom: '24px',
-        right: '24px',
-        backgroundColor: type === 'success' ? '#E8F5E9' : '#FEF2F2',
-        color: type === 'success' ? '#4A7C59' : '#C44536',
-        padding: '16px 20px',
-        borderRadius: '12px',
-        boxShadow: '0 8px 24px rgba(26, 26, 26, 0.12)',
-        zIndex: 1000,
+        bottom: theme.spacing.xl,
+        right: theme.spacing.xl,
+        backgroundColor: bgColor,
+        color: textColor,
+        padding: `${theme.spacing.md} ${theme.spacing.lg}`,
+        borderRadius: theme.radii.lg,
+        boxShadow: theme.shadows.lg,
+        zIndex: theme.zIndex.modal,
         display: 'flex',
         alignItems: 'center',
-        gap: '16px',
+        gap: theme.spacing.md,
         animation: 'slideUp 0.3s ease-out',
-        fontWeight: '500',
-        fontSize: '14px',
+        fontWeight: theme.fontWeights.medium,
+        fontSize: theme.fontSizes.base,
       }}
     >
       <span
         style={{
-          width: '24px',
-          height: '24px',
-          borderRadius: '50%',
-          backgroundColor: type === 'success' ? '#4A7C59' : '#C44536',
+          width: theme.spacing.xl,
+          height: theme.spacing.xl,
+          borderRadius: theme.radii.full,
+          backgroundColor: iconBgColor,
           color: 'white',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '14px',
+          fontSize: theme.fontSizes.base,
           flexShrink: 0,
         }}
       >
@@ -47,12 +53,12 @@ export function Toast({ message, type = 'success', onClose }: ToastProps) {
         style={{
           background: 'none',
           border: 'none',
-          color: type === 'success' ? '#4A7C59' : '#C44536',
-          fontSize: '20px',
+          color: textColor,
+          fontSize: theme.fontSizes.lg,
           cursor: 'pointer',
           padding: '0',
           lineHeight: '1',
-          marginLeft: '8px',
+          marginLeft: theme.spacing.sm,
           opacity: 0.7,
         }}
         aria-label="Close notification"

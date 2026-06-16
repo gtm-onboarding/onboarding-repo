@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { CartIcon } from './icons/CartIcon';
 import { UserIcon } from './icons/UserIcon';
 import { categories } from '../data/products';
+import { theme } from '../theme';
 
 export function Header() {
   const { totalItems } = useCart();
@@ -12,13 +13,13 @@ export function Header() {
   return (
     <header
       style={{
-        backgroundColor: '#FFFFFF',
-        borderBottom: '1px solid #E8E6E3',
-        padding: '20px 32px',
+        backgroundColor: theme.colors.surface,
+        borderBottom: `1px solid ${theme.colors.border}`,
+        padding: `${theme.spacing.lg} ${theme.spacing['2xl']}`,
         position: 'sticky',
         top: 0,
-        zIndex: 100,
-        boxShadow: '0 1px 3px rgba(26, 26, 26, 0.04)',
+        zIndex: theme.zIndex.sticky,
+        boxShadow: theme.shadows.sm,
       }}
     >
       <nav
@@ -30,29 +31,29 @@ export function Header() {
           margin: '0 auto',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '48px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing['3xl'] }}>
           <Link
             to="/"
             style={{
-              color: '#1A1A1A',
+              color: theme.colors.text,
               fontSize: '26px',
-              fontWeight: '600',
-              fontFamily: '"Playfair Display", Georgia, serif',
-              letterSpacing: '-0.5px',
+              fontWeight: theme.fontWeights.semibold,
+              fontFamily: theme.fonts.display,
+              letterSpacing: theme.letterSpacing.tight,
             }}
           >
             Onboarding Shop
           </Link>
-          <div style={{ display: 'flex', gap: '32px' }}>
+          <div style={{ display: 'flex', gap: theme.spacing['2xl'] }}>
             {categories.map((category) => (
               <Link
                 key={category}
                 to={`/category/${encodeURIComponent(category)}`}
                 style={{
-                  color: '#6B6B6B',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  letterSpacing: '0.3px',
+                  color: theme.colors.textSecondary,
+                  fontSize: theme.fontSizes.base,
+                  fontWeight: theme.fontWeights.medium,
+                  letterSpacing: theme.letterSpacing.wide,
                   position: 'relative',
                   paddingBottom: '2px',
                 }}
@@ -62,21 +63,27 @@ export function Header() {
             ))}
           </div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing.xl }}>
           {isAuthenticated ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: theme.spacing.md }}>
               <UserIcon />
-              <span style={{ color: '#6B6B6B', fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
+              <span style={{ 
+                color: theme.colors.textSecondary, 
+                fontSize: theme.fontSizes.base, 
+                fontWeight: theme.fontWeights.medium 
+              }}>
+                {user?.email}
+              </span>
               <button
                 onClick={signOut}
                 style={{
                   backgroundColor: 'transparent',
-                  border: '1px solid #E8E6E3',
-                  color: '#6B6B6B',
-                  padding: '8px 16px',
-                  borderRadius: '6px',
-                  fontSize: '13px',
-                  fontWeight: '500',
+                  border: `1px solid ${theme.colors.border}`,
+                  color: theme.colors.textSecondary,
+                  padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+                  borderRadius: theme.radii.sm,
+                  fontSize: theme.fontSizes.sm,
+                  fontWeight: theme.fontWeights.medium,
                 }}
               >
                 Sign Out
@@ -86,12 +93,12 @@ export function Header() {
             <Link
               to="/signin"
               style={{
-                color: '#1A1A1A',
+                color: theme.colors.text,
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                fontSize: '14px',
-                fontWeight: '500',
+                gap: theme.spacing.sm,
+                fontSize: theme.fontSizes.base,
+                fontWeight: theme.fontWeights.medium,
               }}
             >
               <UserIcon />
@@ -101,10 +108,10 @@ export function Header() {
           <Link
             to="/cart"
             style={{
-              color: '#1A1A1A',
+              color: theme.colors.text,
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
+              gap: theme.spacing.sm,
               position: 'relative',
             }}
           >
@@ -112,10 +119,10 @@ export function Header() {
             {totalItems > 0 && (
               <span
                 style={{
-                  backgroundColor: '#E07A5F',
+                  backgroundColor: theme.colors.primary,
                   color: 'white',
-                  fontSize: '11px',
-                  fontWeight: '600',
+                  fontSize: theme.fontSizes.xs,
+                  fontWeight: theme.fontWeights.semibold,
                   padding: '2px 7px',
                   borderRadius: '10px',
                   position: 'absolute',
