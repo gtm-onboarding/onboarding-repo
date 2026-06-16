@@ -3,13 +3,28 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
 
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+  const validateEmail = (value: string) => {
+    if (value && !isValidEmail(value)) {
+      setEmailError('Please enter a valid email address');
+    } else {
+      setEmailError('');
+    }
+  };
+
+  const isFormValid = email !== '' && password !== '' && isValidEmail(email);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,6 +32,11 @@ export function SignInPage() {
 
     if (!email || !password) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setEmailError('Please enter a valid email address');
       return;
     }
 
@@ -97,10 +117,22 @@ export function SignInPage() {
           <input
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              validateEmail(e.target.value);
+            }}
+            onBlur={() => validateEmail(email)}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              borderColor: emailError ? '#C44536' : '#E8E6E3',
+            }}
           />
+          {emailError && (
+            <span style={{ color: '#C44536', fontSize: '13px', marginTop: '4px', display: 'block' }}>
+              {emailError}
+            </span>
+          )}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label
@@ -124,9 +156,10 @@ export function SignInPage() {
         </div>
         <button
           type="submit"
+          disabled={!isFormValid}
           style={{
-            backgroundColor: '#E07A5F',
-            color: 'white',
+            backgroundColor: isFormValid ? '#E07A5F' : '#E8E6E3',
+            color: isFormValid ? 'white' : '#9A9A9A',
             border: 'none',
             padding: '16px',
             borderRadius: '8px',
@@ -135,6 +168,7 @@ export function SignInPage() {
             width: '100%',
             marginBottom: '24px',
             letterSpacing: '0.3px',
+            cursor: isFormValid ? 'pointer' : 'not-allowed',
           }}
         >
           Sign In
