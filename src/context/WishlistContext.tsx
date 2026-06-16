@@ -51,14 +51,11 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   };
 
   const removeFromWishlist = (productId: string) => {
-    setItems((current) => {
-      const product = current.find((item) => item.id === productId);
-      const next = current.filter((item) => item.id !== productId);
-      if (product) {
-        showToast(`Removed ${product.name} from wishlist`);
-      }
-      return next;
-    });
+    const product = items.find((item) => item.id === productId);
+    setItems((current) => current.filter((item) => item.id !== productId));
+    if (product) {
+      showToast(`Removed ${product.name} from wishlist`);
+    }
   };
 
   const toggleWishlist = (product: Product) => {
