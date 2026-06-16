@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRatings } from '../context/RatingsContext';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { rateProduct, getUserRating, getAverageRating, getRatingCount } = useRatings();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
@@ -148,11 +151,28 @@ export function ProductPage() {
                 fontSize: '32px',
                 fontWeight: '700',
                 display: 'block',
-                marginBottom: '32px',
+                marginBottom: '16px',
               }}
             >
               ${product.price.toFixed(2)}
             </span>
+            <div style={{ marginBottom: '24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                <StarRating
+                  rating={getUserRating(product.id)}
+                  onRate={(stars) => rateProduct(product.id, stars)}
+                  size={28}
+                />
+                <span style={{ color: '#9A9A9A', fontSize: '14px' }}>
+                  {getUserRating(product.id) ? 'Your rating' : 'Rate this product'}
+                </span>
+              </div>
+              {getAverageRating(product.id) !== null && (
+                <p style={{ color: '#6B6B6B', fontSize: '14px', margin: 0 }}>
+                  Average: {getAverageRating(product.id)!.toFixed(1)} / 5 ({getRatingCount(product.id)} {getRatingCount(product.id) === 1 ? 'rating' : 'ratings'})
+                </p>
+              )}
+            </div>
             <p
               style={{
                 color: '#6B6B6B',

@@ -12,6 +12,11 @@ export interface CartItem {
   quantity: number;
 }
 
+export interface Rating {
+  productId: string;
+  stars: number;
+}
+
 export interface User {
   email: string;
   name: string;
