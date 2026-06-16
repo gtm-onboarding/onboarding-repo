@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRating } from '../context/RatingContext';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { addRating, getAverageRating, getRatingCount, getUserRating } = useRating();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
@@ -148,11 +151,26 @@ export function ProductPage() {
                 fontSize: '32px',
                 fontWeight: '700',
                 display: 'block',
-                marginBottom: '32px',
+                marginBottom: '16px',
               }}
             >
               ${product.price.toFixed(2)}
             </span>
+            <div style={{ marginBottom: '32px' }}>
+              <div style={{ marginBottom: '8px' }}>
+                <StarRating
+                  rating={getUserRating(product.id) ?? getAverageRating(product.id)}
+                  interactive
+                  onRate={(r) => addRating(product.id, r)}
+                  size={24}
+                />
+              </div>
+              <p style={{ color: '#9A9A9A', fontSize: '13px', margin: 0 }}>
+                {getRatingCount(product.id) > 0
+                  ? `${getAverageRating(product.id).toFixed(1)} avg · ${getRatingCount(product.id)} rating${getRatingCount(product.id) !== 1 ? 's' : ''}`
+                  : 'Be the first to rate this product'}
+              </p>
+            </div>
             <p
               style={{
                 color: '#6B6B6B',
