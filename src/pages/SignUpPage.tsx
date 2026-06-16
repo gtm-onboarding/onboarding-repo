@@ -3,14 +3,44 @@ import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
 
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 export function SignUpPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordMatchError, setPasswordMatchError] = useState('');
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+
+  const validateEmail = (value: string) => {
+    if (value && !isValidEmail(value)) {
+      setEmailError('Please enter a valid email address');
+    } else {
+      setEmailError('');
+    }
+  };
+
+  const validatePasswordMatch = (pw: string, confirmPw: string) => {
+    if (confirmPw && pw !== confirmPw) {
+      setPasswordMatchError('Passwords do not match');
+    } else {
+      setPasswordMatchError('');
+    }
+  };
+
+  const isFormValid =
+    name !== '' &&
+    email !== '' &&
+    password !== '' &&
+    confirmPassword !== '' &&
+    isValidEmail(email) &&
+    password === confirmPassword;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,6 +48,16 @@ export function SignUpPage() {
 
     if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setPasswordMatchError('Passwords do not match');
       return;
     }
 
@@ -105,17 +145,32 @@ export function SignUpPage() {
           <input
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              validateEmail(e.target.value);
+            }}
+            onBlur={() => validateEmail(email)}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              borderColor: emailError ? '#C44536' : '#E8E6E3',
+            }}
           />
+          {emailError && (
+            <span style={{ color: '#C44536', fontSize: '13px', marginTop: '4px', display: 'block' }}>
+              {emailError}
+            </span>
+          )}
         </div>
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Password</label>
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              validatePasswordMatch(e.target.value, confirmPassword);
+            }}
             placeholder="At least 6 characters"
             style={inputStyle}
           />
@@ -125,16 +180,29 @@ export function SignUpPage() {
           <input
             type="password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              validatePasswordMatch(password, e.target.value);
+            }}
+            onBlur={() => validatePasswordMatch(password, confirmPassword)}
             placeholder="Confirm your password"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              borderColor: passwordMatchError ? '#C44536' : '#E8E6E3',
+            }}
           />
+          {passwordMatchError && (
+            <span style={{ color: '#C44536', fontSize: '13px', marginTop: '4px', display: 'block' }}>
+              {passwordMatchError}
+            </span>
+          )}
         </div>
         <button
           type="submit"
+          disabled={!isFormValid}
           style={{
-            backgroundColor: '#E07A5F',
-            color: 'white',
+            backgroundColor: isFormValid ? '#E07A5F' : '#E8E6E3',
+            color: isFormValid ? 'white' : '#9A9A9A',
             border: 'none',
             padding: '16px',
             borderRadius: '8px',
@@ -143,6 +211,7 @@ export function SignUpPage() {
             width: '100%',
             marginBottom: '24px',
             letterSpacing: '0.3px',
+            cursor: isFormValid ? 'pointer' : 'not-allowed',
           }}
         >
           Sign Up
