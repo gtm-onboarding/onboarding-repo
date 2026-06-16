@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useId } from 'react';
 
 interface StarRatingProps {
   rating: number;
@@ -8,19 +8,19 @@ interface StarRatingProps {
   size?: number;
 }
 
-function StarIcon({ filled, half, size, color }: { filled: boolean; half: boolean; size: number; color: string }) {
+function StarIcon({ filled, half, size, color, clipId }: { filled: boolean; half: boolean; size: number; color: string; clipId: string }) {
   if (half) {
     return (
       <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <clipPath id="halfClip">
+          <clipPath id={clipId}>
             <rect x="0" y="0" width="12" height="24" />
           </clipPath>
         </defs>
         <path
           d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
           fill={color}
-          clipPath="url(#halfClip)"
+          clipPath={`url(#${clipId})`}
         />
         <path
           d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
@@ -46,6 +46,7 @@ function StarIcon({ filled, half, size, color }: { filled: boolean; half: boolea
 
 export function StarRating({ rating, count, interactive = false, onRate, size = 18 }: StarRatingProps) {
   const [hoverRating, setHoverRating] = useState(0);
+  const baseId = useId();
   const starColor = '#F4A261';
   const displayRating = interactive && hoverRating > 0 ? hoverRating : rating;
 
@@ -67,7 +68,7 @@ export function StarRating({ rating, count, interactive = false, onRate, size = 
         onMouseLeave={interactive ? () => setHoverRating(0) : undefined}
         data-testid={`star-${i}`}
       >
-        <StarIcon filled={filled} half={half} size={size} color={starColor} />
+        <StarIcon filled={filled} half={half} size={size} color={starColor} clipId={`${baseId}-half-${i}`} />
       </span>
     );
   }

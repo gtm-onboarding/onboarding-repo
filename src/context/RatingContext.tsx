@@ -13,6 +13,11 @@ const RatingContext = createContext<RatingContextType | undefined>(undefined);
 const RATINGS_STORAGE_KEY = 'onboarding-demo-ratings';
 const USER_RATINGS_STORAGE_KEY = 'onboarding-demo-user-ratings';
 
+interface RatingState {
+  ratings: ProductRatings;
+  userRatings: Record<string, number>;
+}
+
 function loadFromStorage<T>(key: string, fallback: T): T {
   const stored = localStorage.getItem(key);
   if (stored) {
@@ -25,28 +30,31 @@ function loadFromStorage<T>(key: string, fallback: T): T {
   return fallback;
 }
 
+function loadInitialState(): RatingState {
+  return {
+    ratings: loadFromStorage<ProductRatings>(RATINGS_STORAGE_KEY, {}),
+    userRatings: loadFromStorage<Record<string, number>>(USER_RATINGS_STORAGE_KEY, {}),
+  };
+}
+
 export function RatingProvider({ children }: { children: ReactNode }) {
-  const [ratings, setRatings] = useState<ProductRatings>(() =>
-    loadFromStorage<ProductRatings>(RATINGS_STORAGE_KEY, {})
-  );
-  const [userRatings, setUserRatings] = useState<Record<string, number>>(() =>
-    loadFromStorage<Record<string, number>>(USER_RATINGS_STORAGE_KEY, {})
-  );
+  const [state, setState] = useState<RatingState>(loadInitialState);
 
   useEffect(() => {
-    localStorage.setItem(RATINGS_STORAGE_KEY, JSON.stringify(ratings));
-  }, [ratings]);
+    localStorage.setItem(RATINGS_STORAGE_KEY, JSON.stringify(state.ratings));
+  }, [state.ratings]);
 
   useEffect(() => {
-    localStorage.setItem(USER_RATINGS_STORAGE_KEY, JSON.stringify(userRatings));
-  }, [userRatings]);
+    localStorage.setItem(USER_RATINGS_STORAGE_KEY, JSON.stringify(state.userRatings));
+  }, [state.userRatings]);
 
   const addRating = useCallback((productId: string, rating: number) => {
     const clamped = Math.max(1, Math.min(5, Math.round(rating)));
-    const previousUserRating = userRatings[productId];
 
-    setRatings((current) => {
-      const productRatings = current[productId] ? [...current[productId]] : [];
+    setState((current) => {
+      const productRatings = current.ratings[productId] ? [...current.ratings[productId]] : [];
+      const previousUserRating = current.userRatings[productId];
+
       if (previousUserRating !== undefined) {
         const idx = productRatings.lastIndexOf(previousUserRating);
         if (idx !== -1) {
@@ -54,27 +62,29 @@ export function RatingProvider({ children }: { children: ReactNode }) {
         }
       }
       productRatings.push(clamped);
-      return { ...current, [productId]: productRatings };
-    });
 
-    setUserRatings((current) => ({ ...current, [productId]: clamped }));
-  }, [userRatings]);
+      return {
+        ratings: { ...current.ratings, [productId]: productRatings },
+        userRatings: { ...current.userRatings, [productId]: clamped },
+      };
+    });
+  }, []);
 
   const getAverageRating = useCallback((productId: string): number => {
-    const productRatings = ratings[productId];
+    const productRatings = state.ratings[productId];
     if (!productRatings || productRatings.length === 0) return 0;
     const sum = productRatings.reduce((a, b) => a + b, 0);
     return sum / productRatings.length;
-  }, [ratings]);
+  }, [state.ratings]);
 
   const getRatingCount = useCallback((productId: string): number => {
-    const productRatings = ratings[productId];
+    const productRatings = state.ratings[productId];
     return productRatings ? productRatings.length : 0;
-  }, [ratings]);
+  }, [state.ratings]);
 
   const getUserRating = useCallback((productId: string): number | null => {
-    return userRatings[productId] ?? null;
-  }, [userRatings]);
+    return state.userRatings[productId] ?? null;
+  }, [state.userRatings]);
 
   return (
     <RatingContext.Provider value={{ addRating, getAverageRating, getRatingCount, getUserRating }}>

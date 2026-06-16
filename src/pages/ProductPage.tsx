@@ -159,7 +159,7 @@ export function ProductPage() {
             <div style={{ marginBottom: '32px' }}>
               <div style={{ marginBottom: '8px' }}>
                 <StarRating
-                  rating={getUserRating(product.id) ?? getAverageRating(product.id)}
+                  rating={getAverageRating(product.id)}
                   interactive
                   onRate={(r) => addRating(product.id, r)}
                   size={24}
@@ -167,7 +167,7 @@ export function ProductPage() {
               </div>
               <p style={{ color: '#9A9A9A', fontSize: '13px', margin: 0 }}>
                 {getRatingCount(product.id) > 0
-                  ? `${getAverageRating(product.id).toFixed(1)} avg · ${getRatingCount(product.id)} rating${getRatingCount(product.id) !== 1 ? 's' : ''}`
+                  ? `${getAverageRating(product.id).toFixed(1)} avg · ${getRatingCount(product.id)} rating${getRatingCount(product.id) !== 1 ? 's' : ''}${getUserRating(product.id) !== null ? ` · Your rating: ${getUserRating(product.id)}` : ''}`
                   : 'Be the first to rate this product'}
               </p>
             </div>
