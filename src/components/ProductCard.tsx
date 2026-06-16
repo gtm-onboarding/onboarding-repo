@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
+import { HeartIcon } from './icons/HeartIcon';
 
 interface ProductCardProps {
   product: Product;
@@ -8,6 +10,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   return (
     <div
@@ -20,8 +23,9 @@ export function ProductCard({ product }: ProductCardProps) {
         boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
       }}
     >
-      <Link to={`/product/${product.id}`} style={{ overflow: 'hidden' }}>
-        <img
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <Link to={`/product/${product.id}`}>
+          <img
           src={product.image}
           alt={product.name}
           style={{
@@ -32,8 +36,28 @@ export function ProductCard({ product }: ProductCardProps) {
           }}
           onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
           onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-        />
-      </Link>
+          />
+        </Link>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleWishlist(product);
+          }}
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '6px',
+          }}
+          aria-label="Toggle wishlist"
+        >
+          <HeartIcon filled={isInWishlist(product.id)} />
+        </button>
+      </div>
       <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
           <h3
