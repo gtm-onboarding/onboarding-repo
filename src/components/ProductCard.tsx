@@ -20,20 +20,41 @@ export function ProductCard({ product }: ProductCardProps) {
         boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
       }}
     >
-      <Link to={`/product/${product.id}`} style={{ overflow: 'hidden' }}>
-        <img
-          src={product.image}
-          alt={product.name}
-          style={{
-            width: '100%',
-            height: '220px',
-            objectFit: 'cover',
-            transition: 'transform 400ms ease',
-          }}
-          onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-          onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-        />
-      </Link>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <Link to={`/product/${product.id}`} style={{ display: 'block' }}>
+          <img
+            src={product.image}
+            alt={product.name}
+            style={{
+              width: '100%',
+              height: '220px',
+              objectFit: 'cover',
+              transition: 'transform 400ms ease',
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
+            onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+          />
+        </Link>
+        {product.price < 50 && (
+          <span
+            style={{
+              position: 'absolute',
+              top: '12px',
+              left: '12px',
+              backgroundColor: '#E07A5F',
+              color: '#FFFFFF',
+              fontSize: '12px',
+              fontWeight: '700',
+              padding: '4px 10px',
+              borderRadius: '4px',
+              letterSpacing: '0.5px',
+              pointerEvents: 'none',
+            }}
+          >
+            Sale
+          </span>
+        )}
+      </div>
       <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
           <h3
