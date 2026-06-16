@@ -20,7 +20,23 @@ export function ProductCard({ product }: ProductCardProps) {
         boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
       }}
     >
-      <Link to={`/product/${product.id}`} style={{ overflow: 'hidden' }}>
+      <Link to={`/product/${product.id}`} style={{ overflow: 'hidden', position: 'relative' }}>
+        {product.price < 50 && (
+          <span style={{
+            position: 'absolute',
+            top: '12px',
+            left: '12px',
+            backgroundColor: '#E07A5F',
+            color: 'white',
+            fontSize: '12px',
+            fontWeight: '700',
+            padding: '4px 12px',
+            borderRadius: '20px',
+            zIndex: 1,
+          }}>
+            Sale
+          </span>
+        )}
         <img
           src={product.image}
           alt={product.name}
