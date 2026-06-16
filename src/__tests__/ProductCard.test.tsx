@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { ProductCard } from '../components/ProductCard';
 import { CartProvider } from '../context/CartContext';
+import { WishlistProvider } from '../context/WishlistContext';
 import { products } from '../data/products';
 
 const mockAddToCart = vi.fn();
@@ -25,11 +26,30 @@ vi.mock('../context/CartContext', async () => {
   };
 });
 
+vi.mock('../context/WishlistContext', async () => {
+  const actual = await vi.importActual('../context/WishlistContext');
+  return {
+    ...actual,
+    useWishlist: () => ({
+      items: [],
+      addToWishlist: vi.fn(),
+      removeFromWishlist: vi.fn(),
+      isInWishlist: () => false,
+      clearWishlist: vi.fn(),
+      totalItems: 0,
+      showToast: vi.fn(),
+      toastMessage: null,
+    }),
+  };
+});
+
 function renderProductCard() {
   return render(
     <BrowserRouter>
       <CartProvider>
-        <ProductCard product={products[0]} />
+        <WishlistProvider>
+          <ProductCard product={products[0]} />
+        </WishlistProvider>
       </CartProvider>
     </BrowserRouter>
   );
