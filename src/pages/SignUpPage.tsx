@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { validateEmail, validatePasswordMatch } from '../utils/validation';
 
 export function SignUpPage() {
   const [name, setName] = useState('');
@@ -9,15 +10,31 @@ export function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');  
+  const [passwordMatchError, setPasswordMatchError] = useState('');
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setEmailError('');
+    setPasswordMatchError('');
 
     if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    const emailErr = validateEmail(email);
+    if (emailErr) {
+      setEmailError(emailErr);
+      return;
+    }
+
+    const matchErr = validatePasswordMatch(password, confirmPassword);
+    if (matchErr) {
+      setPasswordMatchError(matchErr);
       return;
     }
 
@@ -26,6 +43,18 @@ export function SignUpPage() {
       navigate('/');
     } else {
       setError('An account with this email already exists');
+    }
+  };
+
+  const handleEmailBlur = () => {
+    if (email) {
+      setEmailError(validateEmail(email) || '');
+    }
+  };
+
+  const handleConfirmPasswordBlur = () => {
+    if (confirmPassword) {
+      setPasswordMatchError(validatePasswordMatch(password, confirmPassword) || '');
     }
   };
 
@@ -105,10 +134,19 @@ export function SignUpPage() {
           <input
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => { setEmail(e.target.value); setEmailError(''); }}
+            onBlur={handleEmailBlur}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              ...(emailError ? { borderColor: '#C44536' } : {}),
+            }}
           />
+          {emailError && (
+            <p style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>
+              {emailError}
+            </p>
+          )}
         </div>
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Password</label>
@@ -125,10 +163,19 @@ export function SignUpPage() {
           <input
             type="password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => { setConfirmPassword(e.target.value); setPasswordMatchError(''); }}
+            onBlur={handleConfirmPasswordBlur}
             placeholder="Confirm your password"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              ...(passwordMatchError ? { borderColor: '#C44536' } : {}),
+            }}
           />
+          {passwordMatchError && (
+            <p style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>
+              {passwordMatchError}
+            </p>
+          )}
         </div>
         <button
           type="submit"
