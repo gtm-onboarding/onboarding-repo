@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { validateEmail } from '../utils/validation';
 
 export function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -14,9 +16,16 @@ export function SignInPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setEmailError('');
 
     if (!email || !password) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    const emailErr = validateEmail(email);
+    if (emailErr) {
+      setEmailError(emailErr);
       return;
     }
 
@@ -26,6 +35,12 @@ export function SignInPage() {
       navigate(redirect);
     } else {
       setError('Invalid email or password');
+    }
+  };
+
+  const handleEmailBlur = () => {
+    if (email) {
+      setEmailError(validateEmail(email) || '');
     }
   };
 
@@ -97,10 +112,19 @@ export function SignInPage() {
           <input
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => { setEmail(e.target.value); setEmailError(''); }}
+            onBlur={handleEmailBlur}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={{
+              ...inputStyle,
+              ...(emailError ? { borderColor: '#C44536' } : {}),
+            }}
           />
+          {emailError && (
+            <p style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>
+              {emailError}
+            </p>
+          )}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label
