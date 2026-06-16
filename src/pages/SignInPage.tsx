@@ -32,20 +32,20 @@ export function SignInPage() {
   const inputStyle = {
     width: '100%',
     padding: '14px 16px',
-    border: '1px solid #E8E6E3',
+    border: '1px solid var(--color-border)',
     borderRadius: '8px',
-    color: '#1A1A1A',
-    backgroundColor: '#FFFFFF',
+    color: 'var(--color-text)',
+    backgroundColor: 'var(--color-surface)',
     fontSize: '15px',
   };
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '80px 24px' }}>
+    <div style={{ backgroundColor: 'var(--color-background)', minHeight: '100vh', padding: '80px 24px' }}>
       <form
         onSubmit={handleSubmit}
         style={{
-          backgroundColor: '#FFFFFF',
-          boxShadow: '0 8px 24px rgba(26, 26, 26, 0.08)',
+          backgroundColor: 'var(--color-surface)',
+          boxShadow: 'var(--shadow-lg)',
           padding: '48px',
           borderRadius: '20px',
           maxWidth: '420px',
@@ -55,7 +55,7 @@ export function SignInPage() {
         <h1
           style={{
             fontFamily: '"Playfair Display", Georgia, serif',
-            color: '#1A1A1A',
+            color: 'var(--color-text)',
             marginBottom: '8px',
             textAlign: 'center',
             fontSize: '32px',
@@ -64,14 +64,14 @@ export function SignInPage() {
         >
           Welcome Back
         </h1>
-        <p style={{ color: '#9A9A9A', textAlign: 'center', marginBottom: '36px', fontSize: '15px' }}>
+        <p style={{ color: 'var(--color-text-muted)', textAlign: 'center', marginBottom: '36px', fontSize: '15px' }}>
           Sign in to continue shopping
         </p>
         {error && (
           <div
             style={{
-              backgroundColor: '#FEF2F2',
-              color: '#C44536',
+              backgroundColor: 'var(--color-error-subtle)',
+              color: 'var(--color-error)',
               padding: '14px 16px',
               borderRadius: '8px',
               marginBottom: '24px',
@@ -86,7 +86,7 @@ export function SignInPage() {
           <label
             style={{
               display: 'block',
-              color: '#1A1A1A',
+              color: 'var(--color-text)',
               marginBottom: '8px',
               fontSize: '14px',
               fontWeight: '500',
@@ -106,7 +106,7 @@ export function SignInPage() {
           <label
             style={{
               display: 'block',
-              color: '#1A1A1A',
+              color: 'var(--color-text)',
               marginBottom: '8px',
               fontSize: '14px',
               fontWeight: '500',
@@ -125,7 +125,7 @@ export function SignInPage() {
         <button
           type="submit"
           style={{
-            backgroundColor: '#E07A5F',
+            backgroundColor: 'var(--color-primary)',
             color: 'white',
             border: 'none',
             padding: '16px',
@@ -147,9 +147,9 @@ export function SignInPage() {
             marginBottom: '24px',
           }}
         >
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#E8E6E3' }} />
-          <span style={{ color: '#9A9A9A', fontSize: '13px', fontWeight: '500' }}>or</span>
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#E8E6E3' }} />
+          <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
+          <span style={{ color: 'var(--color-text-muted)', fontSize: '13px', fontWeight: '500' }}>or</span>
+          <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
           <GoogleLogin
@@ -170,9 +170,9 @@ export function SignInPage() {
             width={320}
           />
         </div>
-        <p style={{ textAlign: 'center', color: '#6B6B6B', fontSize: '14px' }}>
+        <p style={{ textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: '14px' }}>
           Don't have an account?{' '}
-          <Link to="/signup" style={{ color: '#E07A5F', fontWeight: '600' }}>
+          <Link to="/signup" style={{ color: 'var(--color-primary)', fontWeight: '600' }}>
             Sign Up
           </Link>
         </p>
