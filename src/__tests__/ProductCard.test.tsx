@@ -25,6 +25,23 @@ vi.mock('../context/CartContext', async () => {
   };
 });
 
+vi.mock('../context/WishlistContext', async () => {
+  const actual = await vi.importActual('../context/WishlistContext');
+  return {
+    ...actual,
+    useWishlist: () => ({
+      items: [],
+      addToWishlist: vi.fn(),
+      removeFromWishlist: vi.fn(),
+      isInWishlist: () => false,
+      toggleWishlist: vi.fn(),
+      totalItems: 0,
+      showToast: vi.fn(),
+      toastMessage: null,
+    }),
+  };
+});
+
 function renderProductCard() {
   return render(
     <BrowserRouter>
