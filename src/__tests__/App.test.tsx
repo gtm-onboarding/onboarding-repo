@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from '../App';
 import { CartProvider } from '../context/CartContext';
 import { AuthProvider } from '../context/AuthContext';
+import { RatingsProvider } from '../context/RatingsContext';
 
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
@@ -21,9 +22,11 @@ function renderApp() {
   return render(
     <BrowserRouter>
       <AuthProvider>
-        <CartProvider>
-          <App />
-        </CartProvider>
+        <RatingsProvider>
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </RatingsProvider>
       </AuthProvider>
     </BrowserRouter>
   );

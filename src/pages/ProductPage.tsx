@@ -2,18 +2,24 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRatings } from '../context/RatingsContext';
+import { StarRating } from '../components/StarRating';
+import { theme } from '../theme';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
+  const { getRating, addRating } = useRatings();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [userRated, setUserRated] = useState(false);
 
   const product = products.find((p) => p.id === productId);
 
   useEffect(() => {
     setIsLoading(true);
     setQuantity(1);
+    setUserRated(false);
     const timer = setTimeout(() => setIsLoading(false), 200);
     return () => clearTimeout(timer);
   }, [productId]);
@@ -153,16 +159,51 @@ export function ProductPage() {
             >
               ${product.price.toFixed(2)}
             </span>
+            <div style={{ marginBottom: '24px' }}>
+              <StarRating
+                rating={getRating(product.id).average}
+                count={getRating(product.id).count}
+                size={20}
+              />
+            </div>
             <p
               style={{
                 color: '#6B6B6B',
                 lineHeight: '1.8',
-                marginBottom: '40px',
+                marginBottom: '24px',
                 fontSize: '16px',
               }}
             >
               {product.description}
             </p>
+            <div
+              style={{
+                marginBottom: '24px',
+                padding: '16px',
+                backgroundColor: theme.colors.surfaceAlt,
+                borderRadius: theme.radii.sm,
+              }}
+            >
+              <p
+                style={{
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: theme.colors.text,
+                  marginBottom: '8px',
+                }}
+              >
+                {userRated ? 'Thanks for your rating!' : 'Rate this product'}
+              </p>
+              <StarRating
+                rating={0}
+                interactive={!userRated}
+                onRate={(star) => {
+                  addRating(product.id, star);
+                  setUserRated(true);
+                }}
+                size={24}
+              />
+            </div>
             <div
               style={{
                 display: 'flex',
