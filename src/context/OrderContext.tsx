@@ -1,0 +1,74 @@
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { Order, CartItem } from '../types';
+
+interface OrderContextType {
+  orders: Order[];
+  placeOrder: (items: CartItem[], userEmail: string) => Order;
+  getOrdersByUser: (email: string) => Order[];
+}
+
+const OrderContext = createContext<OrderContextType | undefined>(undefined);
+
+const ORDERS_STORAGE_KEY = 'onboarding-demo-orders';
+
+export function OrderProvider({ children }: { children: ReactNode }) {
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem(ORDERS_STORAGE_KEY);
+    if (stored) {
+      try {
+        setOrders(JSON.parse(stored));
+      } catch {
+        localStorage.removeItem(ORDERS_STORAGE_KEY);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
+  }, [orders]);
+
+  const placeOrder = (cartItems: CartItem[], userEmail: string): Order => {
+    const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    const tax = subtotal * 0.08;
+    const total = subtotal + tax;
+
+    const order: Order = {
+      id: `ORD-${Date.now()}`,
+      items: cartItems.map((item) => ({
+        productId: item.product.id,
+        productName: item.product.name,
+        productImage: item.product.image,
+        price: item.product.price,
+        quantity: item.quantity,
+      })),
+      subtotal,
+      tax,
+      total,
+      date: new Date().toISOString(),
+      userEmail,
+    };
+
+    setOrders((current) => [order, ...current]);
+    return order;
+  };
+
+  const getOrdersByUser = (email: string): Order[] => {
+    return orders.filter((order) => order.userEmail === email);
+  };
+
+  return (
+    <OrderContext.Provider value={{ orders, placeOrder, getOrdersByUser }}>
+      {children}
+    </OrderContext.Provider>
+  );
+}
+
+export function useOrders() {
+  const context = useContext(OrderContext);
+  if (context === undefined) {
+    throw new Error('useOrders must be used within an OrderProvider');
+  }
+  return context;
+}
