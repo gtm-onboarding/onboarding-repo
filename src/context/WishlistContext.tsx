@@ -45,9 +45,9 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
       if (current.some((item) => item.id === product.id)) {
         return current;
       }
+      showToast(`Added ${product.name} to wishlist`);
       return [...current, product];
     });
-    showToast(`Added ${product.name} to wishlist`);
   };
 
   const removeFromWishlist = (productId: string) => {
