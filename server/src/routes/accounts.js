@@ -17,17 +17,22 @@ router.get('/', async (req, res) => {
       include: [{
         model: Transaction,
         as: 'transactions',
-        limit: 10,
-        order: [['processedAt', 'DESC']],
-        separate: true
+        separate: true,
+        order: [['processedAt', 'DESC']]
       }],
       limit: parseInt(limit),
       offset: parseInt(offset),
       order: [['createdAt', 'DESC']]
     });
 
+    const data = accounts.map(account => {
+      const json = account.toJSON();
+      json.transactions = (json.transactions || []).slice(0, 10);
+      return json;
+    });
+
     res.json({
-      data: accounts,
+      data,
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
@@ -67,7 +72,7 @@ router.get('/:id', async (req, res) => {
 // GET /api/accounts/summary - Account summary with transaction counts
 router.get('/summary/all', async (req, res) => {
   try {
-    const summary = await Account.findAll({
+    const rows = await Account.findAll({
       attributes: [
         'id',
         'customerName',
@@ -89,6 +94,13 @@ router.get('/summary/all', async (req, res) => {
       group: ['Account.id'],
       raw: true
     });
+
+    const summary = rows.map(row => ({
+      ...row,
+      transactionCount: parseInt(row.transactionCount, 10),
+      totalCredits: parseFloat(row.totalCredits),
+      totalDebits: parseFloat(row.totalDebits)
+    }));
 
     res.json({ data: summary });
   } catch (error) {
