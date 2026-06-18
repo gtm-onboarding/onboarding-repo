@@ -13,29 +13,23 @@ router.get('/', async (req, res) => {
 
     const accounts = await Account.findAll({
       where,
+      include: [{
+        model: Transaction,
+        as: 'transactions',
+        required: false,
+        separate: true,
+        limit: 10,
+        order: [['processedAt', 'DESC']]
+      }],
       limit: parseInt(limit),
       offset: parseInt(offset),
       order: [['createdAt', 'DESC']]
     });
 
-    // Fetch transactions for each account
-    const accountsWithTransactions = [];
-    for (const account of accounts) {
-      const transactions = await Transaction.findAll({
-        where: { accountId: account.id },
-        limit: 10,
-        order: [['processedAt', 'DESC']]
-      });
-      accountsWithTransactions.push({
-        ...account.toJSON(),
-        transactions
-      });
-    }
-
     const total = await Account.count({ where });
 
     res.json({
-      data: accountsWithTransactions,
+      data: accounts,
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
@@ -52,23 +46,19 @@ router.get('/', async (req, res) => {
 // GET /api/accounts/:id - Get single account with full transaction history
 router.get('/:id', async (req, res) => {
   try {
-    const account = await Account.findByPk(req.params.id);
+    const account = await Account.findByPk(req.params.id, {
+      include: [{
+        model: Transaction,
+        as: 'transactions'
+      }],
+      order: [[{ model: Transaction, as: 'transactions' }, 'processedAt', 'DESC']]
+    });
 
     if (!account) {
       return res.status(404).json({ error: 'Account not found' });
     }
 
-    const transactions = await Transaction.findAll({
-      where: { accountId: account.id },
-      order: [['processedAt', 'DESC']]
-    });
-
-    res.json({
-      data: {
-        ...account.toJSON(),
-        transactions
-      }
-    });
+    res.json({ data: account });
   } catch (error) {
     console.error('Error fetching account:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -78,29 +68,28 @@ router.get('/:id', async (req, res) => {
 // GET /api/accounts/summary - Account summary with transaction counts
 router.get('/summary/all', async (req, res) => {
   try {
-    const accounts = await Account.findAll();
+    const accounts = await Account.findAll({
+      include: [{
+        model: Transaction,
+        as: 'transactions',
+        attributes: ['id', 'amount', 'type'],
+        required: false
+      }]
+    });
 
-    const summary = [];
-    for (const account of accounts) {
-      const transactions = await Transaction.findAll({
-        where: { accountId: account.id },
-        attributes: ['id', 'amount', 'type']
-      });
-
-      summary.push({
-        id: account.id,
-        customerName: account.customerName,
-        accountNumber: account.accountNumber,
-        balance: account.balance,
-        transactionCount: transactions.length,
-        totalCredits: transactions
-          .filter(t => t.type === 'credit')
-          .reduce((sum, t) => sum + parseFloat(t.amount), 0),
-        totalDebits: transactions
-          .filter(t => t.type === 'debit')
-          .reduce((sum, t) => sum + parseFloat(t.amount), 0)
-      });
-    }
+    const summary = accounts.map(account => ({
+      id: account.id,
+      customerName: account.customerName,
+      accountNumber: account.accountNumber,
+      balance: account.balance,
+      transactionCount: account.transactions.length,
+      totalCredits: account.transactions
+        .filter(t => t.type === 'credit')
+        .reduce((sum, t) => sum + parseFloat(t.amount), 0),
+      totalDebits: account.transactions
+        .filter(t => t.type === 'debit')
+        .reduce((sum, t) => sum + parseFloat(t.amount), 0)
+    }));
 
     res.json({ data: summary });
   } catch (error) {
