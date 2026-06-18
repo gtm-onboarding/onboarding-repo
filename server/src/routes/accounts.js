@@ -17,6 +17,7 @@ router.get('/', async (req, res) => {
         model: Transaction,
         as: 'transactions',
         required: false,
+        separate: true,
         limit: 10,
         order: [['processedAt', 'DESC']]
       }],
@@ -48,9 +49,9 @@ router.get('/:id', async (req, res) => {
     const account = await Account.findByPk(req.params.id, {
       include: [{
         model: Transaction,
-        as: 'transactions',
-        order: [['processedAt', 'DESC']]
-      }]
+        as: 'transactions'
+      }],
+      order: [[{ model: Transaction, as: 'transactions' }, 'processedAt', 'DESC']]
     });
 
     if (!account) {
