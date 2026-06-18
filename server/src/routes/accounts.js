@@ -1,5 +1,6 @@
 const express = require('express');
-const { Account, Transaction } = require('../models');
+const { sequelize, Account, Transaction } = require('../models');
+const { fn, col, literal } = require('sequelize');
 const router = express.Router();
 
 // GET /api/accounts - List all accounts with their recent transactions
@@ -11,31 +12,27 @@ router.get('/', async (req, res) => {
     const where = {};
     if (status) where.status = status;
 
-    const accounts = await Account.findAll({
+    const { count: total, rows: accounts } = await Account.findAndCountAll({
       where,
+      include: [{
+        model: Transaction,
+        as: 'transactions',
+        separate: true,
+        order: [['processedAt', 'DESC']]
+      }],
       limit: parseInt(limit),
       offset: parseInt(offset),
       order: [['createdAt', 'DESC']]
     });
 
-    // Fetch transactions for each account
-    const accountsWithTransactions = [];
-    for (const account of accounts) {
-      const transactions = await Transaction.findAll({
-        where: { accountId: account.id },
-        limit: 10,
-        order: [['processedAt', 'DESC']]
-      });
-      accountsWithTransactions.push({
-        ...account.toJSON(),
-        transactions
-      });
-    }
-
-    const total = await Account.count({ where });
+    const data = accounts.map(account => {
+      const json = account.toJSON();
+      json.transactions = (json.transactions || []).slice(0, 10);
+      return json;
+    });
 
     res.json({
-      data: accountsWithTransactions,
+      data,
       pagination: {
         page: parseInt(page),
         limit: parseInt(limit),
@@ -52,23 +49,20 @@ router.get('/', async (req, res) => {
 // GET /api/accounts/:id - Get single account with full transaction history
 router.get('/:id', async (req, res) => {
   try {
-    const account = await Account.findByPk(req.params.id);
+    const account = await Account.findByPk(req.params.id, {
+      include: [{
+        model: Transaction,
+        as: 'transactions',
+        order: [['processedAt', 'DESC']],
+        separate: true
+      }]
+    });
 
     if (!account) {
       return res.status(404).json({ error: 'Account not found' });
     }
 
-    const transactions = await Transaction.findAll({
-      where: { accountId: account.id },
-      order: [['processedAt', 'DESC']]
-    });
-
-    res.json({
-      data: {
-        ...account.toJSON(),
-        transactions
-      }
-    });
+    res.json({ data: account });
   } catch (error) {
     console.error('Error fetching account:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -78,29 +72,35 @@ router.get('/:id', async (req, res) => {
 // GET /api/accounts/summary - Account summary with transaction counts
 router.get('/summary/all', async (req, res) => {
   try {
-    const accounts = await Account.findAll();
+    const rows = await Account.findAll({
+      attributes: [
+        'id',
+        'customerName',
+        'accountNumber',
+        'balance',
+        [fn('COUNT', col('transactions.id')), 'transactionCount'],
+        [fn('COALESCE', fn('SUM',
+          literal("CASE WHEN \"transactions\".\"type\" = 'credit' THEN \"transactions\".\"amount\" ELSE 0 END")
+        ), 0), 'totalCredits'],
+        [fn('COALESCE', fn('SUM',
+          literal("CASE WHEN \"transactions\".\"type\" = 'debit' THEN \"transactions\".\"amount\" ELSE 0 END")
+        ), 0), 'totalDebits']
+      ],
+      include: [{
+        model: Transaction,
+        as: 'transactions',
+        attributes: []
+      }],
+      group: ['Account.id'],
+      raw: true
+    });
 
-    const summary = [];
-    for (const account of accounts) {
-      const transactions = await Transaction.findAll({
-        where: { accountId: account.id },
-        attributes: ['id', 'amount', 'type']
-      });
-
-      summary.push({
-        id: account.id,
-        customerName: account.customerName,
-        accountNumber: account.accountNumber,
-        balance: account.balance,
-        transactionCount: transactions.length,
-        totalCredits: transactions
-          .filter(t => t.type === 'credit')
-          .reduce((sum, t) => sum + parseFloat(t.amount), 0),
-        totalDebits: transactions
-          .filter(t => t.type === 'debit')
-          .reduce((sum, t) => sum + parseFloat(t.amount), 0)
-      });
-    }
+    const summary = rows.map(row => ({
+      ...row,
+      transactionCount: parseInt(row.transactionCount, 10),
+      totalCredits: parseFloat(row.totalCredits),
+      totalDebits: parseFloat(row.totalDebits)
+    }));
 
     res.json({ data: summary });
   } catch (error) {
