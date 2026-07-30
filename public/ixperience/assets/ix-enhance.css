@@ -1,0 +1,123 @@
+/* Floating dark mode / language controls plus dark-theme fixups.
+   Load after assets/ix-dark.css, which carries the generated dark palette. */
+
+.ix-controls {
+  --ix-ctl-bg: rgba(255, 255, 255, 0.92);
+  --ix-ctl-fg: #1b1c1e;
+  --ix-ctl-border: rgba(27, 28, 30, 0.14);
+  position: fixed;
+  z-index: 10000;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px;
+  border: 1px solid var(--ix-ctl-border);
+  border-radius: 999px;
+  background: var(--ix-ctl-bg);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(8px);
+  font-family: Lato, sans-serif;
+}
+
+.ix-controls button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ix-ctl-fg);
+  font: 700 14px/1 Lato, sans-serif;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+
+.ix-controls button:hover {
+  background: rgba(249, 0, 122, 0.12);
+  color: #f9007a;
+}
+
+.ix-controls .ix-sep {
+  width: 1px;
+  height: 22px;
+  background: var(--ix-ctl-border);
+}
+
+html.ix-dark .ix-controls {
+  --ix-ctl-bg: rgba(21, 24, 29, 0.92);
+  --ix-ctl-fg: #e9ecf2;
+  --ix-ctl-border: rgba(233, 236, 242, 0.18);
+}
+
+/* ---------- dark theme fixups ---------- */
+html.ix-dark {
+  color-scheme: dark;
+}
+
+html.ix-dark,
+html.ix-dark body {
+  background-color: #0b0d10;
+  color: #e9ecf2;
+}
+
+/* Sections and cards that are already dark in the light theme stay dark. */
+html.ix-dark .bg-black,
+html.ix-dark .navbar-wrapper,
+html.ix-dark .navbar-banner,
+html.ix-dark .video-rounded,
+html.ix-dark .box-black-30,
+html.ix-dark .box-black-25,
+html.ix-dark .box-black-square,
+html.ix-dark .box-black-square-small,
+html.ix-dark .box-black-spaced,
+html.ix-dark .box-icon-black,
+html.ix-dark .step,
+html.ix-dark .circle,
+html.ix-dark .black-circle,
+html.ix-dark .navbar-2,
+html.ix-dark .navbar-3,
+html.ix-dark .navbar-menu,
+html.ix-dark .div-nav,
+html.ix-dark .main---slide-content,
+html.ix-dark .main---slide-content-block {
+  background-color: #101317;
+}
+
+/* White-on-dark copy must not be flipped to a dark colour. */
+html.ix-dark .text-white,
+html.ix-dark .text-white-desktop,
+html.ix-dark .bg-black,
+html.ix-dark .bg-pink,
+html.ix-dark .bg-black .text-ix-dark,
+html.ix-dark .btn.btn-pink,
+html.ix-dark .btn.btn-black,
+html.ix-dark .navbar-banner,
+html.ix-dark .tags-label-black,
+html.ix-dark .step {
+  color: #fff;
+}
+
+/* The page's inline Webflow interaction styles hard-code dark nav colours. */
+html.ix-dark .nav-link,
+html.ix-dark .nav-dropdown-toggle,
+html.ix-dark .dropdown-toggle-2,
+html.ix-dark .w-nav-link {
+  color: #e9ecf2 !important;
+}
+
+html.ix-dark .nav-link.style,
+html.ix-dark .nav-link.style-new,
+html.ix-dark .text-reset.nav-link-100,
+html.ix-dark .text-reset.nav-link-100-new {
+  color: #fff !important;
+}
+
+/* Logo strips are dark artwork on white; lift them onto the dark background. */
+html.ix-dark [class*="elfsight-app"] img,
+html.ix-dark .logo-grid-wrapper img {
+  filter: brightness(0) invert(1);
+}
