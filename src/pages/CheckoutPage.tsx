@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useOrders } from '../context/OrderContext';
 
 export function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
+  const { placeOrder } = useOrders();
   const navigate = useNavigate();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [formData, setFormData] = useState({
@@ -23,12 +25,17 @@ export function CheckoutPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    placeOrder(items, totalPrice, tax, total);
+    clearCart();
     setShowConfirmation(true);
   };
 
   const handleConfirmationClose = () => {
-    clearCart();
     navigate('/');
+  };
+
+  const handleViewOrders = () => {
+    navigate('/orders');
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -357,6 +364,21 @@ export function CheckoutPage() {
             <p style={{ color: '#6B6B6B', marginBottom: '32px', fontSize: '16px', lineHeight: '1.6' }}>
               Thank you for your purchase. Your order has been placed successfully.
             </p>
+            <button
+              onClick={handleViewOrders}
+              style={{
+                backgroundColor: 'transparent',
+                color: '#1A1A1A',
+                border: '1px solid #E8E6E3',
+                padding: '14px 32px',
+                borderRadius: '8px',
+                fontSize: '15px',
+                fontWeight: '600',
+                marginRight: '12px',
+              }}
+            >
+              View Orders
+            </button>
             <button
               onClick={handleConfirmationClose}
               style={{
