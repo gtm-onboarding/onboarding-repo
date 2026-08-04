@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useOrders } from '../context/OrderContext';
 
 export function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
+  const { addOrder } = useOrders();
   const navigate = useNavigate();
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const orderRecorded = useRef(false);
   const [formData, setFormData] = useState({
     name: user?.name || '',
     address: '',
@@ -23,6 +26,12 @@ export function CheckoutPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!orderRecorded.current) {
+      const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+      const taxAmount = subtotal * 0.08;
+      addOrder(items, subtotal, taxAmount, subtotal + taxAmount);
+      orderRecorded.current = true;
+    }
     setShowConfirmation(true);
   };
 

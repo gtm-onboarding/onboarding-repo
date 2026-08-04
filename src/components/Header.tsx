@@ -65,6 +65,7 @@ export function Header() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <Link to="/orders" style={{ color: '#6B6B6B', fontSize: '14px', fontWeight: '500' }}>Orders</Link>
               <UserIcon />
               <span style={{ color: '#6B6B6B', fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
               <button
