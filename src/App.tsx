@@ -10,6 +10,7 @@ import { SignInPage } from './pages/SignInPage';
 import { SignUpPage } from './pages/SignUpPage';
 import { useCart } from './context/CartContext';
 import { useAuth } from './context/AuthContext';
+import { theme } from './theme';
 
 function App() {
   const { toastMessage: cartToast, showToast: showCartToast } = useCart();
@@ -22,7 +23,7 @@ function App() {
   };
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: theme.colors.background, minHeight: '100vh' }}>
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
