@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { RatingSummary } from '../types';
 
 interface RatingsContextType {
@@ -16,52 +16,55 @@ export const MAX_RATING = 5;
 
 type StoredRatings = Record<string, number[]>;
 
+interface RatingsState {
+  ratings: StoredRatings;
+  userRatings: Record<string, number>;
+}
+
+const EMPTY_STATE: RatingsState = { ratings: {}, userRatings: {} };
+
 function isValidRating(rating: number) {
   return Number.isInteger(rating) && rating >= MIN_RATING && rating <= MAX_RATING;
 }
 
+function readStoredRatings(): RatingsState {
+  const stored = localStorage.getItem(RATINGS_STORAGE_KEY);
+  if (!stored) return EMPTY_STATE;
+  try {
+    const parsed = JSON.parse(stored) as Partial<RatingsState>;
+    return { ratings: parsed.ratings ?? {}, userRatings: parsed.userRatings ?? {} };
+  } catch {
+    localStorage.removeItem(RATINGS_STORAGE_KEY);
+    return EMPTY_STATE;
+  }
+}
+
 export function RatingsProvider({ children }: { children: ReactNode }) {
-  const [ratings, setRatings] = useState<StoredRatings>({});
-  const [userRatings, setUserRatings] = useState<Record<string, number>>({});
-  const hydrated = useRef(false);
+  const [state, setState] = useState<RatingsState>(readStoredRatings);
+  const { ratings, userRatings } = state;
 
   useEffect(() => {
-    const stored = localStorage.getItem(RATINGS_STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored) as { ratings: StoredRatings; userRatings: Record<string, number> };
-        setRatings(parsed.ratings ?? {});
-        setUserRatings(parsed.userRatings ?? {});
-      } catch {
-        localStorage.removeItem(RATINGS_STORAGE_KEY);
-      }
-    }
-    hydrated.current = true;
-  }, []);
-
-  useEffect(() => {
-    if (!hydrated.current) return;
-    localStorage.setItem(RATINGS_STORAGE_KEY, JSON.stringify({ ratings, userRatings }));
-  }, [ratings, userRatings]);
+    localStorage.setItem(RATINGS_STORAGE_KEY, JSON.stringify(state));
+  }, [state]);
 
   const rateProduct = (productId: string, rating: number) => {
     if (!isValidRating(rating)) return;
 
-    const previous = userRatings[productId];
-    setRatings((current) => {
-      const productRatings = current[productId] ?? [];
-      if (previous === undefined) {
-        return { ...current, [productId]: [...productRatings, rating] };
-      }
-      const index = productRatings.indexOf(previous);
-      if (index === -1) {
-        return { ...current, [productId]: [...productRatings, rating] };
-      }
+    setState((current) => {
+      const previous = current.userRatings[productId];
+      const productRatings = current.ratings[productId] ?? [];
+      const index = previous === undefined ? -1 : productRatings.indexOf(previous);
       const updated = [...productRatings];
-      updated[index] = rating;
-      return { ...current, [productId]: updated };
+      if (index === -1) {
+        updated.push(rating);
+      } else {
+        updated[index] = rating;
+      }
+      return {
+        ratings: { ...current.ratings, [productId]: updated },
+        userRatings: { ...current.userRatings, [productId]: rating },
+      };
     });
-    setUserRatings((current) => ({ ...current, [productId]: rating }));
   };
 
   const getUserRating = (productId: string) => userRatings[productId] ?? null;
