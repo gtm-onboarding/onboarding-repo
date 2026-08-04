@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { isValidEmail } from '../utils/validation';
 
 export function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -17,9 +19,16 @@ export function SignInPage() {
 
     if (!email || !password) {
       setError('Please fill in all fields');
+      setFieldErrors({});
       return;
     }
 
+    if (!isValidEmail(email)) {
+      setFieldErrors({ email: 'Please enter a valid email address' });
+      return;
+    }
+
+    setFieldErrors({});
     const success = signIn(email, password);
     if (success) {
       const redirect = searchParams.get('redirect') || '/';
@@ -27,6 +36,14 @@ export function SignInPage() {
     } else {
       setError('Invalid email or password');
     }
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    setFieldErrors((current) => ({
+      ...current,
+      email: value && !isValidEmail(value) ? 'Please enter a valid email address' : '',
+    }));
   };
 
   const inputStyle = {
@@ -84,6 +101,7 @@ export function SignInPage() {
         )}
         <div style={{ marginBottom: '20px' }}>
           <label
+            htmlFor="sign-in-email"
             style={{
               display: 'block',
               color: '#1A1A1A',
@@ -95,15 +113,20 @@ export function SignInPage() {
             Email
           </label>
           <input
+            id="sign-in-email"
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleEmailChange(e.target.value)}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={{ ...inputStyle, borderColor: fieldErrors.email ? '#C44536' : '#E8E6E3' }}
           />
+          {fieldErrors.email && (
+            <div style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>{fieldErrors.email}</div>
+          )}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label
+            htmlFor="sign-in-password"
             style={{
               display: 'block',
               color: '#1A1A1A',
@@ -115,6 +138,7 @@ export function SignInPage() {
             Password
           </label>
           <input
+            id="sign-in-password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
