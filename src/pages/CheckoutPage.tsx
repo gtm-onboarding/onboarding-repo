@@ -2,12 +2,21 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useOrders } from '../context/OrderContext';
+import { CartItem } from '../types';
 
 export function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
   const { user } = useAuth();
+  const { addOrder } = useOrders();
   const navigate = useNavigate();
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [orderSnapshot, setOrderSnapshot] = useState<{
+    items: CartItem[];
+    subtotal: number;
+    tax: number;
+    total: number;
+  } | null>(null);
   const [formData, setFormData] = useState({
     name: user?.name || '',
     address: '',
@@ -18,16 +27,24 @@ export function CheckoutPage() {
     cvv: '',
   });
 
-  const tax = totalPrice * 0.08;
-  const total = totalPrice + tax;
+  const summaryItems = orderSnapshot?.items ?? items;
+  const subtotal = orderSnapshot?.subtotal ?? totalPrice;
+  const tax = orderSnapshot?.tax ?? totalPrice * 0.08;
+  const total = orderSnapshot?.total ?? totalPrice + tax;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const snapshotItems = items.map((item) => ({ ...item, product: { ...item.product } }));
+    const orderSubtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    const orderTax = orderSubtotal * 0.08;
+    const orderTotal = orderSubtotal + orderTax;
+    setOrderSnapshot({ items: snapshotItems, subtotal: orderSubtotal, tax: orderTax, total: orderTotal });
+    addOrder(snapshotItems, orderSubtotal, orderTax, orderTotal);
+    clearCart();
     setShowConfirmation(true);
   };
 
   const handleConfirmationClose = () => {
-    clearCart();
     navigate('/');
   };
 
@@ -239,7 +256,7 @@ export function CheckoutPage() {
             >
               Order Summary
             </h2>
-            {items.map((item) => (
+            {summaryItems.map((item) => (
               <div
                 key={item.product.id}
                 style={{
@@ -269,7 +286,7 @@ export function CheckoutPage() {
                 }}
               >
                 <span>Subtotal</span>
-                <span style={{ color: '#1A1A1A' }}>${totalPrice.toFixed(2)}</span>
+                <span style={{ color: '#1A1A1A' }}>${subtotal.toFixed(2)}</span>
               </div>
               <div
                 style={{
@@ -357,6 +374,14 @@ export function CheckoutPage() {
             <p style={{ color: '#6B6B6B', marginBottom: '32px', fontSize: '16px', lineHeight: '1.6' }}>
               Thank you for your purchase. Your order has been placed successfully.
             </p>
+            <div style={{ color: '#6B6B6B', fontSize: '14px', marginBottom: '32px', textAlign: 'left' }}>
+              {summaryItems.map((item) => (
+                <div key={item.product.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span>{item.product.name} × {item.quantity}</span>
+                  <span style={{ color: '#1A1A1A' }}>${(item.product.price * item.quantity).toFixed(2)}</span>
+                </div>
+              ))}
+            </div>
             <button
               onClick={handleConfirmationClose}
               style={{
