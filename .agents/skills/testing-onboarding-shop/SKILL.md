@@ -14,8 +14,9 @@ npm run dev          # Vite dev server on http://localhost:5173
 ```
 
 No backend, no API keys, and no secrets are required. `VITE_GOOGLE_CLIENT_ID` is
-optional — the Google sign-in button renders without it, and email/password auth
-works regardless.
+optional — email/password auth works without it. Whether the Google sign-in
+button renders with an empty client id has not been verified; do not rely on
+the Google flow for testing.
 
 ## Devin Secrets Needed
 
@@ -42,15 +43,22 @@ item to the cart and proceed.
 
 | Key | Purpose |
 |---|---|
-| `onboarding-demo-theme` | `light` \| `dark` theme preference |
-| `onboarding-demo-users` | registered users array |
+| `onboarding-demo-users` | registered users array (`src/context/AuthContext.tsx`) |
+| `onboarding-demo-session` | current signed-in user |
+| `onboarding-demo-cart` | cart items (`src/context/CartContext.tsx`) |
+| `onboarding-demo-theme` | `light` \| `dark` theme preference (only once GB-17 / PR #119 lands) |
 
 Reset to a pristine state with `localStorage.clear()` in the console before a
-run, then reload. Note the **cart is not persisted** — a page reload empties the
-cart and resets the header badge. That is expected pre-existing behaviour, so do
-not report it as a regression.
+run, then reload. Cart caveat: `CartContext` writes the cart to
+`onboarding-demo-cart`, but under the dev server the cart was observed to come
+back **empty after a full page reload** (React 18 `StrictMode` double-runs the
+effects, and the save-effect writes `[]` before the load-effect's state lands).
+Verify current behaviour before reporting cart persistence either way.
 
 ## Theming / dark mode: important testing pitfalls
+
+**Applies only to branches containing GB-17 (PR #119); `main` has no dark mode
+until that PR merges.**
 
 Theme is a React context (`src/context/ThemeContext.tsx`) that writes
 `--color-*` / `--shadow-*` CSS custom properties onto
