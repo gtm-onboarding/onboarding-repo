@@ -67,6 +67,8 @@ describe('CheckoutPage order persistence', () => {
     fireEvent.click(screen.getByText('Place Order'));
 
     expect(await screen.findByText('Order Confirmed!')).toBeInTheDocument();
+    expect(localStorageMock.getItem('onboarding-demo-cart')).toBe('[]');
+    expect(screen.getAllByText(`${products[0].name} × 2`)).toHaveLength(2);
     await waitFor(() => {
       const orders = JSON.parse(localStorageMock.getItem('onboarding-demo-orders') || '[]');
       expect(orders).toHaveLength(1);

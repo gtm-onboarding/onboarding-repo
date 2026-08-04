@@ -35,7 +35,7 @@ export function OrderProvider({ children }: { children: ReactNode }) {
       id: `order-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       date: new Date().toISOString(),
       userEmail: user?.email || '',
-      items,
+      items: items.map((item) => ({ ...item, product: { ...item.product } })),
       subtotal,
       tax,
       total,

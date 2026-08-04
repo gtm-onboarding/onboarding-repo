@@ -33,7 +33,7 @@ function renderOrders() {
 
 function order(userEmail: string, product = products[0]): Order {
   return {
-    id: `order-${userEmail}`,
+    id: 'order-1705320000000-ab12cd34',
     date: '2024-01-15T12:00:00.000Z',
     userEmail,
     items: [{ product, quantity: 2 }],
@@ -60,7 +60,7 @@ describe('OrdersPage', () => {
     localStorageMock.setItem('onboarding-demo-orders', JSON.stringify([order('buyer@example.com')]));
     renderOrders();
 
-    expect(await screen.findByRole('heading', { name: 'Order mple.com' })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'Order ab12cd34' })).toBeInTheDocument();
     expect(screen.getByText(`${products[0].name} × 2`)).toBeInTheDocument();
     expect(screen.getAllByText(`$${(products[0].price * 2).toFixed(2)}`)).toHaveLength(2);
     expect(screen.getByText(`$${(products[0].price * 2 * 1.08).toFixed(2)}`)).toBeInTheDocument();
