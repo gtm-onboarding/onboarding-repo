@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { rateProduct, useProductRating } from '../hooks/useRatings';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
   const { addToCart } = useCart();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const { average, count, userRating } = useProductRating(productId ?? '');
 
   const product = products.find((p) => p.id === productId);
 
@@ -142,6 +145,9 @@ export function ProductPage() {
             >
               {product.name}
             </h1>
+            <div style={{ marginBottom: '20px' }}>
+              <StarRating value={average} count={count} size={20} />
+            </div>
             <span
               style={{
                 color: '#E07A5F',
@@ -168,9 +174,26 @@ export function ProductPage() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '20px',
-                marginBottom: '32px',
+                marginBottom: '24px',
                 paddingTop: '24px',
                 borderTop: '1px solid #F0EEEB',
+              }}
+            >
+              <label style={{ color: '#1A1A1A', fontWeight: '500', fontSize: '15px' }}>
+                {userRating === null ? 'Rate this product:' : 'Your rating:'}
+              </label>
+              <StarRating
+                value={userRating ?? 0}
+                size={24}
+                onRate={(rating) => rateProduct(product.id, rating)}
+              />
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '20px',
+                marginBottom: '32px',
               }}
             >
               <label style={{ color: '#1A1A1A', fontWeight: '500', fontSize: '15px' }}>Quantity:</label>
