@@ -80,4 +80,13 @@ describe('SearchBar', () => {
     fireEvent.keyDown(input, { key: 'Escape' });
     expect(screen.queryByText('Smart Watch')).not.toBeInTheDocument();
   });
+
+  it('reopens dropdown when clicking the input after Escape', () => {
+    renderSearchBar();
+    const input = screen.getByLabelText('Search products');
+    fireEvent.change(input, { target: { value: 'watch' } });
+    fireEvent.keyDown(input, { key: 'Escape' });
+    fireEvent.mouseDown(input);
+    expect(screen.getByText('Smart Watch')).toBeInTheDocument();
+  });
 });

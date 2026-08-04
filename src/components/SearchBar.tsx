@@ -55,6 +55,7 @@ export function SearchBar() {
             setIsOpen(true);
           }}
           onFocus={() => setIsOpen(true)}
+          onMouseDown={() => setIsOpen(true)}
           onKeyDown={(e) => {
             if (e.key === 'Escape') setIsOpen(false);
             if (e.key === 'Enter' && results.length > 0) selectProduct(results[0].id);
