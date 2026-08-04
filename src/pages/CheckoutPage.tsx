@@ -26,16 +26,15 @@ export function CheckoutPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     placeOrder(items, totalPrice, tax, total);
+    clearCart();
     setShowConfirmation(true);
   };
 
   const handleConfirmationClose = () => {
-    clearCart();
     navigate('/');
   };
 
   const handleViewOrders = () => {
-    clearCart();
     navigate('/orders');
   };
 

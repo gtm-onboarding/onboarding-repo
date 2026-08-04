@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { AuthProvider } from '../context/AuthContext';
 import { OrderProvider, useOrders } from '../context/OrderContext';
 import { OrdersPage } from '../pages/OrdersPage';
 import { products } from '../data/products';
@@ -37,24 +38,28 @@ describe('OrderContext', () => {
 
   it('starts with no orders', () => {
     render(
-      <OrderProvider>
-        <TestComponent />
-      </OrderProvider>
+      <AuthProvider>
+        <OrderProvider>
+          <TestComponent />
+        </OrderProvider>
+      </AuthProvider>
     );
     expect(screen.getByTestId('orders-count').textContent).toBe('0');
   });
 
   it('saves an order and persists it to localStorage', () => {
     render(
-      <OrderProvider>
-        <TestComponent />
-      </OrderProvider>
+      <AuthProvider>
+        <OrderProvider>
+          <TestComponent />
+        </OrderProvider>
+      </AuthProvider>
     );
     fireEvent.click(screen.getByText('Place Order'));
     expect(screen.getByTestId('orders-count').textContent).toBe('1');
     expect(screen.getByTestId('first-total').textContent).toBe('108.00');
 
-    const stored = JSON.parse(localStorage.getItem('onboarding-demo-orders')!);
+    const stored = JSON.parse(localStorage.getItem('onboarding-demo-orders:guest')!);
     expect(stored).toHaveLength(1);
     expect(stored[0].items[0].quantity).toBe(2);
   });
@@ -62,10 +67,12 @@ describe('OrderContext', () => {
   it('shows saved orders on the Order History page', () => {
     render(
       <MemoryRouter>
-        <OrderProvider>
-          <TestComponent />
-          <OrdersPage />
-        </OrderProvider>
+        <AuthProvider>
+          <OrderProvider>
+            <TestComponent />
+            <OrdersPage />
+          </OrderProvider>
+        </AuthProvider>
       </MemoryRouter>
     );
     expect(screen.getByText('You have no past orders yet.')).toBeInTheDocument();
