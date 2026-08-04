@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { isValidEmail, getEmailError } from '../utils/validation';
 
 export function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [emailTouched, setEmailTouched] = useState(false);
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -17,6 +19,11 @@ export function SignInPage() {
 
     if (!email || !password) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setError('Please enter a valid email address');
       return;
     }
 
@@ -32,19 +39,19 @@ export function SignInPage() {
   const inputStyle = {
     width: '100%',
     padding: '14px 16px',
-    border: '1px solid #E8E6E3',
+    border: '1px solid var(--color-border)',
     borderRadius: '8px',
-    color: '#1A1A1A',
-    backgroundColor: '#FFFFFF',
+    color: 'var(--color-text)',
+    backgroundColor: 'var(--color-surface)',
     fontSize: '15px',
   };
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '80px 24px' }}>
+    <div style={{ backgroundColor: 'var(--color-background)', minHeight: '100vh', padding: '80px 24px' }}>
       <form
         onSubmit={handleSubmit}
         style={{
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'var(--color-surface)',
           boxShadow: '0 8px 24px rgba(26, 26, 26, 0.08)',
           padding: '48px',
           borderRadius: '20px',
@@ -55,7 +62,7 @@ export function SignInPage() {
         <h1
           style={{
             fontFamily: '"Playfair Display", Georgia, serif',
-            color: '#1A1A1A',
+            color: 'var(--color-text)',
             marginBottom: '8px',
             textAlign: 'center',
             fontSize: '32px',
@@ -64,14 +71,14 @@ export function SignInPage() {
         >
           Welcome Back
         </h1>
-        <p style={{ color: '#9A9A9A', textAlign: 'center', marginBottom: '36px', fontSize: '15px' }}>
+        <p style={{ color: 'var(--color-text-muted)', textAlign: 'center', marginBottom: '36px', fontSize: '15px' }}>
           Sign in to continue shopping
         </p>
         {error && (
           <div
             style={{
-              backgroundColor: '#FEF2F2',
-              color: '#C44536',
+              backgroundColor: 'var(--color-error-bg)',
+              color: 'var(--color-error)',
               padding: '14px 16px',
               borderRadius: '8px',
               marginBottom: '24px',
@@ -86,7 +93,7 @@ export function SignInPage() {
           <label
             style={{
               display: 'block',
-              color: '#1A1A1A',
+              color: 'var(--color-text)',
               marginBottom: '8px',
               fontSize: '14px',
               fontWeight: '500',
@@ -98,15 +105,22 @@ export function SignInPage() {
             type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onBlur={() => setEmailTouched(true)}
             placeholder="you@example.com"
+            aria-invalid={emailTouched && !!getEmailError(email)}
             style={inputStyle}
           />
+          {emailTouched && getEmailError(email) && (
+            <p style={{ color: 'var(--color-error)', fontSize: '13px', marginTop: '6px' }}>
+              {getEmailError(email)}
+            </p>
+          )}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label
             style={{
               display: 'block',
-              color: '#1A1A1A',
+              color: 'var(--color-text)',
               marginBottom: '8px',
               fontSize: '14px',
               fontWeight: '500',
@@ -124,8 +138,11 @@ export function SignInPage() {
         </div>
         <button
           type="submit"
+          disabled={!isValidEmail(email) || !password}
           style={{
-            backgroundColor: '#E07A5F',
+            opacity: !isValidEmail(email) || !password ? 0.5 : 1,
+            cursor: !isValidEmail(email) || !password ? 'not-allowed' : 'pointer',
+            backgroundColor: 'var(--color-primary)',
             color: 'white',
             border: 'none',
             padding: '16px',
@@ -147,9 +164,9 @@ export function SignInPage() {
             marginBottom: '24px',
           }}
         >
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#E8E6E3' }} />
-          <span style={{ color: '#9A9A9A', fontSize: '13px', fontWeight: '500' }}>or</span>
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#E8E6E3' }} />
+          <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
+          <span style={{ color: 'var(--color-text-muted)', fontSize: '13px', fontWeight: '500' }}>or</span>
+          <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
           <GoogleLogin
@@ -170,9 +187,9 @@ export function SignInPage() {
             width={320}
           />
         </div>
-        <p style={{ textAlign: 'center', color: '#6B6B6B', fontSize: '14px' }}>
+        <p style={{ textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: '14px' }}>
           Don't have an account?{' '}
-          <Link to="/signup" style={{ color: '#E07A5F', fontWeight: '600' }}>
+          <Link to="/signup" style={{ color: 'var(--color-primary)', fontWeight: '600' }}>
             Sign Up
           </Link>
         </p>

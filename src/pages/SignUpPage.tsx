@@ -2,6 +2,12 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import {
+  isValidEmail,
+  getEmailError,
+  getPasswordError,
+  getConfirmPasswordError,
+} from '../utils/validation';
 
 export function SignUpPage() {
   const [name, setName] = useState('');
@@ -9,6 +15,7 @@ export function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [touched, setTouched] = useState({ email: false, password: false, confirmPassword: false });
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
@@ -18,6 +25,21 @@ export function SignUpPage() {
 
     if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    if (getPasswordError(password)) {
+      setError(getPasswordError(password));
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
@@ -32,27 +54,38 @@ export function SignUpPage() {
   const inputStyle = {
     width: '100%',
     padding: '14px 16px',
-    border: '1px solid #E8E6E3',
+    border: '1px solid var(--color-border)',
     borderRadius: '8px',
-    color: '#1A1A1A',
-    backgroundColor: '#FFFFFF',
+    color: 'var(--color-text)',
+    backgroundColor: 'var(--color-surface)',
     fontSize: '15px',
   };
 
   const labelStyle = {
     display: 'block',
-    color: '#1A1A1A',
+    color: 'var(--color-text)',
     marginBottom: '8px',
     fontSize: '14px',
     fontWeight: '500' as const,
   };
 
+  const fieldErrorStyle = {
+    color: 'var(--color-error)',
+    fontSize: '13px',
+    marginTop: '6px',
+  };
+
+  const emailError = getEmailError(email);
+  const passwordError = getPasswordError(password);
+  const confirmPasswordError = getConfirmPasswordError(password, confirmPassword);
+  const formInvalid = !name || !!emailError || !!passwordError || !!confirmPasswordError;
+
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '80px 24px' }}>
+    <div style={{ backgroundColor: 'var(--color-background)', minHeight: '100vh', padding: '80px 24px' }}>
       <form
         onSubmit={handleSubmit}
         style={{
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'var(--color-surface)',
           boxShadow: '0 8px 24px rgba(26, 26, 26, 0.08)',
           padding: '48px',
           borderRadius: '20px',
@@ -63,7 +96,7 @@ export function SignUpPage() {
         <h1
           style={{
             fontFamily: '"Playfair Display", Georgia, serif',
-            color: '#1A1A1A',
+            color: 'var(--color-text)',
             marginBottom: '8px',
             textAlign: 'center',
             fontSize: '32px',
@@ -72,14 +105,14 @@ export function SignUpPage() {
         >
           Create Account
         </h1>
-        <p style={{ color: '#9A9A9A', textAlign: 'center', marginBottom: '36px', fontSize: '15px' }}>
+        <p style={{ color: 'var(--color-text-muted)', textAlign: 'center', marginBottom: '36px', fontSize: '15px' }}>
           Join us and start shopping
         </p>
         {error && (
           <div
             style={{
-              backgroundColor: '#FEF2F2',
-              color: '#C44536',
+              backgroundColor: 'var(--color-error-bg)',
+              color: 'var(--color-error)',
               padding: '14px 16px',
               borderRadius: '8px',
               marginBottom: '24px',
@@ -106,9 +139,12 @@ export function SignUpPage() {
             type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onBlur={() => setTouched((t) => ({ ...t, email: true }))}
             placeholder="you@example.com"
+            aria-invalid={touched.email && !!emailError}
             style={inputStyle}
           />
+          {touched.email && emailError && <p style={fieldErrorStyle}>{emailError}</p>}
         </div>
         <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>Password</label>
@@ -116,9 +152,12 @@ export function SignUpPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onBlur={() => setTouched((t) => ({ ...t, password: true }))}
             placeholder="At least 6 characters"
+            aria-invalid={touched.password && !!passwordError}
             style={inputStyle}
           />
+          {touched.password && passwordError && <p style={fieldErrorStyle}>{passwordError}</p>}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label style={labelStyle}>Confirm Password</label>
@@ -126,14 +165,22 @@ export function SignUpPage() {
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+            onBlur={() => setTouched((t) => ({ ...t, confirmPassword: true }))}
             placeholder="Confirm your password"
+            aria-invalid={touched.confirmPassword && !!confirmPasswordError}
             style={inputStyle}
           />
+          {touched.confirmPassword && confirmPasswordError && (
+            <p style={fieldErrorStyle}>{confirmPasswordError}</p>
+          )}
         </div>
         <button
           type="submit"
+          disabled={formInvalid}
           style={{
-            backgroundColor: '#E07A5F',
+            opacity: formInvalid ? 0.5 : 1,
+            cursor: formInvalid ? 'not-allowed' : 'pointer',
+            backgroundColor: 'var(--color-primary)',
             color: 'white',
             border: 'none',
             padding: '16px',
@@ -155,9 +202,9 @@ export function SignUpPage() {
             marginBottom: '24px',
           }}
         >
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#E8E6E3' }} />
-          <span style={{ color: '#9A9A9A', fontSize: '13px', fontWeight: '500' }}>or</span>
-          <div style={{ flex: 1, height: '1px', backgroundColor: '#E8E6E3' }} />
+          <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
+          <span style={{ color: 'var(--color-text-muted)', fontSize: '13px', fontWeight: '500' }}>or</span>
+          <div style={{ flex: 1, height: '1px', backgroundColor: 'var(--color-border)' }} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
           <GoogleLogin
@@ -177,9 +224,9 @@ export function SignUpPage() {
             width={320}
           />
         </div>
-        <p style={{ textAlign: 'center', color: '#6B6B6B', fontSize: '14px' }}>
+        <p style={{ textAlign: 'center', color: 'var(--color-text-secondary)', fontSize: '14px' }}>
           Already have an account?{' '}
-          <Link to="/signin" style={{ color: '#E07A5F', fontWeight: '600' }}>
+          <Link to="/signin" style={{ color: 'var(--color-primary)', fontWeight: '600' }}>
             Sign In
           </Link>
         </p>

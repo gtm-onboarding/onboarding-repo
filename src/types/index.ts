@@ -12,6 +12,15 @@ export interface CartItem {
   quantity: number;
 }
 
+export interface Order {
+  id: string;
+  date: string;
+  items: CartItem[];
+  subtotal: number;
+  tax: number;
+  total: number;
+}
+
 export interface User {
   email: string;
   name: string;

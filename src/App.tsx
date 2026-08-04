@@ -8,6 +8,7 @@ import { CartPage } from './pages/CartPage';
 import { CheckoutPage } from './pages/CheckoutPage';
 import { SignInPage } from './pages/SignInPage';
 import { SignUpPage } from './pages/SignUpPage';
+import { OrderHistoryPage } from './pages/OrderHistoryPage';
 import { useCart } from './context/CartContext';
 import { useAuth } from './context/AuthContext';
 
@@ -22,7 +23,7 @@ function App() {
   };
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: 'var(--color-background)', minHeight: '100vh' }}>
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -32,6 +33,7 @@ function App() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/orders" element={<OrderHistoryPage />} />
       </Routes>
       {toastMessage && <Toast message={toastMessage} onClose={clearToast} />}
     </div>

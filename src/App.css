@@ -1,5 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
+:root {
+  --color-background: #FAF9F7;
+  --color-surface: #FFFFFF;
+  --color-surface-alt: #F5F3F0;
+  --color-text: #1A1A1A;
+  --color-text-secondary: #6B6B6B;
+  --color-text-muted: #9A9A9A;
+  --color-primary: #E07A5F;
+  --color-primary-hover: #C96A52;
+  --color-primary-soft: #FEF6F4;
+  --color-success: #4A7C59;
+  --color-success-bg: #E8F5E9;
+  --color-error: #C44536;
+  --color-error-bg: #FEF2F2;
+  --color-border: #E8E6E3;
+  --color-border-light: #F0EEEB;
+}
+
+[data-theme='dark'] {
+  --color-background: #171514;
+  --color-surface: #211F1D;
+  --color-surface-alt: #2C2927;
+  --color-text: #F2F0EE;
+  --color-text-secondary: #B3AFAB;
+  --color-text-muted: #8A8681;
+  --color-primary: #E58A71;
+  --color-primary-hover: #EE9C85;
+  --color-primary-soft: #33241F;
+  --color-success: #7DBB92;
+  --color-success-bg: #1F2E24;
+  --color-error: #E0766A;
+  --color-error-bg: #33201D;
+  --color-border: #3A3734;
+  --color-border-light: #2C2927;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -13,15 +49,16 @@ html {
 body {
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.6;
-  background-color: #FAF9F7;
-  color: #1A1A1A;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color 250ms ease, color 250ms ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
   background-color: rgba(224, 122, 95, 0.2);
-  color: #1A1A1A;
+  color: var(--color-text);
 }
 
 a {
@@ -38,7 +75,7 @@ button {
 button:focus,
 input:focus,
 a:focus {
-  outline: 2px solid #E07A5F;
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
