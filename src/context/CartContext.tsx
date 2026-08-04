@@ -19,13 +19,12 @@ const CART_STORAGE_KEY = 'onboarding-demo-cart';
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => {
-    const stored = localStorage.getItem(CART_STORAGE_KEY);
-    if (!stored) return [];
     try {
+      const stored = localStorage.getItem(CART_STORAGE_KEY);
+      if (!stored) return [];
       const parsed = JSON.parse(stored);
       return Array.isArray(parsed) ? parsed : [];
     } catch {
-      localStorage.removeItem(CART_STORAGE_KEY);
       return [];
     }
   });
