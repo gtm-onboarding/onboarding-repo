@@ -20,6 +20,8 @@ function TestComponent() {
     <div>
       <span data-testid="mode">{mode}</span>
       <span data-testid="background">{theme.colors.background}</span>
+      <span data-testid="success">{theme.colors.success}</span>
+      <span data-testid="error">{theme.colors.error}</span>
       <button onClick={toggleTheme}>Toggle theme</button>
     </div>
   );
@@ -49,6 +51,8 @@ describe('ThemeContext', () => {
     fireEvent.click(screen.getByText('Toggle theme'));
     expect(screen.getByTestId('mode')).toHaveTextContent('dark');
     expect(screen.getByTestId('background')).toHaveTextContent('#171614');
+    expect(screen.getByTestId('success')).toHaveTextContent('#7FB08D');
+    expect(screen.getByTestId('error')).toHaveTextContent('#E08A7D');
   });
 
   it('persists and restores the selected theme', () => {

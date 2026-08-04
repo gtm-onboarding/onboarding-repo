@@ -81,7 +81,7 @@ export function ProductCard({ product }: ProductCardProps) {
             onClick={() => addToCart(product)}
             style={{
               backgroundColor: 'var(--color-text)',
-              color: 'white',
+              color: 'var(--color-textInverse)',
               border: 'none',
               padding: '10px 20px',
               borderRadius: '6px',

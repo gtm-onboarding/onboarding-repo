@@ -15,6 +15,7 @@ export const lightTheme = {
     accentSurface: '#FEF6F4',
     errorSurface: '#FEF2F2',
     successSurface: '#E8F5E9',
+    textInverse: '#FFFFFF',
   },
   fonts: {
     display: '"Playfair Display", Georgia, serif',
@@ -51,11 +52,14 @@ export const darkTheme = {
     textMuted: '#938D85',
     primary: '#F09A7D',
     primaryHover: '#F5B098',
+    success: '#7FB08D',
+    error: '#E08A7D',
     border: '#49443E',
     borderLight: '#3B3732',
     accentSurface: '#432C25',
     errorSurface: '#422422',
     successSurface: '#253A2A',
+    textInverse: '#171614',
   },
   shadows: {
     sm: '0 1px 3px rgba(0, 0, 0, 0.2)',

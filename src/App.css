@@ -16,6 +16,7 @@
   --color-accentSurface: #FEF6F4;
   --color-errorSurface: #FEF2F2;
   --color-successSurface: #E8F5E9;
+  --color-textInverse: #FFFFFF;
   --shadow-sm: 0 1px 3px rgba(26, 26, 26, 0.04);
   --shadow-md: 0 4px 12px rgba(26, 26, 26, 0.06);
   --shadow-lg: 0 8px 24px rgba(26, 26, 26, 0.08);
