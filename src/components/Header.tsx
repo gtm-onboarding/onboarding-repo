@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useWishlist } from '../context/WishlistContext';
 import { CartIcon } from './icons/CartIcon';
+import { HeartIcon } from './icons/HeartIcon';
 import { UserIcon } from './icons/UserIcon';
 import { categories } from '../data/products';
 
 export function Header() {
   const { totalItems } = useCart();
   const { user, isAuthenticated, signOut } = useAuth();
+  const { totalItems: wishlistItems } = useWishlist();
 
   return (
     <header
@@ -98,6 +101,38 @@ export function Header() {
               <span>Sign In</span>
             </Link>
           )}
+          <Link
+            to="/wishlist"
+            aria-label="Wishlist"
+            style={{
+              color: '#1A1A1A',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              position: 'relative',
+            }}
+          >
+            <HeartIcon />
+            {wishlistItems > 0 && (
+              <span
+                style={{
+                  backgroundColor: '#E07A5F',
+                  color: 'white',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  padding: '2px 7px',
+                  borderRadius: '10px',
+                  position: 'absolute',
+                  top: '-10px',
+                  right: '-10px',
+                  minWidth: '20px',
+                  textAlign: 'center',
+                }}
+              >
+                {wishlistItems}
+              </span>
+            )}
+          </Link>
           <Link
             to="/cart"
             style={{
