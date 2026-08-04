@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { Product, CartItem } from '../types';
+import { useAuth } from './AuthContext';
 
 interface CartContextType {
   items: CartItem[];
@@ -15,24 +16,43 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const CART_STORAGE_KEY = 'onboarding-demo-cart';
+const CART_STORAGE_PREFIX = 'onboarding-demo-cart';
+
+function storageKey(email: string | undefined) {
+  return `${CART_STORAGE_PREFIX}:${email ?? 'guest'}`;
+}
+
+function readCart(key: string): CartItem[] {
+  try {
+    const stored = localStorage.getItem(key);
+    if (!stored) return [];
+    const parsed = JSON.parse(stored);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(() => {
-    try {
-      const stored = localStorage.getItem(CART_STORAGE_KEY);
-      if (!stored) return [];
-      const parsed = JSON.parse(stored);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  });
+  const { user } = useAuth();
+  const key = storageKey(user?.email);
+  const [items, setItems] = useState<CartItem[]>(() => readCart(key));
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const loadedKey = useRef(key);
 
   useEffect(() => {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-  }, [items]);
+    if (loadedKey.current !== key) {
+      setItems(readCart(key));
+    }
+  }, [key]);
+
+  useEffect(() => {
+    if (loadedKey.current !== key) {
+      loadedKey.current = key;
+      return;
+    }
+    localStorage.setItem(key, JSON.stringify(items));
+  }, [key, items]);
 
   const showToast = (message: string) => {
     setToastMessage(message);

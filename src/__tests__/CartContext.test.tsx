@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { CartProvider, useCart } from '../context/CartContext';
+import { AuthProvider } from '../context/AuthContext';
 import { products } from '../data/products';
 
 const localStorageMock = (() => {
@@ -42,9 +43,11 @@ function TestComponent() {
 function renderWithProvider() {
   return render(
     <BrowserRouter>
-      <CartProvider>
-        <TestComponent />
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <TestComponent />
+        </CartProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
@@ -53,6 +56,32 @@ describe('CartContext', () => {
   beforeEach(() => {
     localStorageMock.clear();
     vi.clearAllMocks();
+  });
+
+  it('does not expose another account\'s cart', () => {
+    localStorage.setItem(
+      'onboarding-demo-cart:someone@example.com',
+      JSON.stringify([{ product: products[0], quantity: 3 }])
+    );
+    localStorage.setItem(
+      'onboarding-demo-session',
+      JSON.stringify({ email: 'other@example.com', name: 'Other' })
+    );
+    renderWithProvider();
+    expect(screen.getByTestId('total-items').textContent).toBe('0');
+  });
+
+  it('restores the signed-in user\'s own cart', () => {
+    localStorage.setItem(
+      'onboarding-demo-cart:owner@example.com',
+      JSON.stringify([{ product: products[0], quantity: 3 }])
+    );
+    localStorage.setItem(
+      'onboarding-demo-session',
+      JSON.stringify({ email: 'owner@example.com', name: 'Owner' })
+    );
+    renderWithProvider();
+    expect(screen.getByTestId('total-items').textContent).toBe('3');
   });
 
   it('starts with empty cart', () => {
