@@ -78,6 +78,22 @@ describe('ratings store', () => {
     });
   });
 
+  it('falls back to seed ratings when storage access throws', () => {
+    const getItem = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('Storage disabled');
+    });
+    const removeItem = vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => {
+      throw new Error('Storage disabled');
+    });
+    try {
+      render(<RatingProbe productId={product.id} />);
+      expect(screen.getByTestId('average')).toHaveTextContent((seed.total / seed.count).toFixed(2));
+    } finally {
+      getItem.mockRestore();
+      removeItem.mockRestore();
+    }
+  });
+
   it('reports a zero average for a product with no ratings', () => {
     render(<RatingProbe productId="does-not-exist" />);
     expect(screen.getByTestId('average')).toHaveTextContent('0.00');

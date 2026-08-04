@@ -56,6 +56,7 @@ export function StarRating({ value, count, size = 16, onRate }: StarRatingProps)
         key={star}
         type="button"
         aria-label={`Rate ${star} ${star === 1 ? 'star' : 'stars'}`}
+        aria-pressed={star === value}
         onClick={() => onRate(star)}
         onMouseEnter={() => setHovered(star)}
         onMouseLeave={() => setHovered(null)}
@@ -77,8 +78,10 @@ export function StarRating({ value, count, size = 16, onRate }: StarRatingProps)
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
       <div
-        role={onRate ? undefined : 'img'}
-        aria-label={onRate ? undefined : `Rated ${value.toFixed(1)} out of ${MAX_RATING} stars`}
+        role={onRate ? 'group' : 'img'}
+        aria-label={
+          onRate ? 'Your rating' : `Rated ${value.toFixed(1)} out of ${MAX_RATING} stars`
+        }
         style={{ display: 'flex', alignItems: 'center', gap: onRate ? '0' : '2px' }}
       >
         {stars}

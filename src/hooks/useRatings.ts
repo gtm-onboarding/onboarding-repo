@@ -17,11 +17,11 @@ function isValidRating(value: unknown): value is number {
 }
 
 function loadUserRatings(): UserRatings {
-  const stored = localStorage.getItem(RATINGS_STORAGE_KEY);
-  if (!stored) {
-    return {};
-  }
   try {
+    const stored = localStorage.getItem(RATINGS_STORAGE_KEY);
+    if (!stored) {
+      return {};
+    }
     const parsed: unknown = JSON.parse(stored);
     if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
       throw new Error('Malformed ratings');
@@ -31,8 +31,16 @@ function loadUserRatings(): UserRatings {
     );
     return Object.fromEntries(entries);
   } catch {
-    localStorage.removeItem(RATINGS_STORAGE_KEY);
+    removeStoredRatings();
     return {};
+  }
+}
+
+function removeStoredRatings() {
+  try {
+    localStorage.removeItem(RATINGS_STORAGE_KEY);
+  } catch {
+    // Storage is unavailable; ratings stay in memory only.
   }
 }
 
@@ -51,9 +59,16 @@ function subscribe(listener: () => void) {
 }
 
 export function rateProduct(productId: string, rating: number) {
+  if (Number.isNaN(rating)) {
+    return;
+  }
   const clamped = Math.min(MAX_RATING, Math.max(MIN_RATING, Math.round(rating)));
   userRatings = { ...getUserRatings(), [productId]: clamped };
-  localStorage.setItem(RATINGS_STORAGE_KEY, JSON.stringify(userRatings));
+  try {
+    localStorage.setItem(RATINGS_STORAGE_KEY, JSON.stringify(userRatings));
+  } catch {
+    // Storage is unavailable or full; the rating stays in memory only.
+  }
   listeners.forEach((listener) => listener());
 }
 
@@ -76,6 +91,6 @@ export function useProductRating(productId: string): ProductRating {
 
 export function resetRatings() {
   userRatings = null;
-  localStorage.removeItem(RATINGS_STORAGE_KEY);
+  removeStoredRatings();
   listeners.forEach((listener) => listener());
 }
