@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ProductCard } from '../components/ProductCard';
 import { CartProvider } from '../context/CartContext';
 import { products } from '../data/products';
+import { theme } from '../theme';
 
 const mockAddToCart = vi.fn();
 
@@ -40,6 +41,16 @@ describe('ProductCard', () => {
     renderProductCard();
     expect(screen.getByText(products[0].name)).toBeInTheDocument();
     expect(screen.getByText(`$${products[0].price.toFixed(2)}`)).toBeInTheDocument();
+  });
+
+  it('applies theme tokens to product styles', () => {
+    renderProductCard();
+    expect(screen.getByText(`$${products[0].price.toFixed(2)}`)).toHaveStyle({
+      color: theme.colors.primary,
+    });
+    expect(screen.getByText('Add to Cart')).toHaveStyle({
+      backgroundColor: theme.colors.text,
+    });
   });
 
   it('renders product image', () => {
