@@ -25,11 +25,11 @@ vi.mock('../context/CartContext', async () => {
   };
 });
 
-function renderProductCard() {
+function renderProductCard(product = products[0]) {
   return render(
     <BrowserRouter>
       <CartProvider>
-        <ProductCard product={products[0]} />
+        <ProductCard product={product} />
       </CartProvider>
     </BrowserRouter>
   );
@@ -47,6 +47,16 @@ describe('ProductCard', () => {
     const img = screen.getByAltText(products[0].name);
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute('src', products[0].image);
+  });
+
+  it('renders a Sale badge for products priced under $50', () => {
+    renderProductCard(products[2]);
+    expect(screen.getByText('Sale')).toBeInTheDocument();
+  });
+
+  it('does not render a Sale badge for products priced at $50 or above', () => {
+    renderProductCard(products[0]);
+    expect(screen.queryByText('Sale')).not.toBeInTheDocument();
   });
 
   it('calls addToCart when button clicked', () => {
