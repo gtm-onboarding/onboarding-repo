@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
@@ -153,6 +154,22 @@ export function ProductPage() {
             >
               ${product.price.toFixed(2)}
             </span>
+            <div style={{ marginBottom: '32px' }}>
+              <StarRating productId={product.id} size={28} />
+              <div style={{ marginTop: '12px' }}>
+                <p
+                  style={{
+                    color: '#6B6B6B',
+                    fontSize: '13px',
+                    marginBottom: '8px',
+                    fontWeight: '500',
+                  }}
+                >
+                  Rate this product
+                </p>
+                <StarRating productId={product.id} interactive size={28} showCount={false} />
+              </div>
+            </div>
             <p
               style={{
                 color: '#6B6B6B',
