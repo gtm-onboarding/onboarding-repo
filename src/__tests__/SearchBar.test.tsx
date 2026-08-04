@@ -88,6 +88,25 @@ describe('SearchBar', () => {
     expect(screen.queryByRole('list')).not.toBeInTheDocument();
   });
 
+  it('reopens the dropdown with arrow keys after Escape', () => {
+    renderSearchBar();
+    const input = screen.getByRole('searchbox');
+    fireEvent.change(input, { target: { value: 'wireless' } });
+    fireEvent.keyDown(input, { key: 'Escape' });
+    expect(screen.queryByRole('list')).not.toBeInTheDocument();
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    expect(screen.getByRole('list')).toBeInTheDocument();
+    expect(input).toHaveValue('wireless');
+  });
+
+  it('closes the dropdown when focus leaves the container', () => {
+    renderSearchBar();
+    const input = screen.getByRole('searchbox');
+    fireEvent.change(input, { target: { value: 'wireless' } });
+    fireEvent.blur(input, { relatedTarget: document.body });
+    expect(screen.queryByRole('list')).not.toBeInTheDocument();
+  });
+
   it('closes the dropdown when clicking outside', () => {
     renderSearchBar();
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'wireless' } });

@@ -18,6 +18,7 @@ export function SearchBar() {
   const navigate = useNavigate();
   const location = useLocation();
   const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -41,6 +42,12 @@ export function SearchBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (highlightedIndex < 0) return;
+    const highlighted = listRef.current?.children[highlightedIndex];
+    highlighted?.scrollIntoView?.({ block: 'nearest' });
+  }, [highlightedIndex]);
+
   const selectProduct = (product: Product) => {
     setQuery('');
     setIsOpen(false);
@@ -52,6 +59,11 @@ export function SearchBar() {
     if (event.key === 'Escape') {
       setIsOpen(false);
       setHighlightedIndex(-1);
+      return;
+    }
+    if (!isOpen && query.trim().length > 0 && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
+      event.preventDefault();
+      setIsOpen(true);
       return;
     }
     if (!showDropdown || results.length === 0) return;
@@ -69,7 +81,16 @@ export function SearchBar() {
   };
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', width: '260px' }}>
+    <div
+      ref={containerRef}
+      onBlur={(event) => {
+        if (!containerRef.current?.contains(event.relatedTarget as Node | null)) {
+          setIsOpen(false);
+          setHighlightedIndex(-1);
+        }
+      }}
+      style={{ position: 'relative', width: '260px', flexShrink: 0 }}
+    >
       <div
         style={{
           display: 'flex',
@@ -83,9 +104,13 @@ export function SearchBar() {
       >
         <SearchIcon />
         <input
-          type="text"
-          role="searchbox"
+          type="search"
           aria-label="Search products"
+          aria-expanded={showDropdown}
+          aria-controls="product-search-results"
+          aria-activedescendant={
+            highlightedIndex >= 0 ? `product-search-result-${results[highlightedIndex].id}` : undefined
+          }
           placeholder="Search products"
           value={query}
           onChange={(event) => {
@@ -94,6 +119,7 @@ export function SearchBar() {
             setHighlightedIndex(-1);
           }}
           onFocus={() => setIsOpen(true)}
+          onClick={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
           style={{
             border: 'none',
@@ -107,6 +133,8 @@ export function SearchBar() {
       </div>
       {showDropdown && (
         <ul
+          id="product-search-results"
+          ref={listRef}
           style={{
             position: 'absolute',
             top: 'calc(100% + 8px)',
@@ -128,7 +156,7 @@ export function SearchBar() {
             <li style={{ color: '#9A9A9A', fontSize: '14px', padding: '12px' }}>No products found</li>
           ) : (
             results.map((product, index) => (
-              <li key={product.id}>
+              <li key={product.id} id={`product-search-result-${product.id}`}>
                 <button
                   type="button"
                   onClick={() => selectProduct(product)}
