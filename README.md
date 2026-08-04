@@ -53,5 +53,22 @@ src/
 - User authentication (mock)
 - Checkout flow with order confirmation
 - Toast notifications
+- Light/dark theme with a header toggle, persisted in localStorage
+
+## Theming
+
+Palette values live in `src/App.css` as `--color-*` / `--shadow-*` custom properties, defined
+twice: once under `:root[data-theme='light']` and once under `:root[data-theme='dark']`.
+`src/theme.ts` exposes those variables as tokens (`theme.colors.text`, `theme.shadows.md`, …)
+for use in inline styles, so switching themes is a single `data-theme` change on `<html>`.
+
+- Use `theme.colors.*` / `theme.shadows.*` in components — never hardcode a hex value.
+- `ThemeContext` (`src/context/ThemeContext.tsx`) owns the active theme: it reads the
+  `onboarding-demo-theme` localStorage key, falls back to `prefers-color-scheme`, and syncs
+  `document.documentElement.dataset.theme`.
+- An inline script in `index.html` applies the stored theme before first paint to avoid a flash
+  of the wrong theme; keep it in sync with the storage key if that ever changes.
+- Adding a token means adding it to both `:root` blocks in `App.css` and to `colorTokens` /
+  `shadowTokens` in `theme.ts`.
 
 

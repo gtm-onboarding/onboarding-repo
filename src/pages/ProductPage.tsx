@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { theme } from '../theme';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
@@ -20,15 +21,15 @@ export function ProductPage() {
 
   if (isLoading) {
     return (
-      <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '40px 32px' }}>
+      <div style={{ backgroundColor: theme.colors.background, minHeight: '100vh', padding: '40px 32px' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px' }}>
-            <div style={{ backgroundColor: '#F5F3F0', height: '500px', borderRadius: '16px' }} />
+            <div style={{ backgroundColor: theme.colors.surfaceAlt, height: '500px', borderRadius: '16px' }} />
             <div>
-              <div style={{ backgroundColor: '#F5F3F0', height: '48px', borderRadius: '8px', marginBottom: '20px', width: '70%' }} />
-              <div style={{ backgroundColor: '#F5F3F0', height: '32px', borderRadius: '8px', marginBottom: '32px', width: '30%' }} />
-              <div style={{ backgroundColor: '#F5F3F0', height: '120px', borderRadius: '8px', marginBottom: '32px' }} />
-              <div style={{ backgroundColor: '#F5F3F0', height: '56px', borderRadius: '8px', width: '50%' }} />
+              <div style={{ backgroundColor: theme.colors.surfaceAlt, height: '48px', borderRadius: '8px', marginBottom: '20px', width: '70%' }} />
+              <div style={{ backgroundColor: theme.colors.surfaceAlt, height: '32px', borderRadius: '8px', marginBottom: '32px', width: '30%' }} />
+              <div style={{ backgroundColor: theme.colors.surfaceAlt, height: '120px', borderRadius: '8px', marginBottom: '32px' }} />
+              <div style={{ backgroundColor: theme.colors.surfaceAlt, height: '56px', borderRadius: '8px', width: '50%' }} />
             </div>
           </div>
         </div>
@@ -38,26 +39,26 @@ export function ProductPage() {
 
   if (!product) {
     return (
-      <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '40px 32px' }}>
+      <div style={{ backgroundColor: theme.colors.background, minHeight: '100vh', padding: '40px 32px' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', textAlign: 'center', paddingTop: '100px' }}>
           <h1
             style={{
-              fontFamily: '"Playfair Display", Georgia, serif',
-              color: '#1A1A1A',
+              fontFamily: theme.fonts.display,
+              color: theme.colors.text,
               marginBottom: '16px',
               fontSize: '32px',
             }}
           >
             Product Not Found
           </h1>
-          <p style={{ color: '#9A9A9A', marginBottom: '32px', fontSize: '16px' }}>
+          <p style={{ color: theme.colors.textMuted, marginBottom: '32px', fontSize: '16px' }}>
             The product you're looking for doesn't exist.
           </p>
           <Link
             to="/"
             style={{
-              backgroundColor: '#E07A5F',
-              color: 'white',
+              backgroundColor: theme.colors.primary,
+              color: theme.colors.primaryContrast,
               padding: '14px 32px',
               borderRadius: '6px',
               display: 'inline-block',
@@ -79,12 +80,12 @@ export function ProductPage() {
   };
 
   return (
-    <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '40px 32px' }}>
+    <div style={{ backgroundColor: theme.colors.background, minHeight: '100vh', padding: '40px 32px' }}>
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
         <Link
           to={`/category/${encodeURIComponent(product.category)}`}
           style={{
-            color: '#6B6B6B',
+            color: theme.colors.textSecondary,
             marginBottom: '32px',
             display: 'inline-flex',
             alignItems: 'center',
@@ -101,10 +102,10 @@ export function ProductPage() {
             gridTemplateColumns: '1fr 1fr',
             gap: '64px',
             marginTop: '24px',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: theme.colors.surface,
             borderRadius: '16px',
             padding: '40px',
-            boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+            boxShadow: theme.shadows.md,
           }}
         >
           <img
@@ -120,7 +121,7 @@ export function ProductPage() {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <p
               style={{
-                color: '#E07A5F',
+                color: theme.colors.primary,
                 fontSize: '13px',
                 fontWeight: '600',
                 letterSpacing: '1.5px',
@@ -132,8 +133,8 @@ export function ProductPage() {
             </p>
             <h1
               style={{
-                fontFamily: '"Playfair Display", Georgia, serif',
-                color: '#1A1A1A',
+                fontFamily: theme.fonts.display,
+                color: theme.colors.text,
                 marginBottom: '20px',
                 fontSize: '36px',
                 fontWeight: '600',
@@ -144,7 +145,7 @@ export function ProductPage() {
             </h1>
             <span
               style={{
-                color: '#E07A5F',
+                color: theme.colors.primary,
                 fontSize: '32px',
                 fontWeight: '700',
                 display: 'block',
@@ -155,7 +156,7 @@ export function ProductPage() {
             </span>
             <p
               style={{
-                color: '#6B6B6B',
+                color: theme.colors.textSecondary,
                 lineHeight: '1.8',
                 marginBottom: '40px',
                 fontSize: '16px',
@@ -170,16 +171,16 @@ export function ProductPage() {
                 gap: '20px',
                 marginBottom: '32px',
                 paddingTop: '24px',
-                borderTop: '1px solid #F0EEEB',
+                borderTop: `1px solid ${theme.colors.borderLight}`,
               }}
             >
-              <label style={{ color: '#1A1A1A', fontWeight: '500', fontSize: '15px' }}>Quantity:</label>
+              <label style={{ color: theme.colors.text, fontWeight: '500', fontSize: '15px' }}>Quantity:</label>
               <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                   style={{
-                    backgroundColor: '#F5F3F0',
-                    color: '#1A1A1A',
+                    backgroundColor: theme.colors.surfaceAlt,
+                    color: theme.colors.text,
                     border: 'none',
                     width: '40px',
                     height: '40px',
@@ -192,7 +193,7 @@ export function ProductPage() {
                 </button>
                 <span
                   style={{
-                    color: '#1A1A1A',
+                    color: theme.colors.text,
                     minWidth: '48px',
                     textAlign: 'center',
                     fontSize: '16px',
@@ -204,8 +205,8 @@ export function ProductPage() {
                 <button
                   onClick={() => setQuantity((q) => Math.min(99, q + 1))}
                   style={{
-                    backgroundColor: '#F5F3F0',
-                    color: '#1A1A1A',
+                    backgroundColor: theme.colors.surfaceAlt,
+                    color: theme.colors.text,
                     border: 'none',
                     width: '40px',
                     height: '40px',
@@ -221,8 +222,8 @@ export function ProductPage() {
             <button
               onClick={handleAddToCart}
               style={{
-                backgroundColor: '#E07A5F',
-                color: '#fff',
+                backgroundColor: theme.colors.primary,
+                color: theme.colors.primaryContrast,
                 border: 'none',
                 padding: '18px 32px',
                 borderRadius: '8px',
