@@ -7,6 +7,17 @@ export interface Product {
   category: string;
 }
 
+export interface RatingSeed {
+  total: number;
+  count: number;
+}
+
+export interface ProductRating {
+  average: number;
+  count: number;
+  userRating: number | null;
+}
+
 export interface CartItem {
   product: Product;
   quantity: number;
