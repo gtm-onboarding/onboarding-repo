@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import App from './App';
 import { CartProvider } from './context/CartContext';
+import { RatingsProvider } from './context/RatingsContext';
 import { AuthProvider } from './context/AuthContext';
 import './App.css';
 
@@ -15,7 +16,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <AuthProvider>
           <CartProvider>
-            <App />
+            <RatingsProvider>
+              <App />
+            </RatingsProvider>
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>

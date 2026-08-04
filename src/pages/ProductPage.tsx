@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRatings } from '../context/RatingsContext';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
-  const { addToCart } = useCart();
+  const { addToCart, showToast } = useCart();
+  const { rateProduct, getUserRating, getAverageRating, getRatingCount } = useRatings();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
@@ -77,6 +80,9 @@ export function ProductPage() {
       addToCart(product);
     }
   };
+  const averageRating = getAverageRating(product.id);
+  const ratingCount = getRatingCount(product.id);
+  const userRating = getUserRating(product.id);
 
   return (
     <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '40px 32px' }}>
@@ -163,6 +169,31 @@ export function ProductPage() {
             >
               {product.description}
             </p>
+            <div style={{ marginBottom: '32px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                <StarRating value={averageRating ?? 0} />
+                <span style={{ color: '#6B6B6B', fontSize: '14px' }}>
+                  {averageRating === null
+                    ? 'No ratings yet'
+                    : `${averageRating.toFixed(1)} (${ratingCount} ${
+                        ratingCount === 1 ? 'rating' : 'ratings'
+                      })`}
+                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span style={{ color: '#1A1A1A', fontSize: '14px', fontWeight: '500' }}>
+                  Your rating:
+                </span>
+                <StarRating
+                  value={userRating ?? 0}
+                  onRate={(rating) => {
+                    rateProduct(product.id, rating);
+                    showToast(`Rated ${product.name} ${rating} ${rating === 1 ? 'star' : 'stars'}`);
+                  }}
+                  size={24}
+                />
+              </div>
+            </div>
             <div
               style={{
                 display: 'flex',

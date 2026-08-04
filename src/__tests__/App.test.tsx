@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import App from '../App';
 import { CartProvider } from '../context/CartContext';
+import { RatingsProvider } from '../context/RatingsContext';
 import { AuthProvider } from '../context/AuthContext';
 
 const localStorageMock = (() => {
@@ -22,7 +23,9 @@ function renderApp() {
     <BrowserRouter>
       <AuthProvider>
         <CartProvider>
-          <App />
+          <RatingsProvider>
+            <App />
+          </RatingsProvider>
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>
