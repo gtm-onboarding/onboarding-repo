@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { useRatings } from '../context/RatingsContext';
+import { StarRating } from '../components/StarRating';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
-  const { addToCart } = useCart();
+  const { addToCart, showToast } = useCart();
+  const { rateProduct, getAverageRating, getRatingCount, getUserRating } = useRatings();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
@@ -71,6 +74,15 @@ export function ProductPage() {
       </div>
     );
   }
+
+  const averageRating = getAverageRating(product.id);
+  const ratingCount = getRatingCount(product.id);
+  const userRating = getUserRating(product.id);
+
+  const handleRate = (stars: number) => {
+    rateProduct(product.id, stars);
+    showToast(`You rated ${product.name} ${stars} star${stars === 1 ? '' : 's'}`);
+  };
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
@@ -165,12 +177,29 @@ export function ProductPage() {
             </p>
             <div
               style={{
+                marginBottom: '32px',
+                paddingTop: '24px',
+                borderTop: '1px solid #F0EEEB',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                <StarRating value={userRating ?? averageRating} onRate={handleRate} size={24} />
+                <span style={{ color: '#6B6B6B', fontSize: '14px' }}>
+                  {ratingCount > 0
+                    ? `${averageRating.toFixed(1)} out of 5 (${ratingCount} rating${ratingCount === 1 ? '' : 's'})`
+                    : 'No ratings yet'}
+                </span>
+              </div>
+              <p style={{ color: '#9A9A9A', fontSize: '13px' }}>
+                {userRating ? `You rated this ${userRating} out of 5` : 'Tap a star to rate this product'}
+              </p>
+            </div>
+            <div
+              style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '20px',
                 marginBottom: '32px',
-                paddingTop: '24px',
-                borderTop: '1px solid #F0EEEB',
               }}
             >
               <label style={{ color: '#1A1A1A', fontWeight: '500', fontSize: '15px' }}>Quantity:</label>
