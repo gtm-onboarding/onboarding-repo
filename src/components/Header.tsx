@@ -4,21 +4,25 @@ import { useAuth } from '../context/AuthContext';
 import { CartIcon } from './icons/CartIcon';
 import { UserIcon } from './icons/UserIcon';
 import { categories } from '../data/products';
+import { useTheme } from '../context/ThemeContext';
+import { MoonIcon } from './icons/MoonIcon';
+import { SunIcon } from './icons/SunIcon';
 
 export function Header() {
   const { totalItems } = useCart();
   const { user, isAuthenticated, signOut } = useAuth();
+  const { mode, toggleTheme, theme } = useTheme();
 
   return (
     <header
       style={{
-        backgroundColor: '#FFFFFF',
-        borderBottom: '1px solid #E8E6E3',
+        backgroundColor: theme.colors.surface,
+        borderBottom: `1px solid ${theme.colors.border}`,
         padding: '20px 32px',
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        boxShadow: '0 1px 3px rgba(26, 26, 26, 0.04)',
+        boxShadow: 'var(--shadow-sm)',
       }}
     >
       <nav
@@ -34,7 +38,7 @@ export function Header() {
           <Link
             to="/"
             style={{
-              color: '#1A1A1A',
+              color: theme.colors.text,
               fontSize: '26px',
               fontWeight: '600',
               fontFamily: '"Playfair Display", Georgia, serif',
@@ -49,7 +53,7 @@ export function Header() {
                 key={category}
                 to={`/category/${encodeURIComponent(category)}`}
                 style={{
-                  color: '#6B6B6B',
+                  color: theme.colors.textSecondary,
                   fontSize: '14px',
                   fontWeight: '500',
                   letterSpacing: '0.3px',
@@ -66,13 +70,13 @@ export function Header() {
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <UserIcon />
-              <span style={{ color: '#6B6B6B', fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
+              <span style={{ color: theme.colors.textSecondary, fontSize: '14px', fontWeight: '500' }}>{user?.email}</span>
               <button
                 onClick={signOut}
                 style={{
                   backgroundColor: 'transparent',
-                  border: '1px solid #E8E6E3',
-                  color: '#6B6B6B',
+                  border: `1px solid ${theme.colors.border}`,
+                  color: theme.colors.textSecondary,
                   padding: '8px 16px',
                   borderRadius: '6px',
                   fontSize: '13px',
@@ -86,7 +90,7 @@ export function Header() {
             <Link
               to="/signin"
               style={{
-                color: '#1A1A1A',
+                color: theme.colors.text,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
@@ -101,7 +105,7 @@ export function Header() {
           <Link
             to="/cart"
             style={{
-              color: '#1A1A1A',
+              color: theme.colors.text,
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
@@ -112,7 +116,7 @@ export function Header() {
             {totalItems > 0 && (
               <span
                 style={{
-                  backgroundColor: '#E07A5F',
+                  backgroundColor: 'var(--color-primary)',
                   color: 'white',
                   fontSize: '11px',
                   fontWeight: '600',
@@ -129,6 +133,22 @@ export function Header() {
               </span>
             )}
           </Link>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              backgroundColor: 'transparent',
+              border: `1px solid ${theme.colors.border}`,
+              color: theme.colors.text,
+              padding: '6px',
+              borderRadius: '6px',
+            }}
+          >
+            {mode === 'light' ? <MoonIcon /> : <SunIcon />}
+          </button>
         </div>
       </nav>
     </header>
