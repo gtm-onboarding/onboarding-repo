@@ -25,6 +25,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <span
             style={{
               position: 'absolute',
+              zIndex: 1,
               top: '12px',
               left: '12px',
               backgroundColor: '#E07A5F',
