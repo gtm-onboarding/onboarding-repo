@@ -21,11 +21,13 @@ function loadWishlist(): Product[] {
   const stored = localStorage.getItem(WISHLIST_STORAGE_KEY);
   if (!stored) return [];
   try {
-    return JSON.parse(stored);
+    const parsed = JSON.parse(stored);
+    if (Array.isArray(parsed)) return parsed;
   } catch {
-    localStorage.removeItem(WISHLIST_STORAGE_KEY);
-    return [];
+    // fall through to reset below
   }
+  localStorage.removeItem(WISHLIST_STORAGE_KEY);
+  return [];
 }
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
@@ -44,9 +46,8 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   const isInWishlist = (productId: string) => items.some((item) => item.id === productId);
 
   const addToWishlist = (product: Product) => {
-    setItems((current) =>
-      current.some((item) => item.id === product.id) ? current : [...current, product]
-    );
+    if (isInWishlist(product.id)) return;
+    setItems((current) => [...current, product]);
     showToast(`Added ${product.name} to wishlist`);
   };
 

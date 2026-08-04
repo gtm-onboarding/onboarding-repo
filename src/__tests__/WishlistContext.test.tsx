@@ -122,4 +122,11 @@ describe('WishlistContext', () => {
     expect(screen.getByTestId('total-items').textContent).toBe('0');
     expect(localStorageMock.removeItem).toHaveBeenCalledWith(WISHLIST_STORAGE_KEY);
   });
+
+  it('recovers from stored data that is not an array', () => {
+    localStorageMock.setItem(WISHLIST_STORAGE_KEY, JSON.stringify({ a: 1 }));
+    renderWithProvider();
+    expect(screen.getByTestId('total-items').textContent).toBe('0');
+    expect(localStorageMock.removeItem).toHaveBeenCalledWith(WISHLIST_STORAGE_KEY);
+  });
 });
