@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
+import { StarRating } from './StarRating';
 
 interface ProductCardProps {
   product: Product;
@@ -48,6 +49,9 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.name}
           </h3>
         </Link>
+        <div style={{ marginBottom: '12px' }}>
+          <StarRating productId={product.id} size={16} />
+        </div>
         <p
           style={{
             color: '#9A9A9A',
