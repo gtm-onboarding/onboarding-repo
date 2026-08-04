@@ -6,10 +6,10 @@ export function HomePage() {
   const featuredProducts = products.slice(0, 4);
 
   return (
-    <main style={{ backgroundColor: '#FAF9F7', minHeight: '100vh' }}>
+    <main style={{ backgroundColor: 'var(--color-background)', minHeight: '100vh' }}>
       <section
         style={{
-          backgroundColor: '#F5F3F0',
+          backgroundColor: 'var(--color-surface-alt)',
           padding: '80px 32px 100px',
           position: 'relative',
           overflow: 'hidden',
@@ -28,7 +28,7 @@ export function HomePage() {
           <div style={{ animation: 'fadeIn 0.6s ease-out' }}>
             <p
               style={{
-                color: '#E07A5F',
+                color: 'var(--color-primary)',
                 fontSize: '13px',
                 fontWeight: '600',
                 letterSpacing: '2px',
@@ -43,7 +43,7 @@ export function HomePage() {
                 fontFamily: '"Playfair Display", Georgia, serif',
                 fontSize: '56px',
                 fontWeight: '600',
-                color: '#1A1A1A',
+                color: 'var(--color-text)',
                 lineHeight: '1.1',
                 marginBottom: '24px',
                 letterSpacing: '-1px',
@@ -56,7 +56,7 @@ export function HomePage() {
             <p
               style={{
                 fontSize: '18px',
-                color: '#6B6B6B',
+                color: 'var(--color-text-secondary)',
                 lineHeight: '1.7',
                 marginBottom: '40px',
                 maxWidth: '440px',
@@ -68,8 +68,8 @@ export function HomePage() {
             <Link
               to="/category/Electronics"
               style={{
-                backgroundColor: '#E07A5F',
-                color: 'white',
+                backgroundColor: 'var(--color-primary)',
+                color: 'var(--color-on-accent)',
                 padding: '16px 40px',
                 borderRadius: '6px',
                 fontWeight: '600',
@@ -91,10 +91,10 @@ export function HomePage() {
           >
             <div
               style={{
-                backgroundColor: '#FFFFFF',
+                backgroundColor: 'var(--color-surface)',
                 borderRadius: '16px',
                 padding: '24px',
-                boxShadow: '0 8px 24px rgba(26, 26, 26, 0.08)',
+                boxShadow: '0 8px 24px rgba(var(--shadow-rgb), 0.08)',
                 transform: 'translateY(-20px)',
               }}
             >
@@ -103,14 +103,14 @@ export function HomePage() {
                 alt="Featured"
                 style={{ width: '100%', borderRadius: '12px', marginBottom: '16px' }}
               />
-              <p style={{ color: '#1A1A1A', fontWeight: '500', fontSize: '14px' }}>Electronics</p>
+              <p style={{ color: 'var(--color-text)', fontWeight: '500', fontSize: '14px' }}>Electronics</p>
             </div>
             <div
               style={{
-                backgroundColor: '#FFFFFF',
+                backgroundColor: 'var(--color-surface)',
                 borderRadius: '16px',
                 padding: '24px',
-                boxShadow: '0 8px 24px rgba(26, 26, 26, 0.08)',
+                boxShadow: '0 8px 24px rgba(var(--shadow-rgb), 0.08)',
                 transform: 'translateY(20px)',
               }}
             >
@@ -119,7 +119,7 @@ export function HomePage() {
                 alt="Featured"
                 style={{ width: '100%', borderRadius: '12px', marginBottom: '16px' }}
               />
-              <p style={{ color: '#1A1A1A', fontWeight: '500', fontSize: '14px' }}>Home & Garden</p>
+              <p style={{ color: 'var(--color-text)', fontWeight: '500', fontSize: '14px' }}>Home & Garden</p>
             </div>
           </div>
         </div>
@@ -136,7 +136,7 @@ export function HomePage() {
           <h2
             style={{
               fontFamily: '"Playfair Display", Georgia, serif',
-              color: '#1A1A1A',
+              color: 'var(--color-text)',
               fontSize: '36px',
               fontWeight: '600',
               marginBottom: '12px',
@@ -145,7 +145,7 @@ export function HomePage() {
           >
             Featured Products
           </h2>
-          <p style={{ color: '#6B6B6B', fontSize: '16px' }}>
+          <p style={{ color: 'var(--color-text-secondary)', fontSize: '16px' }}>
             Handpicked selections for discerning tastes
           </p>
         </div>
@@ -164,7 +164,7 @@ export function HomePage() {
 
       <section
         style={{
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'var(--color-surface)',
           padding: '80px 32px',
         }}
       >
@@ -173,7 +173,7 @@ export function HomePage() {
             <h2
               style={{
                 fontFamily: '"Playfair Display", Georgia, serif',
-                color: '#1A1A1A',
+                color: 'var(--color-text)',
                 fontSize: '36px',
                 fontWeight: '600',
                 marginBottom: '12px',
@@ -182,7 +182,7 @@ export function HomePage() {
             >
               Shop by Category
             </h2>
-            <p style={{ color: '#6B6B6B', fontSize: '16px' }}>
+            <p style={{ color: 'var(--color-text-secondary)', fontSize: '16px' }}>
               Explore our curated collections
             </p>
           </div>
@@ -198,11 +198,11 @@ export function HomePage() {
                 key={category}
                 to={`/category/${encodeURIComponent(category)}`}
                 style={{
-                  backgroundColor: '#F5F3F0',
+                  backgroundColor: 'var(--color-surface-alt)',
                   borderRadius: '16px',
                   padding: '48px 32px',
                   textAlign: 'center',
-                  color: '#1A1A1A',
+                  color: 'var(--color-text)',
                   position: 'relative',
                   overflow: 'hidden',
                 }}
@@ -212,8 +212,8 @@ export function HomePage() {
                     position: 'absolute',
                     top: '16px',
                     right: '16px',
-                    backgroundColor: '#E07A5F',
-                    color: 'white',
+                    backgroundColor: 'var(--color-primary)',
+                    color: 'var(--color-on-accent)',
                     fontSize: '12px',
                     fontWeight: '600',
                     padding: '4px 12px',
@@ -233,7 +233,7 @@ export function HomePage() {
                 >
                   {category}
                 </h3>
-                <p style={{ color: '#6B6B6B', fontSize: '14px' }}>
+                <p style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>
                   {index === 0 && 'Tech & gadgets'}
                   {index === 1 && 'Fashion & apparel'}
                   {index === 2 && 'Living spaces'}

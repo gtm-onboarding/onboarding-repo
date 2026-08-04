@@ -5,6 +5,13 @@
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Onboarding Demo Shop</title>
+    <script>
+      var storedTheme = localStorage.getItem('onboarding-demo-theme');
+      document.documentElement.setAttribute(
+        'data-theme',
+        storedTheme === 'dark' ? 'dark' : 'light'
+      );
+    </script>
   </head>
   <body>
     <div id="root"></div>
