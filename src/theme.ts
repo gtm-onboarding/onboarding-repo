@@ -20,6 +20,7 @@ export const palettes: Record<ThemeMode, Record<string, string>> = {
     borderLight: '#F0EEEB',
     inverseSurface: '#1A1A1A',
     inverseText: '#FFFFFF',
+    selection: 'rgba(224, 122, 95, 0.2)',
     shadow: 'rgba(26, 26, 26, 0.08)',
   },
   dark: {
@@ -41,6 +42,7 @@ export const palettes: Record<ThemeMode, Record<string, string>> = {
     borderLight: '#2E2C29',
     inverseSurface: '#F5F3F0',
     inverseText: '#1A1A1A',
+    selection: 'rgba(232, 143, 118, 0.32)',
     shadow: 'rgba(0, 0, 0, 0.5)',
   },
 };
