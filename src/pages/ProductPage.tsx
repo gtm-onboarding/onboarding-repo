@@ -188,7 +188,7 @@ export function ProductPage() {
                   value={userRating ?? 0}
                   onRate={(rating) => {
                     rateProduct(product.id, rating);
-                    showToast(`Rated ${product.name} ${rating} stars`);
+                    showToast(`Rated ${product.name} ${rating} ${rating === 1 ? 'star' : 'stars'}`);
                   }}
                   size={24}
                 />
