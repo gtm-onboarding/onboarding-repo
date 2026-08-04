@@ -3,6 +3,7 @@ import { render, screen, act } from '@testing-library/react';
 import { ThemeProvider, useTheme } from '../context/ThemeContext';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { palettes } from '../theme';
+import indexHtml from '../../index.html?raw';
 
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
@@ -127,5 +128,21 @@ describe('ThemeContext', () => {
 
   it('defines the same color keys for both palettes', () => {
     expect(Object.keys(palettes.dark).sort()).toEqual(Object.keys(palettes.light).sort());
+  });
+
+  it('keeps the pre-paint script in index.html in sync with the dark palette', () => {
+    const declared = Object.fromEntries(
+      [...indexHtml.matchAll(/'(--color-[a-z-]+)':\s*'([^']+)'/g)].map(([, name, value]) => [
+        name,
+        value,
+      ])
+    );
+    const expected = Object.fromEntries(
+      Object.entries(palettes.dark).map(([key, value]) => [
+        `--color-${key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}`,
+        value,
+      ])
+    );
+    expect(declared).toEqual(expected);
   });
 });

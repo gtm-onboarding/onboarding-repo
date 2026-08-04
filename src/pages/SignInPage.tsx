@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 export function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { signIn, signInWithGoogle } = useAuth();
+  const { mode } = useTheme();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -126,7 +128,7 @@ export function SignInPage() {
           type="submit"
           style={{
             backgroundColor: 'var(--color-primary)',
-            color: 'white',
+            color: 'var(--color-on-primary)',
             border: 'none',
             padding: '16px',
             borderRadius: '8px',
@@ -165,6 +167,7 @@ export function SignInPage() {
               }
             }}
             onError={() => setError('Google sign-in failed. Please try again.')}
+            theme={mode === 'dark' ? 'filled_black' : 'outline'}
             text="signin_with"
             shape="rectangular"
             width={320}

@@ -204,7 +204,7 @@ export function CheckoutPage() {
               type="submit"
               style={{
                 backgroundColor: 'var(--color-primary)',
-                color: 'white',
+                color: 'var(--color-on-primary)',
                 border: 'none',
                 padding: '18px 32px',
                 borderRadius: '8px',
@@ -361,7 +361,7 @@ export function CheckoutPage() {
               onClick={handleConfirmationClose}
               style={{
                 backgroundColor: 'var(--color-primary)',
-                color: 'white',
+                color: 'var(--color-on-primary)',
                 border: 'none',
                 padding: '14px 32px',
                 borderRadius: '8px',

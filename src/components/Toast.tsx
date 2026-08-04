@@ -31,7 +31,7 @@ export function Toast({ message, type = 'success', onClose }: ToastProps) {
           height: '24px',
           borderRadius: '50%',
           backgroundColor: type === 'success' ? 'var(--color-success)' : 'var(--color-error)',
-          color: 'white',
+          color: 'var(--color-on-primary)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

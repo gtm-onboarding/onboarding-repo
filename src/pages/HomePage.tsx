@@ -69,7 +69,7 @@ export function HomePage() {
               to="/category/Electronics"
               style={{
                 backgroundColor: 'var(--color-primary)',
-                color: 'white',
+                color: 'var(--color-on-primary)',
                 padding: '16px 40px',
                 borderRadius: '6px',
                 fontWeight: '600',
@@ -213,7 +213,7 @@ export function HomePage() {
                     top: '16px',
                     right: '16px',
                     backgroundColor: 'var(--color-primary)',
-                    color: 'white',
+                    color: 'var(--color-on-primary)',
                     fontSize: '12px',
                     fontWeight: '600',
                     padding: '4px 12px',

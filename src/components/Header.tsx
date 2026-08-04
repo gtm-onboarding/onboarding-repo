@@ -115,7 +115,7 @@ export function Header() {
               <span
                 style={{
                   backgroundColor: 'var(--color-primary)',
-                  color: 'white',
+                  color: 'var(--color-on-primary)',
                   fontSize: '11px',
                   fontWeight: '600',
                   padding: '2px 7px',

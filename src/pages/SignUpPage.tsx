@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 export function SignUpPage() {
   const [name, setName] = useState('');
@@ -10,6 +11,7 @@ export function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const { signUp, signInWithGoogle } = useAuth();
+  const { mode } = useTheme();
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -134,7 +136,7 @@ export function SignUpPage() {
           type="submit"
           style={{
             backgroundColor: 'var(--color-primary)',
-            color: 'white',
+            color: 'var(--color-on-primary)',
             border: 'none',
             padding: '16px',
             borderRadius: '8px',
@@ -172,6 +174,7 @@ export function SignUpPage() {
               }
             }}
             onError={() => setError('Google sign-up failed. Please try again.')}
+            theme={mode === 'dark' ? 'filled_black' : 'outline'}
             text="signup_with"
             shape="rectangular"
             width={320}

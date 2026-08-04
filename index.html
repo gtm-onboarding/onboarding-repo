@@ -18,8 +18,31 @@
         document.documentElement.setAttribute('data-theme', mode);
         document.documentElement.style.colorScheme = mode;
         if (mode === 'dark') {
-          document.documentElement.style.setProperty('--color-background', '#151413');
-          document.documentElement.style.setProperty('--color-text', '#F5F3F0');
+          // Keep in sync with palettes.dark in src/theme.ts; ThemeProvider re-applies these on mount.
+          var dark = {
+            '--color-background': '#151413',
+            '--color-surface': '#1F1E1C',
+            '--color-surface-alt': '#2A2826',
+            '--color-text': '#F5F3F0',
+            '--color-text-secondary': '#B0ADA8',
+            '--color-text-muted': '#8A8782',
+            '--color-primary': '#E88F76',
+            '--color-primary-hover': '#F0A48D',
+            '--color-primary-surface': '#3A2A25',
+            '--color-on-primary': '#1A1A1A',
+            '--color-success': '#7FB08D',
+            '--color-success-surface': '#23342A',
+            '--color-error': '#E2695B',
+            '--color-error-surface': '#3A2320',
+            '--color-border': '#3A3835',
+            '--color-border-light': '#2E2C29',
+            '--color-inverse-surface': '#F5F3F0',
+            '--color-inverse-text': '#1A1A1A',
+            '--color-shadow': 'rgba(0, 0, 0, 0.5)'
+          };
+          Object.keys(dark).forEach(function (key) {
+            document.documentElement.style.setProperty(key, dark[key]);
+          });
         }
       })();
     </script>

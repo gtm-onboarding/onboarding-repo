@@ -57,7 +57,7 @@ export function ProductPage() {
             to="/"
             style={{
               backgroundColor: 'var(--color-primary)',
-              color: 'white',
+              color: 'var(--color-on-primary)',
               padding: '14px 32px',
               borderRadius: '6px',
               display: 'inline-block',
@@ -222,7 +222,7 @@ export function ProductPage() {
               onClick={handleAddToCart}
               style={{
                 backgroundColor: 'var(--color-primary)',
-                color: 'var(--color-surface)',
+                color: 'var(--color-on-primary)',
                 border: 'none',
                 padding: '18px 32px',
                 borderRadius: '8px',

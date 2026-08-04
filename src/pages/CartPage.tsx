@@ -147,7 +147,7 @@ export function CartPage() {
             onClick={handleCheckout}
             style={{
               backgroundColor: 'var(--color-primary)',
-              color: 'white',
+              color: 'var(--color-on-primary)',
               border: 'none',
               padding: '16px 40px',
               borderRadius: '8px',
