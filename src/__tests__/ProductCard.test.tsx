@@ -1,9 +1,23 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { ProductCard } from '../components/ProductCard';
 import { CartProvider } from '../context/CartContext';
+import { AuthProvider } from '../context/AuthContext';
+import { RatingsProvider } from '../context/RatingsContext';
 import { products } from '../data/products';
+
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: vi.fn((key: string) => store[key] || null),
+    setItem: vi.fn((key: string, value: string) => { store[key] = value; }),
+    removeItem: vi.fn((key: string) => { delete store[key]; }),
+    clear: vi.fn(() => { store = {}; }),
+  };
+})();
+
+Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
 const mockAddToCart = vi.fn();
 
@@ -28,14 +42,23 @@ vi.mock('../context/CartContext', async () => {
 function renderProductCard() {
   return render(
     <BrowserRouter>
-      <CartProvider>
-        <ProductCard product={products[0]} />
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <RatingsProvider>
+            <ProductCard product={products[0]} />
+          </RatingsProvider>
+        </CartProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
 
 describe('ProductCard', () => {
+  beforeEach(() => {
+    localStorageMock.clear();
+    vi.clearAllMocks();
+  });
+
   it('renders product information', () => {
     renderProductCard();
     expect(screen.getByText(products[0].name)).toBeInTheDocument();
@@ -53,6 +76,23 @@ describe('ProductCard', () => {
     renderProductCard();
     fireEvent.click(screen.getByText('Add to Cart'));
     expect(mockAddToCart).toHaveBeenCalledWith(products[0]);
+  });
+
+  it('renders read-only stars with no ratings yet', () => {
+    renderProductCard();
+    expect(screen.getByText('No ratings yet')).toBeInTheDocument();
+    expect(screen.getByLabelText('Rated 0.0 out of 5')).toBeInTheDocument();
+    expect(screen.queryAllByRole('button', { name: /Rate \d star/ })).toHaveLength(0);
+  });
+
+  it('renders the average rating and count from stored ratings', () => {
+    localStorageMock.setItem(
+      'onboarding-demo-ratings',
+      JSON.stringify({ [products[0].id]: { 'a@example.com': 5, 'b@example.com': 4 } })
+    );
+    renderProductCard();
+    expect(screen.getByText('4.5 (2 ratings)')).toBeInTheDocument();
+    expect(screen.getByLabelText('Rated 4.5 out of 5')).toBeInTheDocument();
   });
 
   it('links to product page', () => {
