@@ -12,6 +12,17 @@ export interface CartItem {
   quantity: number;
 }
 
+export interface StoredRating {
+  ratings: number[];
+  userRating: number | null;
+}
+
+export interface ProductRating {
+  average: number;
+  count: number;
+  userRating: number | null;
+}
+
 export interface User {
   email: string;
   name: string;
