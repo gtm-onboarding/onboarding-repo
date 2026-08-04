@@ -19,8 +19,16 @@ function renderSearchBar() {
   );
 }
 
+const MAX_RESULTS = 6;
+
+function matchingProducts(query: string) {
+  return products
+    .filter((product) => product.name.toLowerCase().includes(query.toLowerCase()))
+    .slice(0, MAX_RESULTS);
+}
+
 function typeQuery(value: string) {
-  const input = screen.getByRole('searchbox');
+  const input = screen.getByRole('combobox');
   fireEvent.change(input, { target: { value } });
   return input;
 }
@@ -69,8 +77,21 @@ describe('SearchBar', () => {
     const input = typeQuery('s');
     fireEvent.keyDown(input, { key: 'ArrowDown' });
     fireEvent.keyDown(input, { key: 'Enter' });
-    const matches = products.filter((product) => product.name.toLowerCase().includes('s'));
-    expect(mockNavigate).toHaveBeenCalledWith(`/product/${matches[1].id}`);
+    expect(mockNavigate).toHaveBeenCalledWith(`/product/${matchingProducts('s')[1].id}`);
+  });
+
+  it('caps the number of results shown', () => {
+    renderSearchBar();
+    typeQuery('s');
+    expect(screen.getAllByRole('option')).toHaveLength(MAX_RESULTS);
+  });
+
+  it('reopens the dropdown when arrowing after Escape', () => {
+    renderSearchBar();
+    const input = typeQuery('watch');
+    fireEvent.keyDown(input, { key: 'Escape' });
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    expect(screen.getByText('Smart Watch')).toBeInTheDocument();
   });
 
   it('closes the dropdown on Escape', () => {

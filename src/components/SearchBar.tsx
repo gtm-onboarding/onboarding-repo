@@ -48,9 +48,11 @@ export function SearchBar() {
     if (!results.length) return;
     if (event.key === 'ArrowDown') {
       event.preventDefault();
+      setIsOpen(true);
       setHighlightedIndex((index) => (index + 1) % results.length);
     } else if (event.key === 'ArrowUp') {
       event.preventDefault();
+      setIsOpen(true);
       setHighlightedIndex((index) => (index - 1 + results.length) % results.length);
     } else if (event.key === 'Enter' && isOpen) {
       event.preventDefault();
@@ -61,7 +63,7 @@ export function SearchBar() {
   const showDropdown = isOpen && query.trim().length > 0;
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', flex: 1, maxWidth: '320px' }}>
+    <div ref={containerRef} style={{ position: 'relative', width: '280px' }}>
       <div
         style={{
           display: 'flex',
@@ -76,8 +78,13 @@ export function SearchBar() {
         <SearchIcon />
         <input
           type="text"
-          role="searchbox"
+          role="combobox"
           aria-label="Search products"
+          aria-expanded={showDropdown}
+          aria-controls="search-results"
+          aria-activedescendant={
+            showDropdown && results.length ? `search-result-${results[highlightedIndex]?.id}` : undefined
+          }
           placeholder="Search products"
           value={query}
           onChange={(event) => {
@@ -99,6 +106,8 @@ export function SearchBar() {
       </div>
       {showDropdown && (
         <ul
+          id="search-results"
+          role="listbox"
           style={{
             position: 'absolute',
             top: 'calc(100% + 8px)',
@@ -115,13 +124,16 @@ export function SearchBar() {
           }}
         >
           {results.length === 0 ? (
-            <li style={{ padding: '12px 14px', color: '#9A9A9A', fontSize: '14px' }}>
+            <li role="none" style={{ padding: '12px 14px', color: '#9A9A9A', fontSize: '14px' }}>
               No products found
             </li>
           ) : (
             results.map((product, index) => (
-              <li key={product.id}>
+              <li key={product.id} role="none">
                 <button
+                  id={`search-result-${product.id}`}
+                  role="option"
+                  aria-selected={index === highlightedIndex}
                   onMouseDown={(event) => event.preventDefault()}
                   onClick={() => selectProduct(product)}
                   onMouseEnter={() => setHighlightedIndex(index)}
