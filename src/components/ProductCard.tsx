@@ -1,13 +1,22 @@
 import { Link } from 'react-router-dom';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
+import { HeartIcon } from './icons/HeartIcon';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { addToCart } = useCart();
+  const { addToCart, showToast } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const saved = isInWishlist(product.id);
+
+  const handleWishlistClick = () => {
+    toggleWishlist(product);
+    showToast(saved ? `Removed ${product.name} from wishlist` : `Saved ${product.name} to wishlist`);
+  };
 
   return (
     <div
@@ -18,8 +27,31 @@ export function ProductCard({ product }: ProductCardProps) {
         display: 'flex',
         flexDirection: 'column',
         boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+        position: 'relative',
       }}
     >
+      <button
+        onClick={handleWishlistClick}
+        aria-label={saved ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
+        aria-pressed={saved}
+        style={{
+          position: 'absolute',
+          top: '12px',
+          right: '12px',
+          zIndex: 1,
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          border: '1px solid #F0EEEB',
+          borderRadius: '50%',
+          width: '36px',
+          height: '36px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+        }}
+      >
+        <HeartIcon filled={saved} />
+      </button>
       <Link to={`/product/${product.id}`} style={{ overflow: 'hidden' }}>
         <img
           src={product.image}
