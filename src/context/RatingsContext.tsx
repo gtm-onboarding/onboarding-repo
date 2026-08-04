@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { RatingSummary } from '../types';
 
 interface RatingsContextType {
@@ -23,6 +23,7 @@ function isValidRating(rating: number) {
 export function RatingsProvider({ children }: { children: ReactNode }) {
   const [ratings, setRatings] = useState<StoredRatings>({});
   const [userRatings, setUserRatings] = useState<Record<string, number>>({});
+  const hydrated = useRef(false);
 
   useEffect(() => {
     const stored = localStorage.getItem(RATINGS_STORAGE_KEY);
@@ -35,9 +36,11 @@ export function RatingsProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem(RATINGS_STORAGE_KEY);
       }
     }
+    hydrated.current = true;
   }, []);
 
   useEffect(() => {
+    if (!hydrated.current) return;
     localStorage.setItem(RATINGS_STORAGE_KEY, JSON.stringify({ ratings, userRatings }));
   }, [ratings, userRatings]);
 
