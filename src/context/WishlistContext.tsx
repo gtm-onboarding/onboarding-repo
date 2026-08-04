@@ -15,22 +15,20 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 
 const WISHLIST_STORAGE_KEY = 'onboarding-demo-wishlist';
 
-export function WishlistProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<Product[]>([]);
+function loadStoredItems(): Product[] {
+  const stored = localStorage.getItem(WISHLIST_STORAGE_KEY);
+  if (!stored) return [];
+  try {
+    const parsed = JSON.parse(stored);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    localStorage.removeItem(WISHLIST_STORAGE_KEY);
+    return [];
+  }
+}
 
-  useEffect(() => {
-    const stored = localStorage.getItem(WISHLIST_STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          setItems(parsed);
-        }
-      } catch {
-        localStorage.removeItem(WISHLIST_STORAGE_KEY);
-      }
-    }
-  }, []);
+export function WishlistProvider({ children }: { children: ReactNode }) {
+  const [items, setItems] = useState<Product[]>(loadStoredItems);
 
   useEffect(() => {
     localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(items));
