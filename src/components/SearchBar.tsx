@@ -57,6 +57,8 @@ export function SearchBar() {
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Escape') {
+      // type="search" inputs clear themselves on Escape in some browsers
+      event.preventDefault();
       setIsOpen(false);
       setHighlightedIndex(-1);
       return;
