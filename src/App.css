@@ -13,15 +13,16 @@ html {
 body {
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.6;
-  background-color: #FAF9F7;
-  color: #1A1A1A;
+  background-color: var(--color-background, #FAF9F7);
+  color: var(--color-text, #1A1A1A);
+  transition: background-color 250ms ease, color 250ms ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
   background-color: rgba(224, 122, 95, 0.2);
-  color: #1A1A1A;
+  color: var(--color-text, #1A1A1A);
 }
 
 a {
@@ -38,7 +39,7 @@ button {
 button:focus,
 input:focus,
 a:focus {
-  outline: 2px solid #E07A5F;
+  outline: 2px solid var(--color-primary, #E07A5F);
   outline-offset: 2px;
 }
 

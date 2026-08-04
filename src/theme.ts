@@ -1,5 +1,7 @@
-export const theme = {
-  colors: {
+export type ThemeMode = 'light' | 'dark';
+
+export const palettes: Record<ThemeMode, Record<string, string>> = {
+  light: {
     background: '#FAF9F7',
     surface: '#FFFFFF',
     surfaceAlt: '#F5F3F0',
@@ -8,20 +10,50 @@ export const theme = {
     textMuted: '#9A9A9A',
     primary: '#E07A5F',
     primaryHover: '#C96A52',
+    primarySurface: '#FEF6F4',
     success: '#4A7C59',
+    successSurface: '#E8F5E9',
     error: '#C44536',
+    errorSurface: '#FEF2F2',
     border: '#E8E6E3',
     borderLight: '#F0EEEB',
+    inverseSurface: '#1A1A1A',
+    inverseText: '#FFFFFF',
+    shadow: 'rgba(26, 26, 26, 0.08)',
   },
+  dark: {
+    background: '#151413',
+    surface: '#1F1E1C',
+    surfaceAlt: '#2A2826',
+    text: '#F5F3F0',
+    textSecondary: '#B0ADA8',
+    textMuted: '#8A8782',
+    primary: '#E88F76',
+    primaryHover: '#F0A48D',
+    primarySurface: '#3A2A25',
+    success: '#7FB08D',
+    successSurface: '#23342A',
+    error: '#E2695B',
+    errorSurface: '#3A2320',
+    border: '#3A3835',
+    borderLight: '#2E2C29',
+    inverseSurface: '#F5F3F0',
+    inverseText: '#1A1A1A',
+    shadow: 'rgba(0, 0, 0, 0.5)',
+  },
+};
+
+export const theme = {
+  colors: palettes.light,
   fonts: {
     display: '"Playfair Display", Georgia, serif',
     body: '"DM Sans", -apple-system, sans-serif',
   },
   shadows: {
-    sm: '0 1px 3px rgba(26, 26, 26, 0.04)',
-    md: '0 4px 12px rgba(26, 26, 26, 0.06)',
-    lg: '0 8px 24px rgba(26, 26, 26, 0.08)',
-    xl: '0 16px 48px rgba(26, 26, 26, 0.1)',
+    sm: '0 1px 3px var(--color-shadow)',
+    md: '0 4px 12px var(--color-shadow)',
+    lg: '0 8px 24px var(--color-shadow)',
+    xl: '0 16px 48px var(--color-shadow)',
   },
   radii: {
     sm: '6px',
