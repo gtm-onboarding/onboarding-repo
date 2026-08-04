@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { isValidEmail } from '../utils/validation';
 
 export function SignUpPage() {
   const [name, setName] = useState('');
@@ -9,6 +10,7 @@ export function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
@@ -18,15 +20,45 @@ export function SignUpPage() {
 
     if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields');
+      setFieldErrors({});
       return;
     }
 
+    const validationErrors: Record<string, string> = {};
+    if (!isValidEmail(email)) {
+      validationErrors.email = 'Please enter a valid email address';
+    }
+    if (password !== confirmPassword) {
+      validationErrors.confirmPassword = 'Passwords do not match';
+    }
+    if (Object.keys(validationErrors).length > 0) {
+      setFieldErrors(validationErrors);
+      return;
+    }
+
+    setFieldErrors({});
     const success = signUp(email, password, name);
     if (success) {
       navigate('/');
     } else {
       setError('An account with this email already exists');
     }
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    setFieldErrors((current) => ({
+      ...current,
+      email: value && !isValidEmail(value) ? 'Please enter a valid email address' : '',
+    }));
+  };
+
+  const handleConfirmPasswordChange = (value: string) => {
+    setConfirmPassword(value);
+    setFieldErrors((current) => ({
+      ...current,
+      confirmPassword: value && value !== password ? 'Passwords do not match' : '',
+    }));
   };
 
   const inputStyle = {
@@ -91,8 +123,9 @@ export function SignUpPage() {
           </div>
         )}
         <div style={{ marginBottom: '20px' }}>
-          <label style={labelStyle}>Name</label>
+          <label htmlFor="sign-up-name" style={labelStyle}>Name</label>
           <input
+            id="sign-up-name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -101,18 +134,23 @@ export function SignUpPage() {
           />
         </div>
         <div style={{ marginBottom: '20px' }}>
-          <label style={labelStyle}>Email</label>
+          <label htmlFor="sign-up-email" style={labelStyle}>Email</label>
           <input
+            id="sign-up-email"
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleEmailChange(e.target.value)}
             placeholder="you@example.com"
-            style={inputStyle}
+            style={{ ...inputStyle, borderColor: fieldErrors.email ? '#C44536' : '#E8E6E3' }}
           />
+          {fieldErrors.email && (
+            <div style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>{fieldErrors.email}</div>
+          )}
         </div>
         <div style={{ marginBottom: '20px' }}>
-          <label style={labelStyle}>Password</label>
+          <label htmlFor="sign-up-password" style={labelStyle}>Password</label>
           <input
+            id="sign-up-password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -121,14 +159,20 @@ export function SignUpPage() {
           />
         </div>
         <div style={{ marginBottom: '28px' }}>
-          <label style={labelStyle}>Confirm Password</label>
+          <label htmlFor="sign-up-confirm-password" style={labelStyle}>Confirm Password</label>
           <input
+            id="sign-up-confirm-password"
             type="password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => handleConfirmPasswordChange(e.target.value)}
             placeholder="Confirm your password"
-            style={inputStyle}
+            style={{ ...inputStyle, borderColor: fieldErrors.confirmPassword ? '#C44536' : '#E8E6E3' }}
           />
+          {fieldErrors.confirmPassword && (
+            <div style={{ color: '#C44536', fontSize: '13px', marginTop: '6px' }}>
+              {fieldErrors.confirmPassword}
+            </div>
+          )}
         </div>
         <button
           type="submit"
