@@ -4,7 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 
 export function CheckoutPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, coverageRiderTotal, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -18,8 +18,8 @@ export function CheckoutPage() {
     cvv: '',
   });
 
-  const tax = totalPrice * 0.08;
-  const total = totalPrice + tax;
+  const tax = (totalPrice + coverageRiderTotal) * 0.08;
+  const total = totalPrice + coverageRiderTotal + tax;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -271,6 +271,20 @@ export function CheckoutPage() {
                 <span>Subtotal</span>
                 <span style={{ color: '#1A1A1A' }}>${totalPrice.toFixed(2)}</span>
               </div>
+              {coverageRiderTotal > 0 && (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginBottom: '12px',
+                    color: '#6B6B6B',
+                    fontSize: '14px',
+                  }}
+                >
+                  <span>Jewelry Coverage Rider</span>
+                  <span style={{ color: '#1A1A1A' }}>${coverageRiderTotal.toFixed(2)}</span>
+                </div>
+              )}
               <div
                 style={{
                   display: 'flex',
