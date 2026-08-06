@@ -1,6 +1,6 @@
 import { Product } from '../types';
 
-export const categories = ['Electronics', 'Clothing', 'Home & Garden'];
+export const categories = ['Electronics', 'Clothing', 'Home & Garden', 'Accessories'];
 
 export const products: Product[] = [
   {
@@ -98,5 +98,37 @@ export const products: Product[] = [
     description: 'Modern minimalist wall clock with silent movement. Adds style to any room while keeping you on time.',
     image: 'https://picsum.photos/seed/wallclock/400/300',
     category: 'Home & Garden',
+  },
+  {
+    id: 'acc-1',
+    name: 'Leather Wallet',
+    price: 59.99,
+    description: 'Slim full-grain leather wallet with RFID-blocking card slots. Ages beautifully with everyday use.',
+    image: 'https://picsum.photos/seed/wallet/400/300',
+    category: 'Accessories',
+  },
+  {
+    id: 'acc-2',
+    name: 'Canvas Backpack',
+    price: 74.99,
+    description: 'Durable water-resistant canvas backpack with padded laptop sleeve and leather trim details.',
+    image: 'https://picsum.photos/seed/backpack/400/300',
+    category: 'Accessories',
+  },
+  {
+    id: 'acc-3',
+    name: 'Polarized Sunglasses',
+    price: 89.99,
+    description: 'Lightweight acetate frames with polarized UV400 lenses. Includes hard case and cleaning cloth.',
+    image: 'https://picsum.photos/seed/sunglasses/400/300',
+    category: 'Accessories',
+  },
+  {
+    id: 'acc-4',
+    name: 'Woven Leather Belt',
+    price: 42.99,
+    description: 'Handwoven leather belt with a brushed brass buckle. A refined finish for casual and formal wear.',
+    image: 'https://picsum.photos/seed/belt/400/300',
+    category: 'Accessories',
   },
 ];

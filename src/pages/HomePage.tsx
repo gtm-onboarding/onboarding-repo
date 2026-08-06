@@ -189,7 +189,7 @@ export function HomePage() {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
               gap: '24px',
             }}
           >
@@ -237,6 +237,7 @@ export function HomePage() {
                   {index === 0 && 'Tech & gadgets'}
                   {index === 1 && 'Fashion & apparel'}
                   {index === 2 && 'Living spaces'}
+                  {index === 3 && 'Everyday essentials'}
                 </p>
               </Link>
             ))}
