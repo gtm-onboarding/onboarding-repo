@@ -1,14 +1,20 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product, CartItem } from '../types';
+import {
+  JEWELRY_COVERAGE_PRODUCT_ID,
+  JEWELRY_COVERAGE_RATE,
+} from '../constants';
 
 interface CartContextType {
   items: CartItem[];
   addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
+  toggleJewelryCoverage: (productId: string) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  jewelryCoverageTotal: number;
   showToast: (message: string) => void;
   toastMessage: string | null;
 }
@@ -73,12 +79,29 @@ export function CartProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const toggleJewelryCoverage = (productId: string) => {
+    setItems((current) =>
+      current.map((item) =>
+        item.product.id === productId
+          ? { ...item, jewelryCoverage: !item.jewelryCoverage }
+          : item
+      )
+    );
+  };
+
   const clearCart = () => {
     setItems([]);
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const jewelryCoverageTotal = items.reduce(
+    (sum, item) =>
+      item.product.id === JEWELRY_COVERAGE_PRODUCT_ID && item.jewelryCoverage
+        ? sum + item.product.price * item.quantity * JEWELRY_COVERAGE_RATE
+        : sum,
+    0
+  );
 
   return (
     <CartContext.Provider
@@ -87,9 +110,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
         addToCart,
         removeFromCart,
         updateQuantity,
+        toggleJewelryCoverage,
         clearCart,
         totalItems,
         totalPrice,
+        jewelryCoverageTotal,
         showToast,
         toastMessage,
       }}

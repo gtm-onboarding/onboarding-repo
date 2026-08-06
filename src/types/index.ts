@@ -10,6 +10,7 @@ export interface Product {
 export interface CartItem {
   product: Product;
   quantity: number;
+  jewelryCoverage?: boolean;
 }
 
 export interface User {

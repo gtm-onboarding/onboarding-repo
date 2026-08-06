@@ -17,11 +17,23 @@ const localStorageMock = (() => {
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
 function TestComponent() {
-  const { items, addToCart, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice } = useCart();
+  const {
+    items,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    toggleJewelryCoverage,
+    clearCart,
+    totalItems,
+    totalPrice,
+    jewelryCoverageTotal,
+  } = useCart();
+  const ring = products.find((product) => product.name === 'Solitaire Engagement Ring')!;
   return (
     <div>
       <span data-testid="total-items">{totalItems}</span>
       <span data-testid="total-price">{totalPrice.toFixed(2)}</span>
+      <span data-testid="coverage-total">{jewelryCoverageTotal.toFixed(2)}</span>
       <span data-testid="items-count">{items.length}</span>
       {items.map((item) => (
         <div key={item.product.id} data-testid={`item-${item.product.id}`}>
@@ -30,6 +42,8 @@ function TestComponent() {
       ))}
       <button onClick={() => addToCart(products[0])}>Add Product 1</button>
       <button onClick={() => addToCart(products[1])}>Add Product 2</button>
+      <button onClick={() => addToCart(ring)}>Add Ring</button>
+      <button onClick={() => toggleJewelryCoverage(ring.id)}>Toggle Ring Coverage</button>
       <button onClick={() => removeFromCart(products[0].id)}>Remove Product 1</button>
       <button onClick={() => updateQuantity(products[0].id, 5)}>Set Qty 5</button>
       <button onClick={() => updateQuantity(products[0].id, 0)}>Set Qty 0</button>
@@ -127,5 +141,23 @@ describe('CartContext', () => {
     renderWithProvider();
     fireEvent.click(screen.getByText('Add Product 1'));
     expect(localStorageMock.setItem).toHaveBeenCalled();
+  });
+
+  it('calculates jewelry coverage at 2% of the ring value', () => {
+    const ring = products.find((product) => product.name === 'Solitaire Engagement Ring')!;
+    renderWithProvider();
+    fireEvent.click(screen.getByText('Add Ring'));
+    fireEvent.click(screen.getByText('Toggle Ring Coverage'));
+    expect(screen.getByTestId('coverage-total').textContent).toBe((ring.price * 0.02).toFixed(2));
+  });
+
+  it('persists jewelry coverage through a localStorage round-trip', () => {
+    const firstRender = renderWithProvider();
+    fireEvent.click(screen.getByText('Add Ring'));
+    fireEvent.click(screen.getByText('Toggle Ring Coverage'));
+    firstRender.unmount();
+
+    renderWithProvider();
+    expect(screen.getByTestId('coverage-total').textContent).toBe('97.98');
   });
 });

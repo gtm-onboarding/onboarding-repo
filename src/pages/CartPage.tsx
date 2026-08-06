@@ -2,14 +2,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { CartItem } from '../components/CartItem';
+import { SALES_TAX_RATE } from '../constants';
 
 export function CartPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, jewelryCoverageTotal, clearCart } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const tax = totalPrice * 0.08;
-  const total = totalPrice + tax;
+  const subtotal = totalPrice + jewelryCoverageTotal;
+  const tax = subtotal * SALES_TAX_RATE;
+  const total = subtotal + tax;
 
   const handleCheckout = () => {
     if (!isAuthenticated) {
@@ -114,6 +116,14 @@ export function CartPage() {
             <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Subtotal</span>
             <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${totalPrice.toFixed(2)}</span>
           </div>
+          {jewelryCoverageTotal > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Jewelry Coverage</span>
+              <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>
+                ${jewelryCoverageTotal.toFixed(2)}
+              </span>
+            </div>
+          )}
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
             <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Tax (8%)</span>
             <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${tax.toFixed(2)}</span>

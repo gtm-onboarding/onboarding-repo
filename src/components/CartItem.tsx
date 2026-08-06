@@ -1,12 +1,13 @@
 import { CartItem as CartItemType } from '../types';
 import { useCart } from '../context/CartContext';
+import { JEWELRY_COVERAGE_PRODUCT_ID } from '../constants';
 
 interface CartItemProps {
   item: CartItemType;
 }
 
 export function CartItem({ item }: CartItemProps) {
-  const { updateQuantity, removeFromCart } = useCart();
+  const { updateQuantity, removeFromCart, toggleJewelryCoverage } = useCart();
 
   return (
     <div
@@ -44,6 +45,24 @@ export function CartItem({ item }: CartItemProps) {
         <span style={{ color: '#E07A5F', display: 'block', fontWeight: '600', fontSize: '15px' }}>
           ${item.product.price.toFixed(2)} each
         </span>
+        {item.product.id === JEWELRY_COVERAGE_PRODUCT_ID && (
+          <button
+            onClick={() => toggleJewelryCoverage(item.product.id)}
+            aria-pressed={item.jewelryCoverage}
+            style={{
+              backgroundColor: item.jewelryCoverage ? '#FEF6F4' : 'transparent',
+              border: '1px solid #E07A5F',
+              color: '#E07A5F',
+              padding: '7px 10px',
+              borderRadius: '6px',
+              marginTop: '12px',
+              fontSize: '12px',
+              fontWeight: '600',
+            }}
+          >
+            {item.jewelryCoverage ? 'Jewelry Coverage Added' : 'Add Jewelry Coverage'}
+          </button>
+        )}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
         <button
