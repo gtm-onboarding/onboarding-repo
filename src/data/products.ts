@@ -100,3 +100,13 @@ export const products: Product[] = [
     category: 'Home & Garden',
   },
 ];
+
+export function searchProducts(query: string, catalog: Product[] = products): Product[] {
+  const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (terms.length === 0) return [];
+
+  return catalog.filter((product) => {
+    const haystack = `${product.name} ${product.description} ${product.category}`.toLowerCase();
+    return terms.every((term) => haystack.includes(term));
+  });
+}
