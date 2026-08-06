@@ -19,7 +19,7 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
 function renderApp() {
   return render(
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AuthProvider>
         <CartProvider>
           <App />

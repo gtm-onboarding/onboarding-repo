@@ -30,7 +30,7 @@ vi.mock('react-router-dom', async () => {
 function renderCartPage(cartItems: Array<{ product: typeof products[0]; quantity: number }> = []) {
   localStorageMock.setItem('onboarding-demo-cart', JSON.stringify(cartItems));
   return render(
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AuthProvider>
         <CartProvider>
           <CartPage />
