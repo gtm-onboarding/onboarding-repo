@@ -1,6 +1,6 @@
 import { Product } from '../types';
 
-export const categories = ['Electronics', 'Clothing', 'Home & Garden'];
+export const categories = ['Electronics', 'Clothing', 'Home & Garden', 'Jewelry'];
 
 export const products: Product[] = [
   {
@@ -98,5 +98,29 @@ export const products: Product[] = [
     description: 'Modern minimalist wall clock with silent movement. Adds style to any room while keeping you on time.',
     image: 'https://picsum.photos/seed/wallclock/400/300',
     category: 'Home & Garden',
+  },
+  {
+    id: 'jewelry-1',
+    name: 'Solitaire Engagement Ring',
+    price: 4899.00,
+    description: 'Timeless solitaire engagement ring with a brilliant center stone and polished precious metal setting.',
+    image: 'https://picsum.photos/seed/engagementring/400/300',
+    category: 'Jewelry',
+  },
+  {
+    id: 'jewelry-2',
+    name: 'Classic Wedding Band',
+    price: 899.00,
+    description: 'Elegant classic wedding band with a smooth polished finish for everyday wear.',
+    image: 'https://picsum.photos/seed/weddingband/400/300',
+    category: 'Jewelry',
+  },
+  {
+    id: 'jewelry-3',
+    name: 'Diamond Tennis Bracelet',
+    price: 2199.00,
+    description: 'Refined tennis bracelet featuring a continuous line of sparkling stones.',
+    image: 'https://picsum.photos/seed/tennisbracelet/400/300',
+    category: 'Jewelry',
   },
 ];
