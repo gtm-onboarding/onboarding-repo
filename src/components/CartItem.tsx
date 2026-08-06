@@ -1,6 +1,6 @@
 import { CartItem as CartItemType } from '../types';
 import { useCart } from '../context/CartContext';
-import { JEWELRY_COVERAGE_PRODUCT_ID } from '../constants';
+import { isCoverageEligible } from '../constants';
 
 interface CartItemProps {
   item: CartItemType;
@@ -45,7 +45,7 @@ export function CartItem({ item }: CartItemProps) {
         <span style={{ color: '#E07A5F', display: 'block', fontWeight: '600', fontSize: '15px' }}>
           ${item.product.price.toFixed(2)} each
         </span>
-        {item.product.id === JEWELRY_COVERAGE_PRODUCT_ID && (
+        {isCoverageEligible(item.product) && (
           <button
             onClick={() => toggleJewelryCoverage(item.product.id)}
             aria-pressed={item.jewelryCoverage}

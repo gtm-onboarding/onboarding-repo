@@ -1,9 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product, CartItem } from '../types';
-import {
-  JEWELRY_COVERAGE_PRODUCT_ID,
-  JEWELRY_COVERAGE_RATE,
-} from '../constants';
+import { isCoverageEligible, JEWELRY_COVERAGE_RATE } from '../constants';
 
 interface CartContextType {
   items: CartItem[];
@@ -97,7 +94,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const totalPrice = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const jewelryCoverageTotal = items.reduce(
     (sum, item) =>
-      item.product.id === JEWELRY_COVERAGE_PRODUCT_ID && item.jewelryCoverage
+      isCoverageEligible(item.product) && item.jewelryCoverage
         ? sum + item.product.price * item.quantity * JEWELRY_COVERAGE_RATE
         : sum,
     0

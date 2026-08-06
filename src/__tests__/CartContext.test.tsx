@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { CartProvider, useCart } from '../context/CartContext';
 import { products } from '../data/products';
+import { JEWELRY_COVERAGE_RATE } from '../constants';
 
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
@@ -29,6 +30,7 @@ function TestComponent() {
     jewelryCoverageTotal,
   } = useCart();
   const ring = products.find((product) => product.name === 'Solitaire Engagement Ring')!;
+  const bracelet = products.find((product) => product.name === 'Diamond Tennis Bracelet')!;
   return (
     <div>
       <span data-testid="total-items">{totalItems}</span>
@@ -44,6 +46,8 @@ function TestComponent() {
       <button onClick={() => addToCart(products[1])}>Add Product 2</button>
       <button onClick={() => addToCart(ring)}>Add Ring</button>
       <button onClick={() => toggleJewelryCoverage(ring.id)}>Toggle Ring Coverage</button>
+      <button onClick={() => addToCart(bracelet)}>Add Bracelet</button>
+      <button onClick={() => toggleJewelryCoverage(bracelet.id)}>Toggle Bracelet Coverage</button>
       <button onClick={() => removeFromCart(products[0].id)}>Remove Product 1</button>
       <button onClick={() => updateQuantity(products[0].id, 5)}>Set Qty 5</button>
       <button onClick={() => updateQuantity(products[0].id, 0)}>Set Qty 0</button>
@@ -148,7 +152,22 @@ describe('CartContext', () => {
     renderWithProvider();
     fireEvent.click(screen.getByText('Add Ring'));
     fireEvent.click(screen.getByText('Toggle Ring Coverage'));
-    expect(screen.getByTestId('coverage-total').textContent).toBe((ring.price * 0.02).toFixed(2));
+    expect(screen.getByTestId('coverage-total').textContent).toBe(
+      (ring.price * JEWELRY_COVERAGE_RATE).toFixed(2)
+    );
+  });
+
+  it('sums coverage across multiple jewelry products', () => {
+    const ring = products.find((product) => product.name === 'Solitaire Engagement Ring')!;
+    const bracelet = products.find((product) => product.name === 'Diamond Tennis Bracelet')!;
+    renderWithProvider();
+    fireEvent.click(screen.getByText('Add Ring'));
+    fireEvent.click(screen.getByText('Add Bracelet'));
+    fireEvent.click(screen.getByText('Toggle Ring Coverage'));
+    fireEvent.click(screen.getByText('Toggle Bracelet Coverage'));
+    expect(screen.getByTestId('coverage-total').textContent).toBe(
+      ((ring.price + bracelet.price) * JEWELRY_COVERAGE_RATE).toFixed(2)
+    );
   });
 
   it('persists jewelry coverage through a localStorage round-trip', () => {

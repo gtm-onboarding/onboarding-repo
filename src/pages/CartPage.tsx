@@ -9,9 +9,9 @@ export function CartPage() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const subtotal = totalPrice + jewelryCoverageTotal;
-  const tax = subtotal * SALES_TAX_RATE;
-  const total = subtotal + tax;
+  const subtotal = totalPrice;
+  const tax = (subtotal + jewelryCoverageTotal) * SALES_TAX_RATE;
+  const total = subtotal + jewelryCoverageTotal + tax;
 
   const handleCheckout = () => {
     if (!isAuthenticated) {

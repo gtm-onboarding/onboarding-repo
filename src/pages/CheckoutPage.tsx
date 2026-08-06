@@ -19,9 +19,9 @@ export function CheckoutPage() {
     cvv: '',
   });
 
-  const subtotal = totalPrice + jewelryCoverageTotal;
-  const tax = subtotal * SALES_TAX_RATE;
-  const total = subtotal + tax;
+  const subtotal = totalPrice;
+  const tax = (subtotal + jewelryCoverageTotal) * SALES_TAX_RATE;
+  const total = subtotal + jewelryCoverageTotal + tax;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
