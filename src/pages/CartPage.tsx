@@ -2,14 +2,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { CartItem } from '../components/CartItem';
+import { JEWELRY_RIDER_RATE, TAX_RATE } from '../data/pricing';
 
 export function CartPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, riderSelected, setRiderSelected, riderEligible, riderPrice } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const tax = totalPrice * 0.08;
-  const total = totalPrice + tax;
+  const taxableTotal = totalPrice + riderPrice;
+  const tax = taxableTotal * TAX_RATE;
+  const total = taxableTotal + tax;
 
   const handleCheckout = () => {
     if (!isAuthenticated) {
@@ -114,6 +116,19 @@ export function CartPage() {
             <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Subtotal</span>
             <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${totalPrice.toFixed(2)}</span>
           </div>
+          {riderEligible && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <label style={{ color: '#6B6B6B', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <input
+                  type="checkbox"
+                  checked={riderSelected}
+                  onChange={(e) => setRiderSelected(e.target.checked)}
+                />
+                Jewelry Coverage Rider ({(JEWELRY_RIDER_RATE * 100).toFixed(0)}%)
+              </label>
+              <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${riderPrice.toFixed(2)}</span>
+            </div>
+          )}
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
             <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Tax (8%)</span>
             <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${tax.toFixed(2)}</span>
