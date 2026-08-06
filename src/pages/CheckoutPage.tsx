@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { JEWELRY_RIDER_NAME, JEWELRY_RIDER_RATE, TAX_RATE } from '../data/pricing';
 
 export function CheckoutPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, riderSelected, riderPrice } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -18,8 +19,8 @@ export function CheckoutPage() {
     cvv: '',
   });
 
-  const tax = totalPrice * 0.08;
-  const total = totalPrice + tax;
+  const tax = (totalPrice + riderPrice) * TAX_RATE;
+  const total = totalPrice + riderPrice + tax;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -258,6 +259,22 @@ export function CheckoutPage() {
                 </span>
               </div>
             ))}
+            {riderSelected && riderPrice > 0 && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginBottom: '16px',
+                  color: '#6B6B6B',
+                  fontSize: '14px',
+                }}
+              >
+                <span>
+                  {JEWELRY_RIDER_NAME} ({(JEWELRY_RIDER_RATE * 100).toFixed(1)}%)
+                </span>
+                <span style={{ color: '#1A1A1A', fontWeight: '500' }}>${riderPrice.toFixed(2)}</span>
+              </div>
+            )}
             <div style={{ borderTop: '1px solid #F0EEEB', marginTop: '20px', paddingTop: '20px' }}>
               <div
                 style={{
