@@ -9,6 +9,11 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  jewelrySubtotal: number;
+  hasJewelry: boolean;
+  riderSelected: boolean;
+  setRiderSelected: (selected: boolean) => void;
+  riderPrice: number;
   showToast: (message: string) => void;
   toastMessage: string | null;
 }
@@ -16,9 +21,15 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'onboarding-demo-cart';
+const RIDER_STORAGE_KEY = 'onboarding-demo-jewelry-rider';
+
+export const JEWELRY_CATEGORY = 'Jewelry';
+export const JEWELRY_RIDER_RATE = 0.015;
+export const JEWELRY_RIDER_NAME = 'Jewelry Coverage Rider';
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [riderSelected, setRiderSelected] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -30,11 +41,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem(CART_STORAGE_KEY);
       }
     }
+    setRiderSelected(localStorage.getItem(RIDER_STORAGE_KEY) === 'true');
   }, []);
 
   useEffect(() => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items]);
+
+  useEffect(() => {
+    localStorage.setItem(RIDER_STORAGE_KEY, String(riderSelected));
+  }, [riderSelected]);
 
   const showToast = (message: string) => {
     setToastMessage(message);
@@ -75,10 +91,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setItems([]);
+    setRiderSelected(false);
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const jewelrySubtotal = items
+    .filter((item) => item.product.category === JEWELRY_CATEGORY)
+    .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const hasJewelry = jewelrySubtotal > 0;
+  const riderPrice = riderSelected && hasJewelry ? jewelrySubtotal * JEWELRY_RIDER_RATE : 0;
 
   return (
     <CartContext.Provider
@@ -90,6 +112,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        jewelrySubtotal,
+        hasJewelry,
+        riderSelected,
+        setRiderSelected,
+        riderPrice,
         showToast,
         toastMessage,
       }}
