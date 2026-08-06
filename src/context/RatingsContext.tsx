@@ -12,19 +12,21 @@ const RATINGS_STORAGE_KEY = 'onboarding-demo-ratings';
 
 const emptyRating: ProductRating = { average: 0, count: 0, userRating: null };
 
-export function RatingsProvider({ children }: { children: ReactNode }) {
-  const [ratings, setRatings] = useState<Record<string, StoredRating>>({});
+function loadRatings(): Record<string, StoredRating> {
+  const stored = localStorage.getItem(RATINGS_STORAGE_KEY);
+  if (!stored) {
+    return {};
+  }
+  try {
+    return JSON.parse(stored);
+  } catch {
+    localStorage.removeItem(RATINGS_STORAGE_KEY);
+    return {};
+  }
+}
 
-  useEffect(() => {
-    const stored = localStorage.getItem(RATINGS_STORAGE_KEY);
-    if (stored) {
-      try {
-        setRatings(JSON.parse(stored));
-      } catch {
-        localStorage.removeItem(RATINGS_STORAGE_KEY);
-      }
-    }
-  }, []);
+export function RatingsProvider({ children }: { children: ReactNode }) {
+  const [ratings, setRatings] = useState<Record<string, StoredRating>>(loadRatings);
 
   useEffect(() => {
     localStorage.setItem(RATINGS_STORAGE_KEY, JSON.stringify(ratings));

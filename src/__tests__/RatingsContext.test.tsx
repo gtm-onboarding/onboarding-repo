@@ -76,6 +76,13 @@ describe('RatingsContext', () => {
     expect(screen.getByText('count:2')).toBeInTheDocument();
   });
 
+  it('does not overwrite stored ratings on mount', () => {
+    const stored = JSON.stringify({ 'elec-1': { ratings: [5], userRating: 5 } });
+    localStorage.setItem('onboarding-demo-ratings', stored);
+    renderHarness();
+    expect(localStorage.getItem('onboarding-demo-ratings')).toBe(stored);
+  });
+
   it('clears corrupt stored ratings', () => {
     localStorage.setItem('onboarding-demo-ratings', 'not json');
     act(() => {
