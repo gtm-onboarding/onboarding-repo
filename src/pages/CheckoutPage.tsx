@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { TAX_RATE } from '../data/pricing';
 
 export function CheckoutPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, riderPrice } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -18,8 +19,8 @@ export function CheckoutPage() {
     cvv: '',
   });
 
-  const tax = totalPrice * 0.08;
-  const total = totalPrice + tax;
+  const tax = totalPrice * TAX_RATE;
+  const total = totalPrice + tax + riderPrice;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -271,6 +272,20 @@ export function CheckoutPage() {
                 <span>Subtotal</span>
                 <span style={{ color: '#1A1A1A' }}>${totalPrice.toFixed(2)}</span>
               </div>
+              {riderPrice > 0 && (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginBottom: '12px',
+                    color: '#6B6B6B',
+                    fontSize: '14px',
+                  }}
+                >
+                  <span>Jewelry Coverage Rider</span>
+                  <span style={{ color: '#1A1A1A' }}>${riderPrice.toFixed(2)}</span>
+                </div>
+              )}
               <div
                 style={{
                   display: 'flex',
