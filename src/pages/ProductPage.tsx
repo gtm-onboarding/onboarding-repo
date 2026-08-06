@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { COVERAGE_RIDER_RATE } from '../constants';
 
 export function ProductPage() {
   const { productId } = useParams<{ productId: string }>();
@@ -10,10 +11,12 @@ export function ProductPage() {
   const [quantity, setQuantity] = useState(1);
 
   const product = products.find((p) => p.id === productId);
+  const [hasCoverageRider, setHasCoverageRider] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
     setQuantity(1);
+    setHasCoverageRider(false);
     const timer = setTimeout(() => setIsLoading(false), 200);
     return () => clearTimeout(timer);
   }, [productId]);
@@ -74,9 +77,12 @@ export function ProductPage() {
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
-      addToCart(product);
+      addToCart(product, hasCoverageRider);
     }
   };
+
+  const showCoverageOption = product.id === 'jewelry-1';
+  const coveragePrice = product.price * COVERAGE_RIDER_RATE;
 
   return (
     <div style={{ backgroundColor: '#FAF9F7', minHeight: '100vh', padding: '40px 32px' }}>
@@ -163,6 +169,31 @@ export function ProductPage() {
             >
               {product.description}
             </p>
+            {showCoverageOption && (
+              <div style={{ marginBottom: '32px' }}>
+                <label
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    cursor: 'pointer',
+                    color: '#1A1A1A',
+                    fontSize: '15px',
+                    fontWeight: '500',
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={hasCoverageRider}
+                    onChange={(e) => setHasCoverageRider(e.target.checked)}
+                    style={{ width: '20px', height: '20px', accentColor: '#E07A5F' }}
+                  />
+                  <span>
+                    Add Jewelry Coverage Rider (+${coveragePrice.toFixed(2)} per item)
+                  </span>
+                </label>
+              </div>
+            )}
             <div
               style={{
                 display: 'flex',

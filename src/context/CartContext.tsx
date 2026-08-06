@@ -1,14 +1,16 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product, CartItem } from '../types';
+import { COVERAGE_RIDER_RATE } from '../constants';
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: Product) => void;
+  addToCart: (product: Product, hasCoverageRider?: boolean) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  coverageTotal: number;
   showToast: (message: string) => void;
   toastMessage: string | null;
 }
@@ -41,17 +43,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: Product, hasCoverageRider = false) => {
     setItems((current) => {
       const existing = current.find((item) => item.product.id === product.id);
       if (existing) {
+        const updatedCoverage = hasCoverageRider || existing.hasCoverageRider;
         return current.map((item) =>
           item.product.id === product.id
-            ? { ...item, quantity: Math.min(99, item.quantity + 1) }
+            ? { ...item, quantity: Math.min(99, item.quantity + 1), hasCoverageRider: updatedCoverage }
             : item
         );
       }
-      return [...current, { product, quantity: 1 }];
+      return [...current, { product, quantity: 1, hasCoverageRider }];
     });
     showToast(`Added ${product.name} to cart`);
   };
@@ -79,6 +82,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const coverageTotal = items.reduce(
+    (sum, item) => sum + (item.hasCoverageRider ? item.product.price * item.quantity * COVERAGE_RIDER_RATE : 0),
+    0
+  );
 
   return (
     <CartContext.Provider
@@ -90,6 +97,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        coverageTotal,
         showToast,
         toastMessage,
       }}
