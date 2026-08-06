@@ -2,6 +2,12 @@ import { Product } from '../types';
 
 export const categories = ['Electronics', 'Clothing', 'Home & Garden', 'Jewelry'];
 
+// Rate applied to an item's price to compute the optional jewelry coverage rider cost.
+export const JEWELRY_COVERAGE_RIDER_RATE = 0.02;
+
+// Only the Solitaire Engagement Ring currently offers the opt-in coverage rider.
+export const COVERAGE_RIDER_ELIGIBLE_PRODUCT_ID = 'jewelry-1';
+
 export const products: Product[] = [
   {
     id: 'elec-1',

@@ -4,12 +4,12 @@ import { useAuth } from '../context/AuthContext';
 import { CartItem } from '../components/CartItem';
 
 export function CartPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, coverageRiderTotal, clearCart } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const tax = totalPrice * 0.08;
-  const total = totalPrice + tax;
+  const tax = (totalPrice + coverageRiderTotal) * 0.08;
+  const total = totalPrice + coverageRiderTotal + tax;
 
   const handleCheckout = () => {
     if (!isAuthenticated) {
@@ -114,6 +114,14 @@ export function CartPage() {
             <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Subtotal</span>
             <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${totalPrice.toFixed(2)}</span>
           </div>
+          {coverageRiderTotal > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Jewelry Coverage Rider</span>
+              <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>
+                ${coverageRiderTotal.toFixed(2)}
+              </span>
+            </div>
+          )}
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
             <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Tax (8%)</span>
             <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${tax.toFixed(2)}</span>

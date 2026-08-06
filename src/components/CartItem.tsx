@@ -1,5 +1,6 @@
 import { CartItem as CartItemType } from '../types';
 import { useCart } from '../context/CartContext';
+import { JEWELRY_COVERAGE_RIDER_RATE } from '../data/products';
 
 interface CartItemProps {
   item: CartItemType;
@@ -7,6 +8,8 @@ interface CartItemProps {
 
 export function CartItem({ item }: CartItemProps) {
   const { updateQuantity, removeFromCart } = useCart();
+  const merchandiseTotal = item.product.price * item.quantity;
+  const coverageRiderCost = item.hasCoverageRider ? merchandiseTotal * JEWELRY_COVERAGE_RIDER_RATE : 0;
 
   return (
     <div
@@ -44,6 +47,11 @@ export function CartItem({ item }: CartItemProps) {
         <span style={{ color: '#E07A5F', display: 'block', fontWeight: '600', fontSize: '15px' }}>
           ${item.product.price.toFixed(2)} each
         </span>
+        {item.hasCoverageRider && (
+          <span style={{ color: '#6B6B6B', display: 'block', fontSize: '13px', marginTop: '4px' }}>
+            Includes jewelry coverage rider (+${coverageRiderCost.toFixed(2)})
+          </span>
+        )}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
         <button
@@ -92,7 +100,7 @@ export function CartItem({ item }: CartItemProps) {
       </div>
       <div style={{ minWidth: '100px', textAlign: 'right' }}>
         <span style={{ color: '#1A1A1A', fontWeight: '700', fontSize: '17px' }}>
-          ${(item.product.price * item.quantity).toFixed(2)}
+          ${(merchandiseTotal + coverageRiderCost).toFixed(2)}
         </span>
       </div>
       <button

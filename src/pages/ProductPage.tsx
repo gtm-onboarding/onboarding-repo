@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { products } from '../data/products';
+import { products, JEWELRY_COVERAGE_RIDER_RATE, COVERAGE_RIDER_ELIGIBLE_PRODUCT_ID } from '../data/products';
 import { useCart } from '../context/CartContext';
 
 export function ProductPage() {
@@ -8,12 +8,16 @@ export function ProductPage() {
   const { addToCart } = useCart();
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [wantsCoverageRider, setWantsCoverageRider] = useState(false);
 
   const product = products.find((p) => p.id === productId);
+  const isCoverageRiderEligible = product?.id === COVERAGE_RIDER_ELIGIBLE_PRODUCT_ID;
+  const coverageRiderPrice = product ? product.price * JEWELRY_COVERAGE_RIDER_RATE : 0;
 
   useEffect(() => {
     setIsLoading(true);
     setQuantity(1);
+    setWantsCoverageRider(false);
     const timer = setTimeout(() => setIsLoading(false), 200);
     return () => clearTimeout(timer);
   }, [productId]);
@@ -74,7 +78,7 @@ export function ProductPage() {
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
-      addToCart(product);
+      addToCart(product, wantsCoverageRider);
     }
   };
 
@@ -218,6 +222,33 @@ export function ProductPage() {
                 </button>
               </div>
             </div>
+            {isCoverageRiderEligible && (
+              <label
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '12px',
+                  marginBottom: '32px',
+                  padding: '16px',
+                  backgroundColor: '#F5F3F0',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={wantsCoverageRider}
+                  onChange={(e) => setWantsCoverageRider(e.target.checked)}
+                  style={{ marginTop: '3px' }}
+                />
+                <span style={{ color: '#1A1A1A', fontSize: '15px' }}>
+                  Add jewelry coverage rider <strong>(+${coverageRiderPrice.toFixed(2)})</strong>
+                  <span style={{ display: 'block', color: '#6B6B6B', fontSize: '13px', marginTop: '4px' }}>
+                    Protects your ring against loss, theft, and damage for {(JEWELRY_COVERAGE_RIDER_RATE * 100).toFixed(0)}% of its price.
+                  </span>
+                </span>
+              </label>
+            )}
             <button
               onClick={handleAddToCart}
               style={{
