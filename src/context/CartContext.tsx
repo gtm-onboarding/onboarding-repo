@@ -1,6 +1,10 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product, CartItem } from '../types';
 
+export const TAX_RATE = 0.08;
+export const JEWELRY_CATEGORY = 'Jewelry';
+export const JEWELRY_COVERAGE_RATE = 0.02;
+
 interface CartContextType {
   items: CartItem[];
   addToCart: (product: Product) => void;
@@ -9,6 +13,11 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  jewelrySubtotal: number;
+  hasJewelry: boolean;
+  coverageRiderEnabled: boolean;
+  setCoverageRiderEnabled: (enabled: boolean) => void;
+  coverageRiderCost: number;
   showToast: (message: string) => void;
   toastMessage: string | null;
 }
@@ -16,9 +25,11 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'onboarding-demo-cart';
+const COVERAGE_RIDER_STORAGE_KEY = 'onboarding-demo-coverage-rider';
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [coverageRiderEnabled, setCoverageRiderEnabled] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -30,11 +41,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem(CART_STORAGE_KEY);
       }
     }
+    setCoverageRiderEnabled(localStorage.getItem(COVERAGE_RIDER_STORAGE_KEY) === 'true');
   }, []);
 
   useEffect(() => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items]);
+
+  useEffect(() => {
+    localStorage.setItem(COVERAGE_RIDER_STORAGE_KEY, String(coverageRiderEnabled));
+  }, [coverageRiderEnabled]);
 
   const showToast = (message: string) => {
     setToastMessage(message);
@@ -75,10 +91,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setItems([]);
+    setCoverageRiderEnabled(false);
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const jewelrySubtotal = items.reduce(
+    (sum, item) =>
+      item.product.category === JEWELRY_CATEGORY
+        ? sum + item.product.price * item.quantity
+        : sum,
+    0
+  );
+  const hasJewelry = jewelrySubtotal > 0;
+  const coverageRiderCost =
+    hasJewelry && coverageRiderEnabled ? jewelrySubtotal * JEWELRY_COVERAGE_RATE : 0;
 
   return (
     <CartContext.Provider
@@ -90,6 +117,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        jewelrySubtotal,
+        hasJewelry,
+        coverageRiderEnabled,
+        setCoverageRiderEnabled,
+        coverageRiderCost,
         showToast,
         toastMessage,
       }}

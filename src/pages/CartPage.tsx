@@ -1,15 +1,27 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
+import {
+  useCart,
+  TAX_RATE,
+  JEWELRY_COVERAGE_RATE,
+} from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { CartItem } from '../components/CartItem';
 
 export function CartPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const {
+    items,
+    totalPrice,
+    clearCart,
+    hasJewelry,
+    coverageRiderEnabled,
+    setCoverageRiderEnabled,
+    coverageRiderCost,
+  } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const tax = totalPrice * 0.08;
-  const total = totalPrice + tax;
+  const tax = totalPrice * TAX_RATE;
+  const total = totalPrice + tax + coverageRiderCost;
 
   const handleCheckout = () => {
     if (!isAuthenticated) {
@@ -102,6 +114,42 @@ export function CartPage() {
             <CartItem key={item.product.id} item={item} />
           ))}
         </div>
+        {hasJewelry && (
+          <label
+            htmlFor="coverage-rider"
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '16px',
+              backgroundColor: '#FFFFFF',
+              padding: '24px 28px',
+              borderRadius: '16px',
+              boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+              marginBottom: '24px',
+              cursor: 'pointer',
+            }}
+          >
+            <input
+              id="coverage-rider"
+              type="checkbox"
+              checked={coverageRiderEnabled}
+              onChange={(e) => setCoverageRiderEnabled(e.target.checked)}
+              style={{ width: '20px', height: '20px', marginTop: '2px', accentColor: '#E07A5F' }}
+            />
+            <div style={{ flex: 1 }}>
+              <span style={{ color: '#1A1A1A', fontWeight: '600', fontSize: '16px', display: 'block', marginBottom: '4px' }}>
+                Add Jewelry Coverage Rider
+              </span>
+              <span style={{ color: '#6B6B6B', fontSize: '14px', lineHeight: '1.5' }}>
+                Insure your jewelry against loss, theft, and accidental damage for
+                {' '}{(JEWELRY_COVERAGE_RATE * 100).toFixed(0)}% of its value.
+              </span>
+            </div>
+            <span style={{ color: '#E07A5F', fontWeight: '600', fontSize: '15px', whiteSpace: 'nowrap' }}>
+              +${coverageRiderCost.toFixed(2)}
+            </span>
+          </label>
+        )}
         <div
           style={{
             backgroundColor: '#FFFFFF',
@@ -118,6 +166,12 @@ export function CartPage() {
             <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Tax (8%)</span>
             <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${tax.toFixed(2)}</span>
           </div>
+          {coverageRiderCost > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Jewelry Coverage Rider</span>
+              <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${coverageRiderCost.toFixed(2)}</span>
+            </div>
+          )}
           <div
             style={{
               display: 'flex',
