@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User } from '../types';
+import { validateEmail } from '../utils/validation';
 
 interface AuthContextType {
   user: User | null;
@@ -60,6 +61,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signIn = (email: string, password: string): boolean => {
+    if (!validateEmail(email)) {
+      return false;
+    }
     const users = getUsers();
     const found = users.find((u) => u.email === email && u.password === password);
     if (found) {
@@ -73,6 +77,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signUp = (email: string, password: string, name: string): boolean => {
+    if (!validateEmail(email)) {
+      return false;
+    }
     const users = getUsers();
     const exists = users.find((u) => u.email === email);
     if (exists) {

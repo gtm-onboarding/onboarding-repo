@@ -27,7 +27,7 @@ vi.mock('../context/CartContext', async () => {
 
 function renderProductCard() {
   return render(
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <CartProvider>
         <ProductCard product={products[0]} />
       </CartProvider>

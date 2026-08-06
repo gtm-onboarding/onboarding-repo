@@ -41,7 +41,7 @@ function TestComponent() {
 
 function renderWithProvider() {
   return render(
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <CartProvider>
         <TestComponent />
       </CartProvider>

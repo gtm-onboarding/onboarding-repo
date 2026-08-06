@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
+import { validateEmail } from '../utils/validation';
 
 export function SignInPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { signIn, signInWithGoogle } = useAuth();
+  const emailError = email !== '' && !validateEmail(email) ? 'Please enter a valid email address' : '';
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -17,6 +19,11 @@ export function SignInPage() {
 
     if (!email || !password) {
       setError('Please fill in all fields');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address');
       return;
     }
 
@@ -101,6 +108,9 @@ export function SignInPage() {
             placeholder="you@example.com"
             style={inputStyle}
           />
+          {emailError && (
+            <p style={{ color: '#C44536', fontSize: '13px', marginTop: '8px' }}>{emailError}</p>
+          )}
         </div>
         <div style={{ marginBottom: '28px' }}>
           <label
@@ -124,8 +134,9 @@ export function SignInPage() {
         </div>
         <button
           type="submit"
+          disabled={emailError !== ''}
           style={{
-            backgroundColor: '#E07A5F',
+            backgroundColor: emailError ? '#E8C4B8' : '#E07A5F',
             color: 'white',
             border: 'none',
             padding: '16px',

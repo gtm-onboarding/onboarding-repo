@@ -40,7 +40,7 @@ function TestComponent() {
 
 function renderWithProvider() {
   return render(
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AuthProvider>
         <TestComponent />
       </AuthProvider>
@@ -93,11 +93,15 @@ describe('AuthContext', () => {
     expect(screen.getByTestId('user-email').textContent).toBe('none');
   });
 
-  it('accepts any email format (no validation)', () => {
+  it('rejects sign up with an invalid email format', () => {
     renderWithProvider();
     fireEvent.click(screen.getByText('Sign Up Invalid Email'));
+    expect(screen.getByTestId('is-authenticated').textContent).toBe('no');
+    expect(screen.getByTestId('user-email').textContent).toBe('none');
+
+    fireEvent.click(screen.getByText('Sign Up Valid'));
     expect(screen.getByTestId('is-authenticated').textContent).toBe('yes');
-    expect(screen.getByTestId('user-email').textContent).toBe('asdf');
+    expect(screen.getByTestId('user-email').textContent).toBe('test@example.com');
   });
 
   it('persists session to localStorage', () => {
