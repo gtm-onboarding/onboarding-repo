@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product, CartItem } from '../types';
+import { JEWELRY_CATEGORY, JEWELRY_RIDER_MINIMUM, JEWELRY_RIDER_RATE } from '../data/pricing';
 
 interface CartContextType {
   items: CartItem[];
@@ -9,6 +10,11 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  jewelrySubtotal: number;
+  riderSelected: boolean;
+  setRiderSelected: (selected: boolean) => void;
+  riderQuote: number;
+  riderPrice: number;
   showToast: (message: string) => void;
   toastMessage: string | null;
 }
@@ -16,10 +22,12 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'onboarding-demo-cart';
+const RIDER_STORAGE_KEY = 'onboarding-demo-jewelry-rider';
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [riderSelected, setRiderSelected] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem(CART_STORAGE_KEY);
@@ -30,11 +38,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem(CART_STORAGE_KEY);
       }
     }
+    setRiderSelected(localStorage.getItem(RIDER_STORAGE_KEY) === 'true');
   }, []);
 
   useEffect(() => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
   }, [items]);
+
+  useEffect(() => {
+    localStorage.setItem(RIDER_STORAGE_KEY, String(riderSelected));
+  }, [riderSelected]);
 
   const showToast = (message: string) => {
     setToastMessage(message);
@@ -75,10 +88,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setItems([]);
+    setRiderSelected(false);
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const jewelrySubtotal = items
+    .filter((item) => item.product.category === JEWELRY_CATEGORY)
+    .reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const riderQuote =
+    jewelrySubtotal > 0 ? Math.max(JEWELRY_RIDER_MINIMUM, jewelrySubtotal * JEWELRY_RIDER_RATE) : 0;
+  const riderPrice = riderSelected ? riderQuote : 0;
 
   return (
     <CartContext.Provider
@@ -90,6 +110,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        jewelrySubtotal,
+        riderSelected,
+        setRiderSelected,
+        riderQuote,
+        riderPrice,
         showToast,
         toastMessage,
       }}

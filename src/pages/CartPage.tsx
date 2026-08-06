@@ -2,14 +2,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { CartItem } from '../components/CartItem';
+import { JEWELRY_RIDER_RATE, TAX_RATE } from '../data/pricing';
 
 export function CartPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, jewelrySubtotal, riderSelected, setRiderSelected, riderQuote, riderPrice } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  const tax = totalPrice * 0.08;
-  const total = totalPrice + tax;
+  const tax = totalPrice * TAX_RATE;
+  const total = totalPrice + tax + riderPrice;
+  const riderRatePercent = (JEWELRY_RIDER_RATE * 100).toFixed(1);
 
   const handleCheckout = () => {
     if (!isAuthenticated) {
@@ -102,6 +104,40 @@ export function CartPage() {
             <CartItem key={item.product.id} item={item} />
           ))}
         </div>
+        {jewelrySubtotal > 0 && (
+          <div
+            style={{
+              backgroundColor: '#FFFFFF',
+              padding: '24px',
+              borderRadius: '16px',
+              boxShadow: '0 4px 12px rgba(26, 26, 26, 0.06)',
+              marginBottom: '24px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '14px',
+            }}
+          >
+            <input
+              id="jewelry-rider"
+              type="checkbox"
+              checked={riderSelected}
+              onChange={(e) => setRiderSelected(e.target.checked)}
+              style={{ width: '18px', height: '18px', marginTop: '2px' }}
+            />
+            <label htmlFor="jewelry-rider" style={{ flex: 1 }}>
+              <span style={{ color: '#1A1A1A', fontWeight: '600', display: 'block', fontSize: '16px', marginBottom: '4px' }}>
+                Add Jewelry Coverage Rider
+              </span>
+              <span style={{ color: '#6B6B6B', fontSize: '14px', lineHeight: '1.5' }}>
+                Insures your jewelry against loss, theft, and damage for one year at {riderRatePercent}% of the jewelry
+                subtotal.
+              </span>
+            </label>
+            <span style={{ color: '#E07A5F', fontWeight: '700', fontSize: '17px', whiteSpace: 'nowrap' }}>
+              ${riderQuote.toFixed(2)}
+            </span>
+          </div>
+        )}
         <div
           style={{
             backgroundColor: '#FFFFFF',
@@ -114,6 +150,12 @@ export function CartPage() {
             <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Subtotal</span>
             <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${totalPrice.toFixed(2)}</span>
           </div>
+          {riderPrice > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Jewelry Coverage Rider</span>
+              <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${riderPrice.toFixed(2)}</span>
+            </div>
+          )}
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
             <span style={{ color: '#6B6B6B', fontSize: '15px' }}>Tax (8%)</span>
             <span style={{ color: '#1A1A1A', fontSize: '15px', fontWeight: '500' }}>${tax.toFixed(2)}</span>
