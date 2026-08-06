@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
+import { useCart, TAX_RATE, JEWELRY_COVERAGE_RIDER_RATE } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 
 export function CheckoutPage() {
-  const { items, totalPrice, clearCart } = useCart();
+  const { items, totalPrice, clearCart, jewelrySubtotal, coverageRiderSelected, coverageRiderPrice } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -18,8 +18,9 @@ export function CheckoutPage() {
     cvv: '',
   });
 
-  const tax = totalPrice * 0.08;
-  const total = totalPrice + tax;
+  const tax = totalPrice * TAX_RATE;
+  const total = totalPrice + tax + coverageRiderPrice;
+  const showCoverageRider = coverageRiderSelected && jewelrySubtotal > 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -271,6 +272,20 @@ export function CheckoutPage() {
                 <span>Subtotal</span>
                 <span style={{ color: '#1A1A1A' }}>${totalPrice.toFixed(2)}</span>
               </div>
+              {showCoverageRider && (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginBottom: '12px',
+                    color: '#6B6B6B',
+                    fontSize: '14px',
+                  }}
+                >
+                  <span>Jewelry Coverage Rider ({JEWELRY_COVERAGE_RIDER_RATE * 100}%)</span>
+                  <span style={{ color: '#1A1A1A' }}>${coverageRiderPrice.toFixed(2)}</span>
+                </div>
+              )}
               <div
                 style={{
                   display: 'flex',
@@ -280,7 +295,7 @@ export function CheckoutPage() {
                   fontSize: '14px',
                 }}
               >
-                <span>Tax (8%)</span>
+                <span>Tax ({TAX_RATE * 100}%)</span>
                 <span style={{ color: '#1A1A1A' }}>${tax.toFixed(2)}</span>
               </div>
               <div
@@ -356,6 +371,7 @@ export function CheckoutPage() {
             </h2>
             <p style={{ color: '#6B6B6B', marginBottom: '32px', fontSize: '16px', lineHeight: '1.6' }}>
               Thank you for your purchase. Your order has been placed successfully.
+              {showCoverageRider && ' Your jewelry coverage rider is included and starts today.'}
             </p>
             <button
               onClick={handleConfirmationClose}
