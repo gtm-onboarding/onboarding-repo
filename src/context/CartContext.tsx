@@ -61,6 +61,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({ items, riderSelected }));
   }, [items, riderSelected]);
 
+  const riderEligible = getRiderEligibleSubtotal(items) > 0;
+
+  useEffect(() => {
+    if (!riderEligible && riderSelected) {
+      setRiderSelected(false);
+    }
+  }, [riderEligible, riderSelected]);
+
   const showToast = (message: string) => {
     setToastMessage(message);
     setTimeout(() => setToastMessage(null), 3000);
@@ -105,7 +113,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-  const riderEligible = getRiderEligibleSubtotal(items) > 0;
   const riderPrice = riderEligible ? getRiderPrice(items, riderSelected) : 0;
 
   return (

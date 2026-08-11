@@ -28,7 +28,8 @@ const ring = products.find((product) => product.id === JEWELRY_RIDER_PRODUCT_ID)
 const otherProduct = products.find((product) => product.category !== 'Jewelry')!;
 
 function TestComponent() {
-  const { addToCart, clearCart, riderSelected, setRiderSelected, riderEligible, riderPrice } = useCart();
+  const { addToCart, removeFromCart, clearCart, riderSelected, setRiderSelected, riderEligible, riderPrice } =
+    useCart();
   return (
     <div>
       <span data-testid="rider-eligible">{String(riderEligible)}</span>
@@ -36,6 +37,7 @@ function TestComponent() {
       <span data-testid="rider-price">{riderPrice.toFixed(2)}</span>
       <button onClick={() => addToCart(ring)}>Add Ring</button>
       <button onClick={() => addToCart(otherProduct)}>Add Other</button>
+      <button onClick={() => removeFromCart(ring.id)}>Remove Ring</button>
       <button onClick={() => setRiderSelected(true)}>Select Rider</button>
       <button onClick={() => setRiderSelected(false)}>Unselect Rider</button>
       <button onClick={clearCart}>Clear Cart</button>
@@ -104,6 +106,17 @@ describe('jewelry rider in CartContext', () => {
     fireEvent.click(screen.getByText('Add Ring'));
     fireEvent.click(screen.getByText('Select Rider'));
     fireEvent.click(screen.getByText('Clear Cart'));
+    expect(screen.getByTestId('rider-selected').textContent).toBe('false');
+    expect(screen.getByTestId('rider-price').textContent).toBe('0.00');
+  });
+
+  it('drops the opt-in when the ring leaves the cart', () => {
+    renderWithProvider();
+    fireEvent.click(screen.getByText('Add Ring'));
+    fireEvent.click(screen.getByText('Select Rider'));
+    fireEvent.click(screen.getByText('Remove Ring'));
+    expect(screen.getByTestId('rider-selected').textContent).toBe('false');
+    fireEvent.click(screen.getByText('Add Ring'));
     expect(screen.getByTestId('rider-selected').textContent).toBe('false');
     expect(screen.getByTestId('rider-price').textContent).toBe('0.00');
   });
