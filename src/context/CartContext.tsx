@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product, CartItem } from '../types';
+import { getRiderEligibleSubtotal, getRiderPrice } from '../data/pricing';
 
 interface CartContextType {
   items: CartItem[];
@@ -9,6 +10,10 @@ interface CartContextType {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  riderSelected: boolean;
+  setRiderSelected: (selected: boolean) => void;
+  riderEligible: boolean;
+  riderPrice: number;
   showToast: (message: string) => void;
   toastMessage: string | null;
 }
@@ -17,15 +22,35 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const CART_STORAGE_KEY = 'onboarding-demo-cart';
 
+interface StoredCart {
+  items: CartItem[];
+  riderSelected: boolean;
+}
+
+function parseStoredCart(stored: string): StoredCart {
+  const parsed: unknown = JSON.parse(stored);
+  if (Array.isArray(parsed)) {
+    return { items: parsed as CartItem[], riderSelected: false };
+  }
+  const { items, riderSelected } = parsed as Partial<StoredCart>;
+  return {
+    items: Array.isArray(items) ? items : [],
+    riderSelected: riderSelected === true,
+  };
+}
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [riderSelected, setRiderSelected] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem(CART_STORAGE_KEY);
     if (stored) {
       try {
-        setItems(JSON.parse(stored));
+        const cart = parseStoredCart(stored);
+        setItems(cart.items);
+        setRiderSelected(cart.riderSelected);
       } catch {
         localStorage.removeItem(CART_STORAGE_KEY);
       }
@@ -33,8 +58,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-  }, [items]);
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({ items, riderSelected }));
+  }, [items, riderSelected]);
+
+  const riderEligible = getRiderEligibleSubtotal(items) > 0;
+
+  useEffect(() => {
+    if (!riderEligible && riderSelected) {
+      setRiderSelected(false);
+    }
+  }, [riderEligible, riderSelected]);
 
   const showToast = (message: string) => {
     setToastMessage(message);
@@ -75,10 +108,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setItems([]);
+    setRiderSelected(false);
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const riderPrice = riderEligible ? getRiderPrice(items, riderSelected) : 0;
 
   return (
     <CartContext.Provider
@@ -90,6 +125,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalItems,
         totalPrice,
+        riderSelected,
+        setRiderSelected,
+        riderEligible,
+        riderPrice,
         showToast,
         toastMessage,
       }}
